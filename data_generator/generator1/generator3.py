@@ -1,8 +1,14 @@
+import csv
 import random
 
 class NameGenerator:
-    def __init__(self):
-        self.names = ['John', 'Jane', 'Michael', 'Emily', 'William', 'Olivia']
+    def __init__(self, file_path):
+        self.names = self.load_data(file_path)
+
+    def load_data(self, file_path):
+        with open(file_path, 'r') as file:
+            data = file.read().splitlines()
+        return data
 
     def generate_name(self):
         return random.choice(self.names)
@@ -19,8 +25,13 @@ class GenderGenerator:
         return random.choice(['Male', 'Female'])
 
 class AddressGenerator:
-    def __init__(self):
-        self.cities = ['New York', 'Los Angeles', 'Chicago', 'Houston', 'Philadelphia']
+    def __init__(self, file_path):
+        self.cities = self.load_data(file_path)
+
+    def load_data(self, file_path):
+        with open(file_path, 'r') as file:
+            data = file.read().splitlines()
+        return data
 
     def generate_address(self):
         city = random.choice(self.cities)
@@ -28,11 +39,11 @@ class AddressGenerator:
         return f"{street} {city}"
 
 class DataGenerator:
-    def __init__(self):
-        self.name_gen = NameGenerator()
+    def __init__(self, name_file, city_file):
+        self.name_gen = NameGenerator(name_file)
         self.birthdate_gen = BirthdateGenerator()
         self.gender_gen = GenderGenerator()
-        self.address_gen = AddressGenerator()
+        self.address_gen = AddressGenerator(city_file)
 
     def generate_data(self, count):
         data = []
@@ -48,12 +59,26 @@ class DataPrinter(DataGenerator):
     def print_data(self, count):
         data = self.generate_data(count)
         for name, birthdate, gender, address in data:
-            # print(f"Name: {name}, Birthdate: {birthdate}, Gender: {gender}, Address: {address}")
             print(f"Name: {name}\nBirthdate: {birthdate}\nGender: {gender}\nAddress: {address}\n")
 
+class DataExporter(DataGenerator):
+    def export_to_csv(self, count, filename):
+        data = self.generate_data(count)
+        headers = ['Name', 'Birthdate', 'Gender', 'Address']
+        with open(filename, 'w', newline='') as csvfile:
+            writer = csv.writer(csvfile)
+            writer.writerow(headers)
+            writer.writerows(data)
 
 # 프로그램 실행
-printer = DataPrinter()
+name_file = 'names.txt'  # 이름 데이터 파일 경로
+city_file = 'cities.txt'  # 도시 데이터 파일 경로
+
+printer = DataPrinter(name_file, city_file)
+exporter = DataExporter(name_file, city_file)
 
 # 데이터 출력
 printer.print_data(100)  # 100개의 데이터 출력
+
+# CSV 파일로 저장
+exporter.export_to_csv(100, 'data.csv')  # 100개의 데이터를 'data.csv' 파일로 저장
