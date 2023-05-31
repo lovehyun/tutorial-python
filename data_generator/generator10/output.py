@@ -2,15 +2,23 @@ import csv
 
 
 def save_to_csv(data):
+    filename = None
+    header = None
+    rows = []
+    
     for item in data:
-        filename = item.get_csv_filename()
-        header = item.get_csv_header()
-        rows = [item.get_row() for item in data]
-        with open(filename, 'w', newline='', encoding='euc-kr') as file:
-            writer = csv.writer(file)
-            writer.writerow(header)
-            writer.writerows(rows)
+        if filename is None:  # 첫 번째 항목의 경우에만 파일명 설정
+            filename = item.get_csv_filename()
+            header = item.get_csv_header()
+        rows.append(item.get_row())  # 중복된 작업 대신 rows 리스트에 항목 추가
+    
+    with open(filename, 'w', newline='', encoding='euc-kr') as file:
+        writer = csv.writer(file)
+        writer.writerow(header)
+        writer.writerows(rows)
+        
     print(f"데이터가 {filename} 파일로 저장되었습니다.")
+
 
 def print_data_item(item):
     item.print_data()
