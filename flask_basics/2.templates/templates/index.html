@@ -1,0 +1,18 @@
+<!doctype html>
+<html>
+<head>
+    <title>Home page</title>
+</head>
+<body>
+    <h1>Home page!</h1>
+    {% if name in content %}
+        <h1>Welcome, {{name}}</h1>
+    {% else %}
+        <h1>Good-bye</h1>
+    {% endif %}
+
+    {% for x in content %}
+        <li>{{x}}</li>
+    {% endfor %}
+</body>
+</html>
