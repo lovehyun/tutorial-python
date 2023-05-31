@@ -1,0 +1,36 @@
+body,html {
+    height: 100%;
+}
+
+.cell-container {
+    margin: 0px;
+    padding: px;
+}
+
+.main-nav {
+    background-color: #333; /* 메뉴바 배경색 */
+}
+
+.menu-item {
+    margin-right: 15px; /* 메뉴 아이템 간의 오른쪽 여백 조정 */
+    padding: 10px 15px; /* 메뉴 아이템의 패딩 설정 */
+    font-size: 64px; /* 폰트 크기 설정 */
+    font-weight: bold; /* 폰트 가중치 설정 */
+    color: #fff; /* 텍스트 색상 설정 */
+    text-decoration: none; /* 텍스트 밑줄 제거 */
+}
+
+.table-hover tbody tr:hover {
+    background-color: #b5d0ff; /* 마우스를 올렸을 때의 배경색 */
+}
+
+.section-header {
+    background-color: #dedede;
+    padding: 10px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.table th {
+    background-color: #f7f7f7;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}

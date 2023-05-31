@@ -1,0 +1,59 @@
+from database import model
+from flask import Blueprint, redirect, render_template, request
+from sqlalchemy.sql.functions import func, sum as sqlsum
+
+
+blueprint = Blueprint('store', __name__)
+
+
+@blueprint.route('/stores/', defaults={'page_num': 1})
+@blueprint.route('/stores/<int:page_num>')
+def stores(page_num=1):
+    stores = model.Store.query.paginate(per_page=20, page=page_num, error_out=True)
+    return render_template("stores.html", pagination=stores)
+
+
+@blueprint.route('/store_detail/<store_id>', methods=['GET'])
+def store_detail(store_id):
+    rev_month = request.args.get('rev_month')
+
+    expr = model.Order.storeid == store_id
+    if rev_month is None:
+        month = func.substr(model.Order.orderat, 0, 8)
+    else:
+        month = func.substr(model.Order.orderat, 0, 11)
+        expr &= func.substr(model.Order.orderat, 0, 8) == rev_month
+
+    revenues = model.db.session.query(
+        month, sqlsum(model.Item.unitprice), func.count()
+    ).join(
+        model.OrderItem, model.OrderItem.itemid == model.Item.id
+    ).join(
+        model.Order, model.Order.id == model.OrderItem.orderid
+    ).filter(
+        expr
+    ).group_by(
+        month
+    ).order_by(
+        month
+    )
+
+    users = model.db.session.query(
+        model.User.id, model.User.name, func.count(model.Order.id)
+    ).join(
+        model.Order, model.Order.userid == model.User.id
+    ).filter(
+        expr
+    ).group_by(
+        model.User.id
+    ).order_by(
+        func.count(model.Order.id).desc()
+    ).limit(
+        10
+    )
+
+    store = model.Store.query.filter_by(id=store_id).first()
+    if not store:
+        return redirect('/stores')
+
+    return render_template("store_detail.html", store=store, revenues=revenues, users=users)

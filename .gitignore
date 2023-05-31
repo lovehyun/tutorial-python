@@ -1,3 +1,8 @@
+# python compile
 __pycache__
 *.pyc
+
+# data files
 *.csv
+*.sqlite
+

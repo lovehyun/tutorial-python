@@ -99,3 +99,64 @@ Id,OrderId,ItemId
 b1904f4b-3c26-4384-af25-729654b1370f,e709ee4b-a56f-49e8-808b-a4cad78bc823,c09d0b02-3392-4061-ba0f-ce0cb421ae94
 406cfa69-2f8a-4951-9e8f-525b1f41e6c0,81b64f16-853e-4914-bb34-4387d4c2cf8c,c09d0b02-3392-4061-ba0f-ce0cb421ae94
 ```
+
+
+----------
+
+# 데이터 SQLITE IMPORT
+
+1. DB 생성
+sqlite3 user-sample.sqlite
+
+2. 데이터 로딩
+(한글 깨짐 현상은, csv 파일 로딩 후 UTF-8로 다시 저장해서 사용.)
+
+.mode csv
+
+.import user.csv users
+.import store.csv stores
+.import item.csv items
+.import order.csv orders
+.import orderitem.csv order_items
+
+3. 데이터 확인
+sqlite> .schema
+CREATE TABLE IF NOT EXISTS "users"(
+"Id" TEXT, "Name" TEXT, "Gender" TEXT, "Age" TEXT,
+ "Birthdate" TEXT, "Address" TEXT);
+CREATE TABLE IF NOT EXISTS "stores"(
+"Id" TEXT, "Name" TEXT, "Type" TEXT, "Address" TEXT);
+CREATE TABLE IF NOT EXISTS "items"(
+"Id" TEXT, "Name" TEXT, "Type" TEXT, "UnitPrice" TEXT);
+CREATE TABLE IF NOT EXISTS "orders"(
+"Id" TEXT, "OrderAt" TEXT, "StoreId" TEXT, "UserId" TEXT);
+CREATE TABLE IF NOT EXISTS "order_items"(
+"Id" TEXT, "OrderId" TEXT, "ItemId" TEXT);
+
+4. (필요시) 데이터 컬럼 속성 변경 (굳이 안해도 무방)
+
+-- 새로운 테이블 생성
+CREATE TABLE new_users (
+    Id INTEGER,
+    Name TEXT,
+    Gender TEXT,
+    Age INTEGER,
+    Birthdate TEXT,
+    Address TEXT
+);
+
+-- 기존 테이블의 데이터를 새로운 테이블로 복사
+INSERT INTO new_users (Id, Name, Gender, Age, Birthdate, Address)
+SELECT Id, Name, Gender, CAST(Age AS INTEGER), Birthdate, Address
+FROM users;
+
+-- 기존 테이블 삭제
+DROP TABLE users;
+
+-- 새로운 테이블의 이름을 기존 테이블의 이름으로 변경
+ALTER TABLE new_users RENAME TO users;
+
+5. 인덱스 생성 
+(생성 전후의 성능 비교 해볼 것)
+
+CREATE INDEX idx_users_name ON users (name);

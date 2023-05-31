@@ -1,0 +1,96 @@
+<!-- /templates/users.html  -->
+
+{% extends 'base.html' %}
+
+{% block content %}
+    <div class="cell-container" style="overflow: auto; max-height: 80vh">
+        <form action="" method="post">
+            {{ form.csrf }}
+            <div class="input text">
+                {{ form.name.label }} {{ form.name(value=query['name'] if query['name'] else '') }}
+                {{ form.gender.label }} {{ form.gender(value=query['gender']) }}
+                <input type="submit" value="Submit">
+            </div>
+        </form>
+
+        <div class="table-responsive">
+            <!-- 마우스 오버 호버 개선 -->
+            <table class="table table-hover" id="users">
+                <thead>
+                    <tr>
+                        <th scope="col">id</th>
+                        <th scope="col">name</th>
+                        <th scope="col">gender</th>
+                        <th scope="col">age</th>
+                        <th scope="col">birthday</th>
+                    </tr>
+                </thead>
+                <tbody>
+                {% for user in pagination.items %}
+                    <tr id={{ user.id }} class="table-light">
+                        <td scope="row"> 
+                            <a href="{{ url_for('.user_detail', user_id=user.id) }}">
+                                {{ user.id }}
+                            </a>
+                        </td>
+                        <td> {{ user.name }} </td>
+                        <td> {{ user.gender }} </td>
+                        <td> {{ user.age }} </td>
+                        <td> {{ user.birthdate }} </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- 테이블 페이지네이션 데코레이션 개선 -->
+    <!-- {% for page in pagination.iter_pages(left_edge=3, right_edge=3, left_current=5, right_current=5) %}
+        {% if page %}
+            {% if query %}
+            <a href="{{ url_for('.users', page_num=page, name=query['name'], gender=query['gender']) }}">{{ page }}</a>
+            {% else %}
+            <a href="{{ url_for('.users', page_num=page) }}">{{ page }}</a>
+            {% endif %}
+        {% else %}
+            ...
+        {% endif %}
+    {% endfor %}  -->
+
+    <nav aria-label="Page navigation">
+        <ul class="pagination justify-content-center">
+            {% if pagination.has_prev %}
+            <li class="page-item">
+                <a class="page-link" href="{{ url_for('.users', page_num=pagination.prev_num, name=query['name'], gender=query['gender']) }}">Previous</a>
+            </li>
+            {% endif %}
+            {% for page in pagination.iter_pages(left_edge=3, right_edge=3, left_current=5, right_current=5) %}
+                {% if page %}
+                    {% if pagination.page == page %}
+                    <li class="page-item active" aria-current="page">
+                        <span class="page-link">{{ page }}</span>
+                    </li>
+                    {% else %}
+                    <li class="page-item">
+                        {% if query %}
+                        <a class="page-link" href="{{ url_for('.users', page_num=page, name=query['name'], gender=query['gender']) }}">{{ page }}</a>
+                        {% else %}
+                        <a class="page-link" href="{{ url_for('.users', page_num=page, **query) }}">{{ page }}</a>
+                        {% endif %}
+                    </li>
+                    {% endif %}
+                {% else %}
+                    <li class="page-item disabled">
+                        <span class="page-link">...</span>
+                    </li>
+                {% endif %}
+            {% endfor %}
+            {% if pagination.has_next %}
+            <li class="page-item">
+                <a class="page-link" href="{{ url_for('.users', page_num=pagination.next_num, name=query['name'], gender=query['gender']) }}">Next</a>
+            </li>
+            {% endif %}
+        </ul>
+    </nav>
+
+{% endblock %}
