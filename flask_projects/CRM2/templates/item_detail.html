@@ -1,0 +1,25 @@
+<!-- /templates/item_detail.html  -->
+
+{% extends 'base.html' %}
+
+{% block content %}
+    <div class="cell-container" style="overflow: auto; max-height: 80vh">
+        <!-- 상품 정보 -->
+        <div class="table-responsive">
+            <table class="table" id="item">
+                <thead>
+                    <tr>
+                        <th scope="col">name</th>
+                        <th scope="col">unit_price</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr id={{ item.id }}>
+                        <td> {{ item.name }} </td>
+                        <td> {{ item.unitprice }} </td>
+                    </tr>
+                    </tbody>
+            </table>
+        </div>
+    </div>
+{% endblock %}

@@ -1,0 +1,37 @@
+<!-- /templates/items.html  -->
+
+{% extends 'base.html' %}
+
+{% block content %}
+    <div class="cell-container" style="overflow: auto; max-height: 80vh">
+        <div class="table-responsive">
+            <table class="table" id="items">
+                <thead>
+                    <tr>
+                        <th scope="col">id</th>
+                        <th scope="col">type</th>
+                        <th scope="col">name</th>
+                        <th scope="col">unit_price</th>
+                    </tr>
+                </thead>
+                <tbody>
+                {% for item in pagination.items %}
+                    <tr id={{ item.id }}>
+                        <td> {{ item.id }} </td>
+                        <td> {{ item.type }} </td>
+                        <td> {{ item.name }} </td>
+                        <td> {{ item.unitprice }} </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    {% for page in pagination.iter_pages(left_edge=3, right_edge=3, left_current=5, right_current=5) %}
+        {% if page %}
+            <a href="{{ url_for('.items', page_num=page) }}">{{ page }}</a>
+        {% else %}
+            ...
+        {% endif %}
+    {% endfor %}
+{% endblock %}

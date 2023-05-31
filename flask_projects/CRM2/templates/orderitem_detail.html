@@ -1,0 +1,29 @@
+<!-- /templates/orderitem_detail.html  -->
+
+{% extends 'base.html' %}
+
+{% block content %}
+    <div class="cell-container" style="overflow: auto; max-height: 80vh">
+        <!-- 상품 주문 정보 -->
+        <div class="table-responsive">
+            <table class="table" id="orderitem">
+                <thead>
+                    <tr>
+                        <th scope="col">id</th>
+                        <th scope="col">order_id</th>
+                        <th scope="col">item_id</th>
+                    </tr>
+                </thead>
+                <tbody>
+                {% for orderitem in orderitems %}
+                    <tr id={{ orderitem.id }}>
+                        <td> {{ orderitem.id }} </td>
+                        <td> <a href="{{ url_for('order.order_detail', order_id=orderitem.orderid) }}">{{ orderitem.orderid }}</a> </td>
+                        <td> <a href="{{ url_for('item.item_detail', item_id=orderitem.itemid) }}">{{ orderitem.itemid }}</a> </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+{% endblock %}

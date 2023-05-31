@@ -1,0 +1,64 @@
+<!-- /templates/store_detail.html  -->
+
+{% extends 'base.html' %}
+
+{% block content %}
+    <div class="cell-container" style="overflow: auto; max-height: 80vh">
+        <a href="{{ url_for('.store_detail', store_id=store.id) }}">
+            back
+        </a>
+        <!-- 상점 기본 정보 -->
+        <div class="table-responsive">
+            <table class="table" id="store">
+                <thead>
+                    <tr>
+                        <th scope="col">name</th>
+                        <th scope="col">type</th>
+                        <th scope="col">address</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr id={{ store.id }}>
+                        <td> {{ store.name }} </td>
+                        <td> {{ store.type }} </td>
+                        <td> {{ store.address }} </td>
+                    </tr>
+                    </tbody>
+            </table>
+        </div>
+
+        <!-- 월간 매출액 -->
+        <div class="table-responsive">
+            <table class="table" id="store">
+                <thead>
+                    <tr>
+                        <th scope="col">month</th>
+                        <th scope="col">revenue</th>
+                        <th scope="col">count</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for month, revenue, count in revenues %}
+                        <tr>
+                            <td>
+                                {% if not request.args.get('rev_month') %}
+                                <a href="{{ url_for('.store_detail', store_id=store.id, rev_month=month) }}">
+                                    {{ month }}
+                                </a>
+                                {% else %}
+                                    {{ month }}
+                                {% endif %}
+                            </td>
+                            <td>
+                                {{ revenue}}
+                            </td>
+                            <td>
+                                {{ count }}
+                            </td>
+                        </tr>
+                    {% endfor %}
+            </tbody>
+            </table>
+        </div>
+    </div>
+{% endblock %}

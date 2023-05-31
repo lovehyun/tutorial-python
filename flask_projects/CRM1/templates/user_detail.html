@@ -1,0 +1,50 @@
+<!-- /templates/user_detail.html  -->
+
+{% extends 'base.html' %}
+
+{% block content %}
+    <div class="cell-container" style="overflow: auto; max-height: 80vh">
+        <div class="table-responsive">
+            <!-- 사용자 정보 -->
+            <table class="table" id="user">
+                <thead>
+                    <tr>
+                        <th scope="col">name</th>
+                        <th scope="col">gender</th>
+                        <th scope="col">age</th>
+                        <th scope="col">birthday</th>
+                        <th scope="col">address</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr id={{ user.id }}>
+                        <td> {{ user.name }} </td>
+                        <td> {{ user.gender }} </td>
+                        <td> {{ user.age }} </td>
+                        <td> {{ user.birthdate }} </td>
+                        <td> {{ user.address }} </td>
+                    </tr>
+                    </tbody>
+            </table>
+            <!-- 상품 주문 정보 -->
+            <table class="table" id="order">
+                <thead>
+                    <tr>
+                        <th scope="col">order id</th>
+                        <th scope="col">purchased date</th>
+                        <th scope="col">purchased location</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for order in orders %}
+                    <tr id={{ order.id }}>
+                        <td> {{ order.id }} </td>
+                        <td> {{ order.orderat }} </td>
+                        <td> {{ order.storeid }} </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+{% endblock %}

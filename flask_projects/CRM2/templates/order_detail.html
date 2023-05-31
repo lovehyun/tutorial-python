@@ -1,0 +1,30 @@
+<!-- /templates/order_detail.html  -->
+
+{% extends 'base.html' %}
+
+{% block content %}
+    <div class="cell-container" style="overflow: auto; max-height: 80vh">
+        <div class="table-responsive">
+            <table class="table" id="order">
+                <thead>
+                    <tr>
+                        <th scope="col">id</th>
+                        <th scope="col">ordered_at</th>
+                        <th scope="col">store_id</th>
+                        <th scope="col">user_id</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for order in orders %}
+                    <tr id={{ order.id }}>
+                        <td> {{ order.id }} </td>
+                        <td> {{ order.orderat }} </td>
+                        <td> <a href="{{ url_for('store.store_detail', store_id=order.storeid) }}">{{ order.storeid }}</a> </td>
+                        <td> <a href="{{ url_for('user.user_detail', user_id=order.userid) }}">{{ order.userid }}</a> </td>
+                    </tr>
+                    {% endfor %}
+                    </tbody>
+            </table>
+        </div>
+    </div>
+{% endblock %}
