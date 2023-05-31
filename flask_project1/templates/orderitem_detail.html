@@ -15,6 +15,7 @@
                         <th scope="col">id</th>
                         <th scope="col">order_id</th>
                         <th scope="col">item_id</th>
+                        <th scope="col">item_name</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -23,6 +24,7 @@
                         <td> {{ orderitem.id }} </td>
                         <td> <a href="{{ url_for('order.order_detail', order_id=orderitem.orderid) }}">{{ orderitem.orderid }}</a> </td>
                         <td> <a href="{{ url_for('item.item_detail', item_id=orderitem.itemid) }}">{{ orderitem.itemid }}</a> </td>
+                        <td> {{ items[loop.index0].name }} </td>  <!-- 현재 반복중인 인덱스(loop.index0)를 통해 item_name 출력 -->
                     </tr>
                 {% endfor %}
                 </tbody>

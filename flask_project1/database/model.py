@@ -23,9 +23,6 @@ class User(db.Model):
     # setup relation
     orderR = db.relationship('Order', backref='users')
 
-    def followed_orders(self):
-        return Order.query.join()
-
 
 class Store(db.Model):
     __tablename__ = table_store
@@ -58,6 +55,7 @@ class Order(db.Model):
     userid = db.Column(db.String(64), db.ForeignKey(table_user + '.id'))
     # setup relation
     orderItemR = db.relationship('OrderItem', backref='orders')
+    storeR = db.relationship('Store', backref='orders')
 
 
 class OrderItem(db.Model):

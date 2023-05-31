@@ -7,39 +7,37 @@ from wtforms.fields import SelectField, StringField
 blueprint = Blueprint('user', __name__)
 
 
-class ReusableForm(FlaskForm):
-    '''
-    search field name, gender forms
-    '''
+class MyForm(FlaskForm):
     name = StringField('Name:')
-    choices = [('', 'ALL'), ('female', 'F'), ('male', 'M')]
-    gender = SelectField('Gender:', choices=choices)
+    gender = SelectField('Gender:', choices=[(''), ('female'), ('male')])
 
 
 @blueprint.route('/users/', defaults={'page_num': 1}, methods=['GET', 'POST'])
 @blueprint.route('/users/<int:page_num>', methods=['GET', 'POST'])
 def users(page_num):
-    form = ReusableForm(request.form)
-    name = request.args.get('name', default=None)
+    form = MyForm(request.args) # GET 파라미터로부터 폼 다시 채우기
+    name = request.args.get('name', default='')
     gender = request.args.get('gender', default=None)
 
-    # http method options
     if request.method == 'POST':
         name = request.form['name']
         gender = request.form['gender']
-        page_num = 1  # restart search on new query
+        form.gender.process(request.form) # 폼에서 입력된 값 유지
+        page_num = 1  # 검색 시 페이징 초기화
 
-    # query statement build-up
+    # 쿼리문 빌드업
     users = model.User.query
     if name:
         users = users.filter(model.User.name.like('{}%'.format(name)))
     if gender:
         users = users.filter(model.User.gender.like('{}'.format(gender)))
 
-    # execute query : .all / .paginate
+    # 쿼리문 실행 .all 또는 .paginate
     users = users.paginate(per_page=20, page=page_num, error_out=True)
 
+    # 조건문이 폼에 계속 유지되도록 쿼리문 재 전달
     query = {'name': name, 'gender': gender}
+    print(query)
 
     return render_template("users.html", pagination=users, form=form, query=query)
 

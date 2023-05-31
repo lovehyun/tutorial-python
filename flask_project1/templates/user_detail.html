@@ -39,6 +39,7 @@
                         <th scope="col">order id</th>
                         <th scope="col">purchased date</th>
                         <th scope="col">purchased location</th>
+                        <th scope="col">store name</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -47,6 +48,7 @@
                         <td> <a href="{{ url_for('order.orderitem_detail', order_id=order.id) }}">{{ order.id }}</a> </td>
                         <td> {{ order.orderat }} </td>
                         <td> <a href="{{ url_for('store.store_detail', store_id=order.storeid) }}">{{ order.storeid }}</a> </td>
+                        <td> {{ order.storeR.name }}</td>
                     </tr>
                     {% endfor %}
                 </tbody>

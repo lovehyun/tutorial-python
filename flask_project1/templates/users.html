@@ -7,8 +7,8 @@
         <form action="" method="post">
             {{ form.csrf }}
             <div class="input text">
-                {{ form.name.label }} {{ form.name(value=query['name'] if query['name'] else '') }}
-                {{ form.gender.label }} {{ form.gender(value=query['gender']) }}
+                {{ form.name.label }} {{ form.name(value=query['name']) }}
+                {{ form.gender.label }} {{ form.gender() }}
                 <input type="submit" value="Submit">
             </div>
         </form>

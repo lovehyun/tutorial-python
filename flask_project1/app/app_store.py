@@ -19,11 +19,12 @@ def store_detail(store_id):
 
     expr = model.Order.storeid == store_id
     if rev_month is None:
-        month = func.substr(model.Order.orderat, 0, 8)
+        month = func.substr(model.Order.orderat, 0, 8) # 월 매칭 2023-03-
     else:
-        month = func.substr(model.Order.orderat, 0, 11)
+        month = func.substr(model.Order.orderat, 0, 11) # 일 매칭 2023-03-01
         expr &= func.substr(model.Order.orderat, 0, 8) == rev_month
 
+    # 월간 매출액
     revenues = model.db.session.query(
         month, sqlsum(model.Item.unitprice), func.count()
     ).join(
@@ -38,6 +39,7 @@ def store_detail(store_id):
         month
     )
 
+    # 단골 고객 Top10
     users = model.db.session.query(
         model.User.id, model.User.name, func.count(model.Order.id)
     ).join(
