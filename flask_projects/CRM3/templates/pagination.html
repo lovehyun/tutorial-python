@@ -1,0 +1,41 @@
+<!-- /templates/pagination.html -->
+<nav aria-label="Page navigation">
+    <ul class="pagination justify-content-center">
+        {% if pagination.has_prev %}
+        <li class="page-item">
+            <a class="page-link" href="{{ prev_url }}">Previous</a>
+        </li>
+        {% endif %}
+
+        {% for page in pagination.iter_pages(left_edge=3, right_edge=3, left_current=5, right_current=5) %}
+            {% if page %}
+                {% set page_url %}
+                    {% if template_name == 'users' %}
+                        {{ url_for('.users', page_num=page, **query) if query else url_for('.users', page_num=page) }}
+                    {% else %}
+                        {{ url_for(template_name, page_num=page) }}
+                    {% endif %}
+                {% endset %}
+                {% if pagination.page == page %}
+                    <li class="page-item active" aria-current="page">
+                        <span class="page-link">{{ page }}</span>
+                    </li>
+                {% else %}
+                    <li class="page-item">
+                        <a class="page-link" href="{{ page_url }}">{{ page }}</a>
+                    </li>
+                {% endif %}
+            {% else %}
+                <li class="page-item disabled">
+                    <span class="page-link">...</span>
+                </li>
+            {% endif %}
+        {% endfor %}
+
+        {% if pagination.has_next %}
+        <li class="page-item">
+            <a class="page-link" href="{{ next_url }}">Next</a>
+        </li>
+        {% endif %}
+    </ul>
+</nav>

@@ -5,7 +5,8 @@
 {% block content %}
     <div class="cell-container" style="overflow: auto; max-height: 80vh">
         <div class="table-responsive">
-            <table class="table" id="stores">
+            <!-- 마우스 오버 호버 개선 table-hover, table-light -->
+            <table class="table table-hover" id="stores">
                 <thead>
                     <tr>
                         <th scope="col">id</th>
@@ -16,7 +17,7 @@
                 </thead>
                 <tbody>
                 {% for store in pagination.items %}
-                    <tr id={{ store.id }}>
+                    <tr id={{ store.id }} class="table-light">
                         <td> <a href="{{ url_for('.store_detail', store_id=store.id) }}">{{ store.id }}</a> </td>
                         <td> {{ store.type}} </td>
                         <td> {{ store.name }} </td>
@@ -27,11 +28,11 @@
             </table>
         </div>
     </div>
-    {% for page in pagination.iter_pages(left_edge=3, right_edge=3, left_current=5, right_current=5) %}
-        {% if page %}
-            <a href="{{ url_for('.stores', page_num=page) }}">{{ page }}</a>
-        {% else %}
-            ...
-        {% endif %}
-    {% endfor %}
+
+    {% set prev_url = url_for('.stores', page_num=pagination.prev_num) %}
+    {% set next_url = url_for('.stores', page_num=pagination.next_num) %}
+    {% set page_url = url_for('.stores', page_num=pagination.page) %}
+    {% set template_name = '.stores' %}
+    {% include 'pagination.html' %}
+
 {% endblock %}

@@ -5,7 +5,8 @@
 {% block content %}
     <div class="cell-container" style="overflow: auto; max-height: 80vh">
         <div class="table-responsive">
-            <table class="table" id="order_items">
+            <!-- 마우스 오버 호버 개선 table-hover, table-light -->
+            <table class="table table-hover" id="order_items">
                 <thead>
                     <tr>
                         <th scope="col">id</th>
@@ -15,7 +16,7 @@
                 </thead>
                 <tbody>
                 {% for order_item in pagination.items %}
-                    <tr id={{ order_item.id }}>
+                    <tr id={{ order_item.id }} class="table-light">
                         <td scope="row">{{ order_item.id }}</td>
                         <td> <a href="{{ url_for('order.order_detail', order_id=order_item.orderid) }}">{{ order_item.orderid }}</a> </td>
                         <td> <a href="{{ url_for('item.item_detail', item_id=order_item.itemid) }}">{{ order_item.itemid }}</a> </td>
@@ -25,11 +26,11 @@
             </table>
         </div>
     </div>
-    {% for page in pagination.iter_pages(left_edge=3, right_edge=3, left_current=5, right_current=5) %}
-        {% if page %}
-            <a href="{{ url_for('.order_items', page_num=page) }}">{{ page }}</a>
-        {% else %}
-            ...
-        {% endif %}
-    {% endfor %}
+    
+    {% set prev_url = url_for('.order_items', page_num=pagination.prev_num) %}
+    {% set next_url = url_for('.order_items', page_num=pagination.next_num) %}
+    {% set page_url = url_for('.order_items', page_num=pagination.page) %}
+    {% set template_name = '.order_items' %}
+    {% include 'pagination.html' %}
+
 {% endblock %}

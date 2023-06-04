@@ -55,7 +55,7 @@ class Order(db.Model):
     userid = db.Column(db.String(64), db.ForeignKey(table_user + '.id'))
     # setup relation
     orderItemR = db.relationship('OrderItem', backref='orders')
-    storeR = db.relationship('Store', backref='orders')
+    # storeR = db.relationship('Store', backref='orders')
 
 
 class OrderItem(db.Model):

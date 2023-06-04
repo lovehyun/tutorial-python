@@ -37,7 +37,6 @@ def users(page_num):
 
     # 조건문이 폼에 계속 유지되도록 쿼리문 재 전달
     query = {'name': name, 'gender': gender}
-    print(query)
 
     return render_template("users.html", pagination=users, form=form, query=query)
 
