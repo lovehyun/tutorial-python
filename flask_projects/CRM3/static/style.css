@@ -34,3 +34,13 @@ body,html {
     background-color: #f7f7f7;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
+
+.dual-list {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 20px;
+}
+
+.left-section, .right-section {
+    flex-basis: 48%;
+}

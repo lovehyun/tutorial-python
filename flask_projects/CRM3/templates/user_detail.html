@@ -29,6 +29,7 @@
                     </tr>
                     </tbody>
             </table>
+
             <!-- 상품 주문 정보 -->
             <div class="section-header">
                 주문 정보
@@ -51,6 +52,32 @@
                     {% endfor %}
                 </tbody>
             </table>
+
+            <div class="dual-list">
+                <!-- 자주 방문한 매장 -->
+                <div class="left-section">
+                    <div class="section-header">
+                        자주 방문한 매장 Top 5
+                    </div>
+                    <ul>
+                        {% for store, count in frequent_stores %}
+                            <li>{{ store.name }} ({{ count }}번 방문)</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            
+                <!-- 자주 주문한 상품명 -->
+                <div class="right-section">
+                    <div class="section-header">
+                        자주 주문한 상품명 Top 5
+                    </div>
+                    <ul>
+                        {% for item, count in frequent_items %}
+                            <li>{{ item.name }} ({{ count }}번 주문)</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
         </div>
     </div>
 {% endblock %}

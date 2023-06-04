@@ -2,6 +2,7 @@ from database import model
 from flask import Blueprint, redirect, render_template, request
 from flask_wtf import FlaskForm
 from wtforms.fields import SelectField, StringField
+from sqlalchemy import func
 
 
 blueprint = Blueprint('user', __name__)
@@ -50,4 +51,30 @@ def user_detail(user_id):
 
     userOrders = user.orderR
 
-    return render_template("user_detail.html", user=user, orders=userOrders)
+    # 자주 방문한 샵 Top 목록 계산
+    frequent_stores = (
+        model.Store.query
+        .join(model.Order, model.Order.storeid == model.Store.id)
+        .filter(model.Order.userid == user_id)
+        .group_by(model.Store)
+        .order_by(func.count().desc())
+        .limit(5)
+        .with_entities(model.Store, func.count())
+        .all()
+    )
+
+    # 자주 주문한 상품명 계산
+    frequent_items = (
+        model.Item.query
+        .join(model.OrderItem, model.Item.id == model.OrderItem.itemid)
+        .join(model.Order, model.OrderItem.orderid == model.Order.id)
+        .filter(model.Order.userid == user_id)
+        .group_by(model.Item)
+        .order_by(func.count().desc())
+        .limit(5)
+        .with_entities(model.Item, func.count())
+        .all()
+    )
+
+    return render_template("user_detail.html", user=user, orders=userOrders,
+                           frequent_stores=frequent_stores, frequent_items=frequent_items)
