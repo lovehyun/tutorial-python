@@ -12,8 +12,11 @@ RUN apt-get update && \
     apt-get install -y sqlite3 && \
     pip install --no-cache-dir -r requirements.txt
 
+RUN pip install gunicorn
+
 # 애플리케이션 파일 복사
 COPY . .
 
 # Flask 애플리케이션 실행 명령어
-CMD ["python", "app.py"]
+# CMD ["python", "app.py"]
+CMD ["gunicorn", "app:app", "-b", "0.0.0.0:8000", "--workers", "4"]
