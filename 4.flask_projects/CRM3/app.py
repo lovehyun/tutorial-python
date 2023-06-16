@@ -12,7 +12,7 @@ from flask import Flask, redirect
 
 app = Flask(__name__)
 app.instance_path = os.getcwd()
-db_url = 'sqlite:///' + os.path.join(app.instance_path + '\database', 'user-sample.sqlite')
+db_url = 'sqlite:///' + os.path.join(app.instance_path, 'database', 'user-sample.sqlite')
 app.config['SQLALCHEMY_DATABASE_URI'] = db_url
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 SECRET_KEY = os.urandom(32)
@@ -38,4 +38,4 @@ if __name__ == '__main__':
         db.create_all()
 
     app.debug = True
-    app.run()
+    app.run(host="0.0.0.0")
