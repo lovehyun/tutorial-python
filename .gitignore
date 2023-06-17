@@ -5,4 +5,12 @@ __pycache__
 # data files
 *.csv
 *.sqlite
+*.sqlite3
 
+# django project files
+static/
+upload/
+migrations/
+
+# project files
+.env
