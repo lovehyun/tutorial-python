@@ -1,0 +1,9 @@
+# 캐시 및 빌드
+*.pyc
+__pycache__
+
+# 개발 환경
+.env
+
+# 프로젝트
+migrations/

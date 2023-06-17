@@ -1,0 +1,116 @@
+{% extends 'base.html' %}
+
+{% block additional_styles %}
+<style>
+    /* 스타일링을 위한 CSS 코드 작성 */
+    /* 예시: 핀의 스타일 변경 */
+    .marker {
+        background-color: red;
+        color: white;
+        font-weight: bold;
+        padding: 5px;
+        border-radius: 50%;
+        position: absolute;
+        transform: translate(-50%, -50%);
+    }
+    .pin-number {
+        position: absolute;
+        top: -10px;
+        left: -10px;
+        width: 20px;
+        height: 20px;
+        background-color: red;
+        color: white;
+        font-size: 12px;
+        font-weight: bold;
+        text-align: center;
+        border-radius: 50%;
+        pointer-events: none;
+    }
+    .pin-table {
+        margin-top: 20px;
+        border-collapse: collapse;
+    }
+    .pin-table th,
+    .pin-table td {
+        padding: 8px;
+        border: 1px solid #ddd;
+    }
+    .custom-icon {
+        font-size: 16px;
+        color: white;
+    }
+</style>
+<!-- Leaflet JavaScript 라이브러리를 로드합니다. -->
+<script src="https://cdn.jsdelivr.net/npm/leaflet@1.7.1/dist/leaflet.js"></script>
+<!-- Leaflet CSS 스타일을 로드합니다. -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.7.1/dist/leaflet.css" />
+{% endblock %}
+
+{% block content %}
+<div class="map-container">
+    <div id="map" style="width: 100%; height: 800px;"></div>
+    <table class="pin-table" style="width: 100%; float: left;">
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>Name</th>
+                <th>Latitude</th>
+                <th>Longitude</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for coordinate in coordinates %}
+            <tr data-marker-id="{{ forloop.counter }}">
+                <td>{{ forloop.counter }}</td>
+                <td>{{ coordinate.name }}</td>
+                <td>{{ coordinate.lat }}</td>
+                <td>{{ coordinate.lng }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<script>
+    // 좌표 데이터를 가져옵니다.
+    var coordinates = {{ coordinates | safe }};
+
+    // 지도를 초기화합니다.
+    var map = L.map('map').setView([37.123, -122.678], 10); // 초기 중심 좌표 및 줌 레벨을 설정합니다.
+
+    // OpenStreetMap 타일 레이어를 추가합니다.
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors',
+        maxZoom: 18,
+    }).addTo(map);
+
+    // 좌표에 핀을 추가합니다.
+    for (var i = 0; i < coordinates.length; i++) {
+        var lat = coordinates[i].lat;
+        var lng = coordinates[i].lng;
+ 
+        // 숫자를 포함한 DivIcon 생성
+        var icon = L.divIcon({
+            className: 'custom-icon',
+            html: '<div class="marker-icon">' + (i + 1) + '</div>'
+        });
+
+        // 마커 생성 및 아이콘 적용
+        var marker = L.marker([lat, lng], { icon: icon }).addTo(map);
+        var marker = L.circleMarker([lat, lng], { radius: 10, color: 'red', fillColor: 'red', fillOpacity: 0.5 }).addTo(map);
+
+        // 다음 좌표가 있을 경우, 현재 좌표와 다음 좌표를 선으로 연결합니다.
+        if (i < coordinates.length - 1) {
+            var nextLat = coordinates[i + 1].lat;
+            var nextLng = coordinates[i + 1].lng;
+            var line = L.polyline([[lat, lng], [nextLat, nextLng]], { color: 'blue' }).addTo(map);
+        }
+
+        // 마커가 있는 위치로 화면 포커스 이동
+        map.setView([lat, lng], 13);
+    }
+
+</script>
+
+{% endblock %}

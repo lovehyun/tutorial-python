@@ -1,0 +1,125 @@
+{% extends 'base.html' %}
+
+{% block additional_styles %}
+<style>
+    table {
+        border-collapse: collapse;
+        width: 100%;
+        margin-bottom: 20px; /* Add margin between tables */
+    }
+
+    th, td {
+        border: 1px solid black;
+        padding: 8px;
+        text-align: left;
+    }
+
+    th {
+        background-color: #f2f2f2;
+    }
+
+    .table-heading {
+        font-weight: bold;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+
+<form action="{% url 'led' %}" method="GET">
+    <label for="date">Select Date:</label>
+    <input type="date" id="date" name="date">
+    <input type="submit" value="Filter">
+</form>
+
+<h2 class="table-heading">누적시간</h2>
+<table>
+    <tr>
+        <th>Date</th>
+        <th>On Time (mins)</th>
+        <th>Off Time (mins)</th>
+    </tr>
+    {% for on_off_time in on_off_times %}
+    <tr>
+        <td>{{ on_off_time.date }}</td>
+        <td>{{ on_off_time.on_time }}</td>
+        <td>{{ on_off_time.off_time }}</td>
+    </tr>
+    {% endfor %}
+</table>
+
+<h2 class="table-heading">실 데이터</h2>
+<table>
+    <tr>
+        <th>Start Time</th>
+        <th>End Time</th>
+        <th>LED</th>
+    </tr>
+    {% for daily_time in daily_times %}
+    <tr>
+        <td>{{ daily_time.start_time }}</td>
+        <td>{{ daily_time.end_time }}</td>
+        <td>{{ daily_time.led }}</td>
+    </tr>
+    {% endfor %}
+</table>
+
+{% if selected_date %}
+{% block chart %}
+<div id="chart"></div>
+<script>
+    // Extract the required data for the chart
+    const chartData = [];
+
+    {% for daily_time in daily_times %}
+        {
+            const startTime = new Date('{{ daily_time.start_time }}');
+            const endTime = new Date('{{ daily_time.end_time }}');
+            const led = {% if daily_time.led == 'ON' %}1{% else %}0{% endif %};
+
+            chartData.push({
+                date: new Date(startTime),
+                led: led
+            });
+            chartData.push({
+                date: new Date(endTime),
+                led: led
+            });
+        }
+    {% endfor %}
+
+    // Generate the chart using C3.js and D3.js
+    const chart = c3.generate({
+        bindto: '#chart',
+        data: {
+            json: chartData,
+            keys: {
+                x: 'date',
+                value: ['led'],
+            },
+            // type: 'line'
+            type: 'area', // Use area-spline type for a filled line graph
+            colors: {
+                led: '#3366ff' // Set the color for the line and area fill
+            }
+        },
+        axis: {
+            x: {
+                type: 'timeseries',
+                tick: {
+                    format: '%Y-%m-%d %H:%M' // Adjust the date format as per your needs
+                },
+            },
+        },
+        grid: {
+            x: {
+                show: true // Show y-axis grid lines
+            }
+        }
+    });
+</script>
+
+{% endblock %}
+{% endif %}
+
+{% endblock %}
