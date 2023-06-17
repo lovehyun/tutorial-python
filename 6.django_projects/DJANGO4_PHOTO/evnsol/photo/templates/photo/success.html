@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <h1>사진 업로드 성공!</h1>
+  <p>사진이 성공적으로 업로드되었습니다.</p>
+
+  <script>
+    setTimeout(function() {
+      window.location.href = "{% url 'photo:album' %}";
+    }, 3000);  // 3초 후에 album 페이지로 이동
+  </script>
+
+{% endblock %}

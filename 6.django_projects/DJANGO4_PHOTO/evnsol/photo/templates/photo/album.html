@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block additional_styles %}
+    <link rel="stylesheet" type="text/css" href="{% static 'photo/css/styles.css' %}">
+{% endblock %}
+
+{% block content %}
+    <h1>Photo Album</h1>
+    <a href="{% url 'photo:upload' %}">사진 업로드</a>
+
+    <table class="photo-table">
+        <tbody>
+            {% for photo in photos %}
+                {% if forloop.counter0|divisibleby:2 %}
+                    <tr>
+                {% endif %}
+                <td>
+                    <img src="{{ photo.image.url }}" alt="{{ photo.title }}">
+                    <div class="photo-title">{{ photo.title }}</div>
+                    <div class="photo-description">{{ photo.description }}</div>
+                </td>
+                {% if forloop.counter|divisibleby:2 or forloop.last %}
+                    </tr>
+                {% endif %}
+            {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}

@@ -1,0 +1,232 @@
+{% extends 'base.html' %}
+
+{% block additional_styles %}
+<style>
+    /* 스타일링을 위한 CSS 코드 작성 */
+    /* 예시: 핀의 스타일 변경 */
+    .marker {
+        background-color: red;
+        color: white;
+        font-weight: bold;
+        padding: 5px;
+        border-radius: 50%;
+        position: absolute;
+        transform: translate(-50%, -50%);
+    }
+    .pin-number {
+        position: absolute;
+        top: -10px;
+        left: -10px;
+        width: 20px;
+        height: 20px;
+        background-color: red;
+        color: white;
+        font-size: 12px;
+        font-weight: bold;
+        text-align: center;
+        border-radius: 50%;
+        pointer-events: none;
+    }
+    .pin-table {
+        margin-top: 20px;
+        border-collapse: collapse;
+    }
+    .pin-table th,
+    .pin-table td {
+        padding: 8px;
+        border: 1px solid #ddd;
+    }
+    .custom-icon {
+        font-size: 16px;
+        color: white;
+    }
+</style>
+<!-- Leaflet JavaScript 라이브러리를 로드합니다. -->
+<script src="https://cdn.jsdelivr.net/npm/leaflet@1.7.1/dist/leaflet.js"></script>
+<!-- Leaflet CSS 스타일을 로드합니다. -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.7.1/dist/leaflet.css" />
+{% endblock %}
+
+{% block content %}
+<div class="map-container">
+    <div id="map" style="width: 100%; height: 800px;"></div>
+    담당자 : <select id="filter-select">
+        <!-- <option value="">모든 사용자</option> -->
+        <!-- <option value="user1">user1</option> -->
+        <!-- <option value="user2">user2</option> -->
+    </select>
+    <table class="pin-table" style="width: 100%; float: left;">
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>Owner</th>
+                <th>Name</th>
+                <th>Latitude</th>
+                <th>Longitude</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for coordinate in coordinates %}
+            <tr data-marker-id="{{ forloop.counter }}">
+                <td>{{ forloop.counter }}</td>
+                <td>{{ coordinate.owner }} </td>
+                <td>{{ coordinate.name }}</td>
+                <td>{{ coordinate.lat }}</td>
+                <td>{{ coordinate.lng }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<script>
+    // 좌표 데이터를 가져옵니다.
+    var coordinates = {{ coordinates | safe }};
+
+    // 지도를 초기화합니다.
+    // 서울의 중심 좌표
+    var seoulLatLng = L.latLng(37.5665, 126.9780);
+    var map = L.map('map').setView(seoulLatLng, 10); // 초기 중심 좌표 및 줌 레벨을 설정합니다.
+
+    // OpenStreetMap 타일 레이어를 추가합니다.
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors',
+        maxZoom: 18,
+    }).addTo(map);
+
+    // 지도의 확대/축소 기능 비활성화
+    map.scrollWheelZoom.disable();
+    map.doubleClickZoom.disable();
+    map.boxZoom.disable();
+    map.keyboard.disable();
+    map.touchZoom.disable();
+    map.dragging.disable();
+
+    // 팝업을 관리하기 위한 객체
+    var popups = {};
+
+    // 좌표에 핀을 추가합니다.
+    function addMarkers(filter) {
+        // 기존 마커 및 선 제거
+        map.eachLayer(function (layer) {
+            if (layer instanceof L.Marker || layer instanceof L.Polyline) {
+                map.removeLayer(layer);
+            }
+        });
+
+        var filteredCoordinates = coordinates;
+        if (filter) {
+            filteredCoordinates = coordinates.filter(function (coordinate) {
+                return coordinate.owner === filter;
+            });
+        }
+
+        var bounds = L.latLngBounds(filteredCoordinates.map(function (coordinate) {
+            return L.latLng(coordinate.lat, coordinate.lng);
+        }));
+
+        for (var i = 0; i < filteredCoordinates.length; i++) {
+            var lat = filteredCoordinates[i].lat;
+            var lng = filteredCoordinates[i].lng;
+    
+            // 숫자를 포함한 DivIcon 생성
+            var icon = L.divIcon({
+                className: 'custom-icon',
+                html: '<div class="marker-icon">' + (i + 1) + '</div>'
+            });
+
+            // 마커 생성 및 아이콘 적용
+            var marker = L.marker([lat, lng], { icon: icon, interactive: false}).addTo(map);
+            var marker = L.circleMarker([lat, lng], { radius: 10, color: 'red', fillColor: 'red', fillOpacity: 0.5 }).addTo(map);
+
+            marker.on('click', function (event) {
+                var clickedMarker = event.target;
+                var latlng = clickedMarker.getLatLng();
+                var popupId = 'popup-map-' + L.Util.stamp(clickedMarker); // 고유한 팝업 ID 생성
+
+                // 팝업이 열려있지 않은 경우에만 초기화합니다.
+                if (!clickedMarker.getPopup()) {
+                    var popup = L.popup({ maxWidth: 800 })
+                        .setLatLng(latlng)
+                        .setContent('<div id="' + popupId + '" style="width: 400px; height: 300px;"></div>')
+                        .openOn(map);
+                                
+                    // 팝업 상태를 관리하는 객체에 추가합니다.
+                    popups[popupId] = {
+                        initialized: false, // 초기화 여부를 관리하는 변수
+                        map: null, // 팝업에 해당하는 지도 객체를 저장하는 변수
+                        description: null // 팝업에 해당하는 설명 정보를 저장하는 변수 : TODO
+                    };
+
+                    if (!popups[popupId].initialized) {
+                        // 팝업을 위한 지도를 생성합니다.
+                        var popupMap = L.map(popupId).setView(latlng, 16);
+                        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                            minZoom: 14,
+                            maxZoom: 18,
+                        }).addTo(popupMap);
+
+                        // 마커를 생성하여 지도에 추가합니다.
+                        L.marker(latlng).addTo(popupMap);
+
+                        // 팝업 초기화가 완료되었음을 표시합니다.
+                        popups[popupId].initialized = true;
+                        // 팝업 상태 객체에 현재 팝업에 해당하는 지도 객체를 저장합니다.
+                        popups[popupId].map = popupMap;
+                    }
+                } else {
+                    clickedMarker.closePopup();
+                }
+            });
+
+            // 다음 좌표가 있을 경우, 현재 좌표와 다음 좌표를 선으로 연결합니다.
+            if (i < filteredCoordinates.length - 1) {
+                var nextLat = filteredCoordinates[i + 1].lat;
+                var nextLng = filteredCoordinates[i + 1].lng;
+                var line = L.polyline([[lat, lng], [nextLat, nextLng]], { color: 'blue' }).addTo(map);
+            }
+        }
+
+        // 지도의 확대/축소 범위를 조정하여 핀이 모두 표시되도록 합니다.
+        map.fitBounds(bounds);
+    }
+
+    // 필터 입력 상자 이벤트 처리
+    var filterSelect = document.getElementById('filter-select');
+    var owners = Array.from(new Set(coordinates.map(function(coordinate) {
+        return coordinate.owner;
+    })));
+
+    // 기본적으로 모든 사용자 옵션을 추가
+    var allOption = document.createElement('option');
+    allOption.value = '';
+    allOption.text = '모든 사용자';
+    filterSelect.appendChild(allOption);
+
+    // 사용자 옵션을 동적으로 추가
+    owners.forEach(function(owner) {
+        var option = document.createElement('option');
+        option.value = owner;
+        option.text = owner;
+        filterSelect.appendChild(option);
+    });
+
+    // 현재 로그인한 사용자 계정을 가져옴
+    var loggedInUser = '{{ request.user.username }}';
+
+    // 로그인한 사용자 계정에 해당하는 옵션을 선택하도록 설정
+    filterSelect.value = loggedInUser;
+
+    filterSelect.addEventListener('change', function (event) {
+        var filter = event.target.value.trim();
+        addMarkers(filter);
+    });
+
+    // 초기 로드 시 모든 마커 표시
+    addMarkers('');
+
+    // 초기 로드 시 선택된 마커 표시
+    addMarkers(loggedInUser)
+</script>
+
+{% endblock %}

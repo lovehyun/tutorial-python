@@ -1,0 +1,69 @@
+<style>
+    .navbar {
+        background-color: #333333;
+    }
+
+    .navbar-brand {
+        color: #ffffff;
+        font-weight: bold;
+    }
+
+    .navbar-nav .nav-item .nav-link {
+        color: #ffffff;
+        margin-right: 0.5rem;
+        border: none;
+    }
+
+    .navbar-nav .nav-item .nav-link.active {
+        font-weight: bold;
+    }
+
+    .navbar-nav .nav-item .nav-link:hover {
+        background-color: rgba(255, 255, 255, 0.2);
+    }
+
+    .mr-auto {
+        margin-right: auto;
+    }
+
+    .ml-auto {
+        margin-left: auto;
+    }
+</style>
+
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <a class="navbar-brand" href="{{WEB_URL_PREFIX}}">LOGO</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
+        aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+        {% if user.is_authenticated %}
+        <ul class="navbar-nav mr-auto">
+            <li class="nav-item">
+                <a class="nav-link {% if request.path == WEB_URL_PREFIX|add:'/home/' %}active{% endif %}" href="{{WEB_URL_PREFIX}}/home">Home</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link {% if request.path == WEB_URL_PREFIX|add:'/myapp/led/' %}active{% endif %}" href="{{WEB_URL_PREFIX}}/myapp/led">LED Status</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link {% if request.path == WEB_URL_PREFIX|add:'/myapp/loc/' %}active{% endif %}" href="{{WEB_URL_PREFIX}}/myapp/loc">Location</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link {% if request.path == WEB_URL_PREFIX|add:'/photo/album/' %}active{% endif %}" href="{{WEB_URL_PREFIX}}/photo/album">Album</a>
+            </li>
+        </ul>
+        <ul class="navbar-nav ml-auto">
+            <li class="nav-item">
+                <a class="nav-link {% if request.path == WEB_URL_PREFIX|add:'/logout/' %}active{% endif %}" href="{{WEB_URL_PREFIX}}/logout">Logout</a>
+            </li>
+        </ul>
+        {% else %}
+        <ul class="navbar-nav ml-auto">
+            <li class="nav-item">
+                <a class="nav-link {% if request.path == WEB_URL_PREFIX|add:'/login/' %}active{% endif %}" href="{{WEB_URL_PREFIX}}/login">Login</a>
+            </li>
+        </ul>
+        {% endif %}
+    </div>
+</nav>
