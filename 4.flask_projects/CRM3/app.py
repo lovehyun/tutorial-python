@@ -11,6 +11,7 @@ from flask import Flask, redirect
 
 
 app = Flask(__name__)
+
 app.instance_path = os.getcwd()
 db_url = 'sqlite:///' + os.path.join(app.instance_path, 'database', 'user-sample.sqlite')
 app.config['SQLALCHEMY_DATABASE_URI'] = db_url
@@ -18,8 +19,10 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 SECRET_KEY = os.urandom(32)
 app.config['SECRET_KEY'] = SECRET_KEY
 
+# DB 초기화
 db.init_app(app)
 
+# 각종 애플리케이션 라우팅 설정 로딩
 app.register_blueprint(item_blueprint)
 app.register_blueprint(order_blueprint)
 app.register_blueprint(store_blueprint)
