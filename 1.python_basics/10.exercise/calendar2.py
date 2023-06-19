@@ -21,6 +21,14 @@ def print_calendar(year, month):
 
     # 해당 월의 첫 날의 요일을 계산
     first_day = year * 365 + (year - 1) // 4 - (year - 1) // 100 + (year - 1) // 400
+    # 0: 월요일
+    # 1: 화요일
+    # 2: 수요일
+    # 3: 목요일
+    # 4: 금요일
+    # 5: 토요일
+    # 6: 일요일
+    
     for i in range(1, month):
         first_day += get_days_in_month(year, i)
 

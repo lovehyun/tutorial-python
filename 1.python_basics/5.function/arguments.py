@@ -18,8 +18,8 @@ def find_users(name):
 # 검색 조건 설정
 search_criteria = {
     "min_age": 30,
-    "location": "Seoul",
-    "car": "Mercedes"
+    "location": "Busan",
+    # "car": "Mercedes"
 }
 
 def find_users2(criteria):
@@ -48,11 +48,20 @@ search_criteria2 = {
 }
 
 search_criteria3 = {
-    "name": "Bob",
-    "car": "Mercedes"
+    "name": "Alice",
+    "car": "BMW"
 }
 
 def find_users3(criteria):
+    result = []
+    for user in users:
+        if (criteria.get("min_age") is None or user.get("age") >= criteria.get("min_age")) and \
+            (criteria.get("location") is None or user.get("location") == criteria.get("location")) and \
+            (criteria.get("car") is None or user.get("car") == criteria.get("car")):
+            result.append(user)
+    return result
+
+def find_users4(criteria):
     result = []
     for user in users:
         if matches_criteria(user, criteria):
