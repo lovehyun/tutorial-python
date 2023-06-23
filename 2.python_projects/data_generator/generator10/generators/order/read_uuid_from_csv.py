@@ -38,7 +38,7 @@ def read_uuid_from_csv(csv_directory, csv_filename):
     if not os.path.isfile(csv_path):
         return uuids
 
-    with open(csv_path, "r") as file:
+    with open(csv_path, "r", encoding="utf-8") as file:
         reader = csv.reader(file)
         next(reader)  # 헤더 스킵
         for row in reader:

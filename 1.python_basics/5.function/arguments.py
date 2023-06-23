@@ -91,3 +91,34 @@ matching_users = find_users3(search_criteria2)
 print("Matching Users3:")
 for user in matching_users:
     print(user)
+
+
+# 미션4. 유닛테스트 만들기
+# 미션4-1. 유닛테스트 효율화하기
+search_bob1 = { "name": "Bob" } # expect 1
+search_bob2 = { "age": 30 } # expect 1
+search_bob3 = { "name": "Bob", "age": 30 } # expect 1
+search_bob4 = { "name": "Bob", "age": 31 } # expect 0
+search_bob5 = { } # expect 3
+
+test_cases = [
+    {"case":search_bob1, "expected_result":1},
+    {"case":search_bob2, "expected_result":1}, 
+    {"case":search_bob3, "expected_result":1}, 
+    {"case":search_bob4, "expected_result":0}, 
+    {"case":search_bob5, "expected_result":3},
+]
+
+def test_find_users():
+    final_result = True
+
+    for test_case in test_cases:
+        if not len(find_users4(test_case["case"])) == test_case["expected_result"]:
+            final_result = False
+
+    if final_result is True:
+        print('PASS')
+    else:
+        print('FAIL')
+
+test_find_users()
