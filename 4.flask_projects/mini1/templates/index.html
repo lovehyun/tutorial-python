@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>CSV 데이터 테이블</title>
+    <style>
+        table {
+            border-collapse: collapse;
+            width: 100%;
+        }
+
+        th, td {
+            padding: 8px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        th {
+            background-color: #f2f2f2;
+        }
+    </style>
+</head>
+<body>
+    <h1>사용자 테이블</h1>
+    <table>
+        <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Gender</th>
+            <th>Age</th>
+            <th>Birthday</th>
+        </tr>
+        {% for row in data %}
+            <tr>
+                <td>{{ row['Id'] }}</td>
+                <td>{{ row['Name'] }}</td>
+                <td>{{ row['Gender'] }}</td>
+                <td>{{ row['Age'] }}</td>
+                <td>{{ row['Birthday'] }}</td>
+            </tr>
+        {% endfor %}
+    </table>
+</body>
+</html>

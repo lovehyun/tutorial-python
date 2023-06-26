@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Pagination Example</title>
+    <style>
+        table {
+            border-collapse: collapse;
+            width: 100%;
+        }
+
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #ffa500;
+            color: white;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+
+        .pagination {
+            margin-top: 20px;
+        }
+
+        .pagination a {
+            color: black;
+            float: left;
+            padding: 8px 16px;
+            text-decoration: none;
+            border: 1px solid #ddd;
+            margin: 0 4px;
+        }
+
+        .pagination a.active {
+            background-color: #4CAF50;
+            color: white;
+            border: 1px solid #4CAF50;
+        }
+    </style>
+</head>
+<body>
+    <h1>사용자 테이블 - 페이징 처리</h1>
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Gender</th>
+                <th>Age</th>
+                <th>Birthday</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for row in data %}
+            <tr>
+                <td>{{ row['Id'] }}</td>
+                <td>{{ row['Name'] }}</td>
+                <td>{{ row['Gender'] }}</td>
+                <td>{{ row['Age'] }}</td>
+                <td>{{ row['Birthday'] }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <div class="pagination">
+        {% if page > 1 %}
+            <a href="/?page={{ page - 1 }}">Previous</a>
+        {% endif %}
+
+        {% for num in range(1, total_pages + 1) %}
+            <!-- <a href="/?page={{ num }}">{{ num }}</a> -->
+            <a href="/?page={{ num }}" {% if num == page %}class="active"{% endif %}>{{ num }}</a>
+        {% endfor %}
+
+        {% if page < total_pages %}
+            <a href="/?page={{ page + 1 }}">Next</a>
+        {% endif %}
+    </div>
+</body>
+</html>

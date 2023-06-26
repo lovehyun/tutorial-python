@@ -9,7 +9,7 @@ from models.store import Store
 from models.item import Item
 
 def test_user():
-    user = User("1111-2222-3333", "Shawn Park", "Male", "1990-01-01", "Address 1")
+    user = User("1111-2222-3333", "Shawn Park", "Male", "30", "1990-01-01", "Address 1")
     print(user)
 
 def test_store():
