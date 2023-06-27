@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <style>
+            div {
+                width: 100px;
+                height: 100px;
+                color: white;
+                background-color: orange;
+                margin: 5px;
+                /* display: inline-block; */
+            }
+            .rel {
+                background-color: orangered;
+                position: relative; /* absolute */
+                top: 50px;
+                left: 50px;
+            }
+            .container {
+                width: 300px;
+                height: 200px;
+                background-image: url(../images/cats.jpg);
+                background-size: 100% 100%;
+            }
+            p {
+                position: relative;
+                top:50px;
+                left: 50px;
+            }
+        </style>
+    </head>
+    <body>
+        <div>1</div>
+        <div class="rel">2</div>
+        <div>3</div>
+        <div class="container">
+            <p class="inline">귀여운 고양이</p>
+        </div>
+    </body>
+</html>

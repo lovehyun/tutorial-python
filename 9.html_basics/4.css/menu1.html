@@ -1,0 +1,19 @@
+<style>
+    .h-container .item { /* 자식요소 */
+        float: left;
+        width: 100px;
+        text-align: center;
+        border-right: 1px solid #ddd;
+    }
+
+    .h-container .item.last { /* 같은 계층 동시적용 */
+        float: right;
+        border-right: none;
+    }
+</style>
+<div class="h-container">
+    <div class="item">menu 1</div>
+    <div class="item">menu 2</div>
+    <div class="item">menu 3</div>
+    <div class="item last">login</div>
+</div>

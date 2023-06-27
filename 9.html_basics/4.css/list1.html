@@ -1,0 +1,32 @@
+<style>
+    /* .element::before {
+      content: "→";
+      color: red;
+    }
+    
+    .element::after {
+      content: "←";
+      color: blue;
+    } */
+    
+    ul {
+      list-style-type: none;
+    }
+    
+    ul li::before {
+      content: "x"; /* 원하는 대체 요소로 변경 가능 */
+      display: inline-block;
+      width: 10px; /* 대체 요소의 크기 조절 가능 */
+      margin-right: 5px; /* 대체 요소와 li 요소 사이 간격 조절 가능 */
+    }
+</style>
+
+<body>
+    <div>
+        <ul>
+            <li class="element">아메리카노</li>
+            <li class="element">카푸치노</li>
+            <li class="element">에스프레소</li>
+        </ul>
+    </div>
+</body>
