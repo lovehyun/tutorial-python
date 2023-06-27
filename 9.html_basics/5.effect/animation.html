@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <style>
+    .box {
+      width: 100px;
+      height: 100px;
+      background-color: red;
+      animation-name: moveLeft;
+      animation-duration: 2s;
+      animation-timing-function: ease;
+      animation-delay: 0.5s;
+      animation-iteration-count: infinite;
+      animation-direction: alternate;
+    }
+    
+    @keyframes moveLeft {
+      0% { left: 0; }
+      100% { left: 200px; }
+    }
+    
+    .text {
+      color: black;
+      animation-name: fadeOut;
+      animation-duration: 1.5s;
+      animation-timing-function: linear;
+      animation-delay: 1s;
+      animation-iteration-count: 1;
+    }
+    
+    @keyframes fadeOut {
+      0% { opacity: 1; }
+      100% { opacity: 0; }
+    }
+    
+    .circle {
+      width: 100px;
+      height: 100px;
+      background-color: blue;
+      border-radius: 50%;
+      animation-name: rotateAndScale;
+      animation-duration: 3s;
+      animation-timing-function: ease-in-out;
+      animation-iteration-count: infinite;
+    }
+    
+    @keyframes rotateAndScale {
+      0% { transform: rotate(0deg) scale(1); }
+      50% { transform: rotate(180deg) scale(1.5); }
+      100% { transform: rotate(360deg) scale(1); }
+    }
+    
+    .image {
+      width: 200px;
+      height: 200px;
+      animation-name: shake;
+      animation-duration: 0.5s;
+      animation-timing-function: linear;
+      animation-iteration-count: infinite;
+    }
+    
+    @keyframes shake {
+      0% { transform: translateX(0); }
+      25% { transform: translateX(-10px) rotate(-5deg); }
+      75% { transform: translateX(10px) rotate(5deg); }
+      100% { transform: translateX(0); }
+    }
+  </style>
+</head>
+<body>
+  <div class="box"></div>
+  <br>
+  <p class="text">Fade Out Animation</p>
+  <br>
+  <div class="circle"></div>
+  <br>
+  <img class="image" src="../images/cats.jpg" alt="Your Image">
+</body>
+</html>
