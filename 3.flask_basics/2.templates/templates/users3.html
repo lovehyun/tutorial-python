@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>User Information</title>
+</head>
+<body>
+    <h1>User Information:</h1>
+    <ul>
+        {% for user in users %}
+        <li>
+            Name: {{ user['name'] }}<br>
+            Age: {{ user['age'] }}<br>
+            Phone: {{ user['phone'] }}
+        </li>
+        {% endfor %}
+    </ul>
+</body>
+</html>

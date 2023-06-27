@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Combined Data</title>
+</head>
+<body>
+    <h1>Combined Data:</h1>
+    <table>
+        <thead>
+            <tr>
+                <th>Column A</th>
+                <th>Column B</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item_a, item_b in zip(data_source_a, data_source_b) %}
+            <tr>
+                <td>{{ item_a }}</td>
+                <td>{{ item_b }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</body>
+</html>

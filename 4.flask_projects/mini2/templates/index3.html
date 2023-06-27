@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Pagination Example</title>
+    <style>
+        table {
+            border-collapse: collapse;
+            width: 100%;
+        }
+        th, td {
+            border: 1px solid black;
+            padding: 8px;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        .pagination {
+            display: inline-block;
+        }
+        .pagination a {
+            color: black;
+            float: left;
+            padding: 8px 16px;
+            text-decoration: none;
+            border: 1px solid #ddd;
+        }
+        .pagination a.active {
+            background-color: #4CAF50;
+            color: white;
+            border: 1px solid #4CAF50;
+        }
+        .pagination a:hover:not(.active) {
+            background-color: #ddd;
+        }
+        tr:hover { /* 3. 사용성 개선 */
+            background-color: #f5f5f5;
+            cursor: pointer; /* 해당 열 전체를 클릭 가능한 형태로 설정 */
+        }
+
+        @keyframes fade-in { /* 효용성은 없지만, 그래도 뭔가 효과를 주고 싶다면 */
+            0% {
+                opacity: 0;
+            }
+            100% {
+                opacity: 1;
+            }
+        }
+
+        tr {
+            animation: fade-in 0.5s ease-in-out;
+        }
+    </style>
+</head>
+<body>
+    <table>
+        <thead>
+            <tr>
+                <!-- 1. 기본 기능 -->
+                <!-- {% for fieldname in fieldnames %}
+                {% if fieldname != 'Address' %}
+                <th>{{ fieldname }}</th>
+                {% endif %}
+                {% endfor %} -->
+
+                <!-- 2. 사용성 개선 -->
+                {% for fieldname in fieldnames %}
+                {% if fieldname != 'Id' and fieldname != 'Address' %}
+                <th>{{ fieldname }}</th>
+                {% endif %}
+                {% endfor %}
+            </tr>
+        </thead>
+        <tbody>
+            {% for row in data %} <!-- 1 / 2 / 3 순서대로 확인 -->
+            <!-- 1. 기본 기능 -->
+            <!-- <tr>
+                {% for fieldname, value in row.items() %}
+                {% if fieldname != 'Address' %}
+                {% if fieldname == 'Id' %}
+                <td><a href="/user/{{ value }}">{{ value }}</a></td>
+                {% else %}
+                <td>{{ value }}</td>
+                {% endif %}
+                {% endif %}
+                {% endfor %}
+            </tr> -->
+            <!-- 2. 사용성 개선 -->
+            <!-- <tr>
+                {% for fieldname, value in row.items() %}
+                {% if fieldname != 'Id' and fieldname != 'Address' %}
+                {% if fieldname == 'Name' %}
+                <td><a href="/user/{{ row.Id }}">{{ value }}</a></td>
+                {% else %}
+                <td>{{ value }}</td>
+                {% endif %}
+                {% endif %}
+                {% endfor %}
+            </tr> -->
+            <!-- 3. 사용성 추가 개선 -->
+            <tr onclick="window.location='/user/{{ row.Id }}';"> <!-- 해당 열 클릭시 이동 -->
+                {% for fieldname, value in row.items() %}
+                {% if fieldname != 'Id' and fieldname != 'Address' %}
+                <td>{{ value }}</td>
+                {% endif %}
+                {% endfor %}
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <div class="pagination">
+        {% if current_page > 1 %}
+            <a href="?page={{ current_page - 1 }}">&laquo; Previous</a>
+        {% endif %}
+
+        {% for page_num in range(1, max_pages + 1) %}
+            {% if page_num == current_page %}
+                <a href="?page={{ page_num }}" class="active">{{ page_num }}</a>
+            {% else %}
+                <a href="?page={{ page_num }}">{{ page_num }}</a>
+            {% endif %}
+        {% endfor %}
+        
+        {% if current_page < max_pages %}
+            <a href="?page={{ current_page + 1 }}">Next &raquo;</a>
+        {% endif %}
+    </div>
+</body>
+</html>
