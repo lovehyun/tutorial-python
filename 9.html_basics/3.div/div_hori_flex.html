@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <style>
+            .box {
+                width : 100px;
+                height : 100px;
+                background : grey;
+                margin : 5px; /* 1 */
+            }
+            .flex-container { /* 2 */
+                display : flex; /* 3 */
+                justify-content: space-evenly; /* flex-end (끝(우/아래) 정렬), flex-start (시작(좌/위) 정렬), space-around (개체 균등공간), space-between (박스 사이 균등공간), space-evenly (좌우 모두 균등공간) */
+                /* flex-wrap : wrap; */
+                /* background: green; */
+                /* height: 500px; */
+                /* align-content: center; */
+            }
+        </style>
+    </head>
+    <body>
+        <div class="flex-container">
+            <div class="box"></div>
+            <div class="box"></div>
+            <div class="box"></div>
+            <!-- <div class="box"></div>
+            <div class="box"></div>
+            <div class="box"></div>
+            <div class="box"></div>
+            <div class="box"></div>
+            <div class="box"></div> -->
+        </div>
+    </body>
+</html>

@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Movie Ranking</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+
+        h1 {
+            text-align: center;
+        }
+
+        .movie-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .movie {
+            width: 45%;
+            border: 1px solid #ccc;
+            padding: 10px;
+            margin: 10px;
+        }
+
+        .movie img {
+            width: 100%;
+            max-width: 200px;
+            height: auto;
+            display: block;
+            margin: 0 auto;
+        }
+
+        .movie-title {
+            font-weight: bold;
+        }
+
+        .movie-info {
+            margin-top: 5px;
+        }
+
+        .movie-description {
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+<h1>Movie Ranking</h1>
+
+<div class="movie-container">
+    <div class="movie">
+        <img src="../images/movie1.jpg" alt="Movie 1">
+        <div class="movie-title">Movie 1</div>
+        <div class="movie-info">
+            <span>Genre: Action</span>
+            <span>Year: 2022</span>
+            <span>Rating: 8.5</span>
+        </div>
+        <div class="movie-description">
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc cursus justo nec luctus gravida.
+        </div>
+    </div>
+
+    <div class="movie">
+        <img src="../images/movie2.jpg" alt="Movie 2">
+        <div class="movie-title">Movie 2</div>
+        <div class="movie-info">
+            <span>Genre: Drama</span>
+            <span>Year: 2021</span>
+            <span>Rating: 7.9</span>
+        </div>
+        <div class="movie-description">
+            Vestibulum sagittis tincidunt mauris, ac condimentum enim laoreet ut.
+        </div>
+    </div>
+
+    <!-- Add more movie items here -->
+
+</div>
+
+</body>
+</html>
