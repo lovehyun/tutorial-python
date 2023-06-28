@@ -15,7 +15,7 @@ def index():
         for row in csv_data:
             data.append(row)
 
-        fieldnames = csv_data.fieldnames
+    fieldnames = csv_data.fieldnames
 
     total_items = len(data)
     total_pages = math.ceil(total_items / items_per_page)
