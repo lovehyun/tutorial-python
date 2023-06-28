@@ -37,7 +37,6 @@
             background-color: #ddd;
         }
         tr td {
-            box-sizing: border-box; /* padding과 border를 포함한 크기 계산 */
             transition: padding 1.0s ease;
         }
         tr:hover td { /* 3. 사용성 개선 */
@@ -46,7 +45,6 @@
             padding-top: 20px;
             padding-bottom: 20px;
         }
-
         @keyframes fade-in { /* 효용성은 없지만, 그래도 뭔가 효과를 주고 싶다면 */
             0% {
                 opacity: 0;
@@ -55,7 +53,6 @@
                 opacity: 1;
             }
         }
-
         tr td {
             animation: fade-in 1.0s ease-in-out;
         }
@@ -63,7 +60,6 @@
 </head>
 <body>
     <h1>사용자 테이블 - 페이징 처리</h1>
-    <div class="container">
     <table>
         <thead>
             <tr>
@@ -119,7 +115,6 @@
             {% endfor %}
         </tbody>
     </table>
-    </div>
     <div class="pagination">
         {% if current_page > 1 %}
             <a href="?page={{ current_page - 1 }}">&laquo; Previous</a>
