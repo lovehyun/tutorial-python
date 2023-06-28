@@ -8,21 +8,25 @@
             width: 100%;
         }
         th, td {
-            border: 1px solid black;
+            border: 1px solid #ddd;
             padding: 8px;
+            text-align: left;
         }
         th {
+            background-color: #ffa500;
+            color: white;
+        }
+        tr:nth-child(even) {
             background-color: #f2f2f2;
         }
         .pagination {
-            display: inline-block;
+            margin-top: 20px;
         }
         .pagination a {
-            color: black;
-            float: left;
             padding: 8px 16px;
             text-decoration: none;
             border: 1px solid #ddd;
+            margin: 0 4px;
         }
         .pagination a.active {
             background-color: #4CAF50;
@@ -35,6 +39,7 @@
     </style>
 </head>
 <body>
+    <h1>사용자 테이블 - 페이징 처리</h1>
     <table>
         <thead>
             <tr>

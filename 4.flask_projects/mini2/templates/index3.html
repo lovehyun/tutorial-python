@@ -8,21 +8,25 @@
             width: 100%;
         }
         th, td {
-            border: 1px solid black;
+            border: 1px solid #ddd;
             padding: 8px;
+            text-align: left;
         }
         th {
+            background-color: #ffa500;
+            color: white;
+        }
+        tr:nth-child(even) {
             background-color: #f2f2f2;
         }
         .pagination {
-            display: inline-block;
+            margin-top: 20px;
         }
         .pagination a {
-            color: black;
-            float: left;
             padding: 8px 16px;
             text-decoration: none;
             border: 1px solid #ddd;
+            margin: 0 4px;
         }
         .pagination a.active {
             background-color: #4CAF50;
@@ -32,9 +36,15 @@
         .pagination a:hover:not(.active) {
             background-color: #ddd;
         }
-        tr:hover { /* 3. 사용성 개선 */
-            background-color: #f5f5f5;
+        tr td {
+            box-sizing: border-box; /* padding과 border를 포함한 크기 계산 */
+            transition: padding 1.0s ease;
+        }
+        tr:hover td { /* 3. 사용성 개선 */
+            background-color: #b3eda8;
             cursor: pointer; /* 해당 열 전체를 클릭 가능한 형태로 설정 */
+            padding-top: 20px;
+            padding-bottom: 20px;
         }
 
         @keyframes fade-in { /* 효용성은 없지만, 그래도 뭔가 효과를 주고 싶다면 */
@@ -46,12 +56,14 @@
             }
         }
 
-        tr {
-            animation: fade-in 0.5s ease-in-out;
+        tr td {
+            animation: fade-in 1.0s ease-in-out;
         }
     </style>
 </head>
 <body>
+    <h1>사용자 테이블 - 페이징 처리</h1>
+    <div class="container">
     <table>
         <thead>
             <tr>
@@ -107,6 +119,7 @@
             {% endfor %}
         </tbody>
     </table>
+    </div>
     <div class="pagination">
         {% if current_page > 1 %}
             <a href="?page={{ current_page - 1 }}">&laquo; Previous</a>

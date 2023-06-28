@@ -17,5 +17,21 @@ def index():
     print(data)
     return render_template('index.html', data=data)
 
+@app.route('/another')
+def another():
+    data = []
+    with open('data.csv', 'r', encoding='utf-8') as file:
+        csv_data = csv.reader(file)
+
+        # Get the header row
+        header = next(csv_data)
+
+        for row in csv_data:
+            clean_row = {fieldname.strip(): value.strip() for fieldname, value in zip(header, row)}
+            data.append(clean_row)
+
+    print(data)
+    return render_template('index.html', data=data)
+
 if __name__ == '__main__':
     app.run(debug=True)
