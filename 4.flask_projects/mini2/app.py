@@ -6,7 +6,7 @@ app = Flask(__name__)
 @app.route('/')
 @app.route('/<int:page>')
 def index(page=1):
-    per_page = 10
+    per_page = 10 # 한 페이지에 보여줄 항목 수
     data = []
 
     with open('data.csv', 'r', encoding='utf-8') as file:

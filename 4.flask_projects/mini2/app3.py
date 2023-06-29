@@ -6,8 +6,8 @@ app = Flask(__name__)
 
 @app.route('/')
 def index():
-    items_per_page = 10  # 한 페이지에 보여줄 항목 수
     page = request.args.get('page', default=1, type=int)
+    items_per_page = 10
     data = []
 
     with open('data.csv', 'r', encoding='utf-8') as file:
@@ -36,6 +36,7 @@ def user_detail(id):
                 break
 
     return render_template('user_detail3.html', user=user_data)
+
 
 if __name__ == '__main__':
     app.run(debug=True)

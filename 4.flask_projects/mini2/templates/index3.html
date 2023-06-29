@@ -65,16 +65,16 @@
             <tr>
                 <!-- 1. 기본 기능 -->
                 <!-- {% for fieldname in fieldnames %}
-                {% if fieldname != 'Address' %}
-                <th>{{ fieldname }}</th>
-                {% endif %}
+                    {% if fieldname != 'Address' %}
+                        <th>{{ fieldname }}</th>
+                    {% endif %}
                 {% endfor %} -->
 
                 <!-- 2. 사용성 개선 -->
                 {% for fieldname in fieldnames %}
-                {% if fieldname != 'Id' and fieldname != 'Address' %}
-                <th>{{ fieldname }}</th>
-                {% endif %}
+                    {% if fieldname != 'Id' and fieldname != 'Address' %}
+                        <th>{{ fieldname }}</th>
+                    {% endif %}
                 {% endfor %}
             </tr>
         </thead>
@@ -83,33 +83,33 @@
             <!-- 1. 기본 기능 -->
             <!-- <tr>
                 {% for fieldname, value in row.items() %}
-                {% if fieldname != 'Address' %}
-                {% if fieldname == 'Id' %}
-                <td><a href="/user/{{ value }}">{{ value }}</a></td>
-                {% else %}
-                <td>{{ value }}</td>
-                {% endif %}
-                {% endif %}
+                    {% if fieldname != 'Address' %}
+                        {% if fieldname == 'Id' %}
+                            <td><a href="/user/{{ value }}">{{ value }}</a></td>
+                        {% else %}
+                            <td>{{ value }}</td>
+                        {% endif %}
+                    {% endif %}
                 {% endfor %}
             </tr> -->
             <!-- 2. 사용성 개선 -->
             <!-- <tr>
                 {% for fieldname, value in row.items() %}
-                {% if fieldname != 'Id' and fieldname != 'Address' %}
-                {% if fieldname == 'Name' %}
-                <td><a href="/user/{{ row.Id }}">{{ value }}</a></td>
-                {% else %}
-                <td>{{ value }}</td>
-                {% endif %}
-                {% endif %}
+                    {% if fieldname != 'Id' and fieldname != 'Address' %}
+                        {% if fieldname == 'Name' %}
+                            <td><a href="/user/{{ row.Id }}">{{ value }}</a></td>
+                        {% else %}
+                            <td>{{ value }}</td>
+                        {% endif %}
+                    {% endif %}
                 {% endfor %}
             </tr> -->
             <!-- 3. 사용성 추가 개선 -->
             <tr onclick="window.location='/user/{{ row.Id }}';"> <!-- 해당 열 클릭시 이동 -->
                 {% for fieldname, value in row.items() %}
-                {% if fieldname != 'Id' and fieldname != 'Address' %}
-                <td>{{ value }}</td>
-                {% endif %}
+                    {% if fieldname != 'Id' and fieldname != 'Address' %}
+                        <td>{{ value }}</td>
+                    {% endif %}
                 {% endfor %}
             </tr>
             {% endfor %}
