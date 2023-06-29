@@ -4,8 +4,8 @@ import csv
 app = Flask(__name__)
 
 @app.route('/')
-def index():
-    page = request.args.get('page', default=1, type=int)
+@app.route('/<int:page>')
+def index(page=1):
     per_page = 10
     data = []
 

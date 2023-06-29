@@ -16,7 +16,7 @@
             background-color: #ffa500;
             color: white;
         }
-        tr:nth-child(even) {
+        tr:nth-child(even) { /* 추가 */
             background-color: #f2f2f2;
         }
         .pagination {
@@ -33,7 +33,7 @@
             color: white;
             border: 1px solid #4CAF50;
         }
-        .pagination a:hover:not(.active) {
+        .pagination a:hover:not(.active) { /* 추가 */
             background-color: #ddd;
         }
     </style>
@@ -59,20 +59,22 @@
         </tbody>
     </table>
     <div class="pagination">
-        {% if current_page > 1 %}
-            <a href="?page={{ current_page - 1 }}">&laquo; Previous</a>
+        <!-- 이전페이지 표시 추가 -->
+        {% if page > 1 %}
+            <a href="?page={{ page - 1 }}">&laquo; Previous</a>
         {% endif %}
 
-        {% for page_num in range(1, max_pages + 1) %}
-            {% if page_num == current_page %}
-                <a href="?page={{ page_num }}" class="active">{{ page_num }}</a>
+        {% for page_num in range(1, total_pages + 1) %}
+            {% if page_num == page %}
+                <a href="#" class="active">{{ page_num }}</a>
             {% else %}
                 <a href="?page={{ page_num }}">{{ page_num }}</a>
             {% endif %}
         {% endfor %}
         
-        {% if current_page < max_pages %}
-            <a href="?page={{ current_page + 1 }}">Next &raquo;</a>
+        <!-- 다음페이지 표시 추가 -->
+        {% if page < total_pages %}
+            <a href="?page={{ page + 1 }}">Next &raquo;</a>
         {% endif %}
     </div>
 </body>

@@ -24,7 +24,7 @@ def index():
     end_index = start_index + items_per_page
     paginated_data = data[start_index:end_index]
 
-    return render_template('index3.html', fieldnames=fieldnames, data=paginated_data, current_page=page, max_pages=total_pages)
+    return render_template('index3.html', fieldnames=fieldnames, data=paginated_data, page=page, total_pages=total_pages)
 
 @app.route('/user/<id>')
 def user_detail(id):

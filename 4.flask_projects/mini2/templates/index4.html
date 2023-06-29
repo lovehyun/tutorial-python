@@ -81,51 +81,51 @@
             <thead>
                 <tr>
                     {% for fieldname in fieldnames %}
-                    {% if fieldname != 'Id' and fieldname != 'Address' %}
-                    <th>{{ fieldname }}</th>
-                    {% endif %}
+                        {% if fieldname != 'Id' and fieldname != 'Address' %}
+                            <th>{{ fieldname }}</th>
+                        {% endif %}
                     {% endfor %}
                 </tr>
             </thead>
             <tbody>
                 <!-- 검색어를 감싸는 span 태그로 감싸주는 함수 -->
                 {% macro highlight_text(text, query) %}
-                {% set highlighted_text = text.replace(query, '<span class="highlight">' ~ query ~ '</span>') %} <!-- 탬플릿 코드 안에서 {{ query }} 구문은 동작 안함으로 이스케이핑 처리하기 위해 ~ query ~ 을 사용함 -->
-                {{ highlighted_text | safe }}
+                    {% set highlighted_text = text.replace(query, '<span class="highlight">' ~ query ~ '</span>') %} <!-- 탬플릿 코드 안에서 {{ query }} 구문은 동작 안함으로 이스케이핑 처리하기 위해 ~ query ~ 을 사용함 -->
+                    {{ highlighted_text | safe }}
                 {% endmacro %}
 
                 <!-- 데이터를 표시하는 템플릿 -->
                 {% for row in data %}
-                <tr onclick="window.location='/user/{{ row.Id }}';"> <!-- 해당 열 클릭시 이동 -->
-                    {% for fieldname, value in row.items() %}
-                    {% if fieldname != 'Id' and fieldname != 'Address' %}
-                    {% if fieldname == 'Name' %}
-                    <td>{{ highlight_text(value, search_name) }}</td>
-                    {% else %}
-                    <td>{{ value }}</td>
-                    {% endif %}
-                    {% endif %}
-                    {% endfor %}
-                </tr>
+                    <tr onclick="window.location='/user/{{ row.Id }}';"> <!-- 해당 열 클릭시 이동 -->
+                        {% for fieldname, value in row.items() %}
+                            {% if fieldname != 'Id' and fieldname != 'Address' %}
+                                {% if fieldname == 'Name' %}
+                                    <td>{{ highlight_text(value, search_name) }}</td>
+                                {% else %}
+                                <td>{{ value }}</td>
+                                {% endif %}
+                            {% endif %}
+                        {% endfor %}
+                    </tr>
                 {% endfor %}
             </tbody>
         </table>
     </div>
     <div class="pagination">
-        {% if current_page > 1 %}
-            <a href="?page={{ current_page - 1 }}&name={{ search_name }}">&laquo; Previous</a>
+        {% if page > 1 %}
+            <a href="?page={{ page - 1 }}&name={{ search_name }}">&laquo; Previous</a>
         {% endif %}
 
-        {% for page_num in range(1, max_pages + 1) %}
-            {% if page_num == current_page %}
+        {% for page_num in range(1, total_pages + 1) %}
+            {% if page_num == page %}
                 <a href="#" class="active">{{ page_num }}</a>
             {% else %}
                 <a href="?page={{ page_num }}&name={{ search_name }}">{{ page_num }}</a>
             {% endif %}
         {% endfor %}
         
-        {% if current_page < max_pages %}
-            <a href="?page={{ current_page + 1 }}&name={{ search_name }}">Next &raquo;</a>
+        {% if page < total_pages %}
+            <a href="?page={{ page + 1 }}&name={{ search_name }}">Next &raquo;</a>
         {% endif %}
     </div>
 </body>

@@ -58,8 +58,8 @@
 
     <div class="pagination">
         {% for num in range(1, total_pages + 1) %}
-            <a href="/?page={{ num }}">{{ num }}</a>
-            <!-- <a href="/?page={{ num }}" {% if num == page %}class="active"{% endif %}>{{ num }}</a> -->
+            <!-- <a href="/{{ num }}">{{ num }}</a> -->
+            <a href="/{{ num }}" {% if num == page %}class="active"{% endif %}>{{ num }}</a>
         {% endfor %}
     </div>
 </body>
