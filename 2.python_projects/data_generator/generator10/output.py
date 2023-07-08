@@ -12,7 +12,7 @@ def save_to_csv(data):
             header = item.get_csv_header()
         rows.append(item.get_row())  # 중복된 작업 대신 rows 리스트에 항목 추가
     
-    with open(filename, 'w', newline='', encoding='euc-kr') as file:
+    with open(filename, 'w', newline='', encoding='utf-8') as file:
         writer = csv.writer(file)
         writer.writerow(header)
         writer.writerows(rows)
