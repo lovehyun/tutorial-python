@@ -9,7 +9,7 @@ def home():
 @app.route("/login", methods=["POST", "GET"])
 def login():
     if request.method == "POST":
-        user = request.form["nm"]
+        user = request.form["name"]
         return redirect(url_for("user", user=user))
     else:
         return render_template("login.html")

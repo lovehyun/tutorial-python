@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% block title %}User{% endblock %}
+{% block content %}
+    {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            {% for msg in messages %}
+            <!-- <div class="alert alert-success" role="alert"> -->
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                <p>{{ msg }}</p>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+<p>Welcome, {{user}}</p>
+
+<!-- Bootstrap JS와 jQuery 로딩 -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<!-- JavaScript 사용하여 alert 컴포넌트 자동 닫힘 설정하기 -->
+<script>
+    // 3초 후에 alert 컴포넌트가 자동으로 사라지도록 설정
+    setTimeout(function() {
+        $(".alert").alert("close");
+    }, 3000);
+</script>
+
+{% endblock %}

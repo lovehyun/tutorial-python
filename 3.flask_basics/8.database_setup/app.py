@@ -6,6 +6,7 @@ from flask_sqlalchemy import SQLAlchemy
 app = Flask(__name__)
 app.secret_key = "hello"
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///users.sqlite3'
+# app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///:memory:'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.permanent_session_lifetime = timedelta(minutes=5)
 
@@ -29,7 +30,7 @@ def home():
 def login():
     if request.method == "POST":
         session.permanent = True
-        user = request.form["nm"]
+        user = request.form["name"]
         session["user"] = user
 
         flash("Login Successful!")
@@ -68,5 +69,6 @@ def logout():
     return redirect(url_for("login"))
 
 if __name__ == "__main__":
-    db.create_all()
+    with app.app_context():
+        db.create_all()
     app.run(debug=True, port=5000)

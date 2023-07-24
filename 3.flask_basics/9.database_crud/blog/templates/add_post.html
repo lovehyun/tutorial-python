@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Add New Post</title>
+</head>
+<body>
+    <h1>Add New Post</h1>
+    <form method="POST" action="/add_post">
+        <label>Title:</label>
+        <input type="text" name="title" required>
+        <br>
+        <label>Content:</label>
+        <textarea name="content" rows="4" required></textarea>
+        <br>
+        <input type="submit" value="Add Post">
+    </form>
+    <a href="/">Go Back to Home</a>
+</body>
+</html>
