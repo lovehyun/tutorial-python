@@ -17,3 +17,6 @@ migrations/
 
 # project files
 .env
+
+# vscode settings
+.vscode/
