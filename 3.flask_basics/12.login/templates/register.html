@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Register</title>
+</head>
+<body>
+    <h1>회원 가입</h1>
+    <form action="{{ url_for('register') }}" method="post">
+        <label>아이디(필수): <input type="text" name="username" required></label><br>
+        <label>비밀번호(필수): <input type="password" name="password" required></label><br>
+        <label>이메일(선택): <input type="email" name="email"></label><br>
+        <input type="submit" value="가입">
+    </form>
+</body>
+</html>

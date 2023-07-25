@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Profile Edit</title>
+</head>
+<body>
+    <h1>프로필 수정</h1>
+    <form action="{{ url_for('profile_edit') }}" method="post">
+        <label>새로운 비밀번호: <input type="password" name="new_password" required></label><br>
+        <label>새로운 이메일: <input type="email" name="new_email" value="{{ current_user.email }}" required></label><br>
+        <input type="submit" value="수정">
+    </form>
+</body>
+</html>

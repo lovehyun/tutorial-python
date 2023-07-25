@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>User Accounts</title>
+</head>
+<body>
+    <h1>사용자 계정 목록</h1>
+    <table border="1">
+        <tr>
+            <th>ID</th>
+            <th>Username</th>
+            <th>Email</th>
+            <th>Password</th>
+        </tr>
+        {% for user in users %}
+        <tr>
+            <td>{{ user.id }}</td>
+            <td>{{ user.username }}</td>
+            <td>{{ user.email }}</td>
+            <td>{{ user.password_hash }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+    <a href="{{ url_for('main') }}">메인 페이지로 돌아가기</a>
+</body>
+</html>

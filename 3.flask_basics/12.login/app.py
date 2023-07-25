@@ -1,64 +1,108 @@
+# app.py
+
 from flask import Flask, render_template, request, redirect, url_for
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
+from werkzeug.security import generate_password_hash, check_password_hash
 
 app = Flask(__name__)
-app.secret_key = 'secret_key'  # 보안을 위한 시크릿 키 설정
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///users.sqlite3'
+
+# Configuration settings
+app.config['SECRET_KEY'] = 'your-secret-key'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///users.db'
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+
 db = SQLAlchemy(app)
+login_manager = LoginManager(app)
+login_manager.login_view = 'login'
 
-# Flask-Login 초기화
-login_manager = LoginManager()
-login_manager.init_app(app)
 
-# 사용자 정보 모델
 class User(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(80), unique=True, nullable=False)
+    email = db.Column(db.String(120), unique=True, nullable=True)
+    password_hash = db.Column(db.String(120), nullable=False)
 
-# 사용자 로드 함수
+    def set_password(self, password):
+        self.password_hash = generate_password_hash(password)
+
+    def check_password(self, password):
+        return check_password_hash(self.password_hash, password)
+
+
 @login_manager.user_loader
 def load_user(user_id):
     return User.query.get(int(user_id))
 
-# 사용자 생성 함수 (새로운 사용자 생성)
-def create_user(username):
-    new_user = User(username=username)
-    db.session.add(new_user)
-    db.session.commit()
+@app.route('/')
+def main():
+    return render_template('main.html')
 
-# 로그인 뷰
-@app.route('/login', methods=['POST'])
+@app.route('/users')
+@login_required
+def view_users():
+    users = User.query.all()
+    return render_template('users.html', users=users)
+
+@app.route('/login', methods=['GET', 'POST'])
 def login():
-    # 실제로는 여기서 사용자 인증 처리를 해야합니다.
-    user = User.query.filter_by(username='user1').first()
-    login_user(user)
-    return redirect(url_for('dashboard'))
+    if request.method == 'POST':
+        username = request.form['username']
+        password = request.form['password']
 
-# 로그아웃 뷰
-@app.route('/logout', methods=['POST'])
+        user = User.query.filter_by(username=username).first()
+
+        if user and user.check_password(password):
+            login_user(user)
+            return redirect(url_for('main'))
+        else:
+            return "아이디나 비밀번호가 잘못되었습니다."
+
+    return redirect(url_for('main'))
+
+@app.route('/logout')
 @login_required
 def logout():
     logout_user()
-    return redirect(url_for('index'))
+    return redirect(url_for('main'))
 
-# 로그인 필요한 보호된 뷰
-@app.route('/dashboard')
+@app.route('/profile_edit', methods=['GET', 'POST'])
 @login_required
-def dashboard():
-    return render_template('dashboard.html', user=current_user)
+def profile_edit():
+    if request.method == 'POST':
+        new_password = request.form['new_password']
+        new_email = request.form['new_email']
 
-# 홈 페이지
-@app.route('/')
-def index():
-    return render_template('index.html')
+        current_user.set_password(new_password)
+        current_user.email = new_email
+        db.session.commit()
+
+        return redirect(url_for('main'))
+
+    return render_template('profile_edit.html', current_user=current_user)
+
+@app.route('/register', methods=['GET', 'POST'])
+def register():
+    if request.method == 'POST':
+        username = request.form['username']
+        password = request.form['password']
+        email = request.form['email']
+
+        existing_user = User.query.filter_by(username=username).first()
+        if existing_user:
+            return "이미 사용 중인 아이디입니다."
+
+        new_user = User(username=username, email=email)
+        new_user.set_password(password)
+        db.session.add(new_user)
+        db.session.commit()
+
+        return redirect(url_for('main'))
+
+    return render_template('register.html')
+
 
 if __name__ == '__main__':
     with app.app_context():
-        # 데이터베이스 테이블 생성
         db.create_all()
-    
-        # 사용자 생성 (실행 시 한 번만 필요)
-        # create_user('user1')
-    
-    app.run()
+    app.run(debug=True)
