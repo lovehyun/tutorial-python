@@ -1,0 +1,28 @@
+<!-- templates/users.html -->
+{% extends 'base.html' %}
+{% block title %}사용자 계정 목록{% endblock %}
+
+{% block content %}
+<h1>사용자 계정 목록</h1>
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Username</th>
+            <th>Email</th>
+            <th>Password</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for user in users %}
+        <tr>
+            <td>{{ user.id }}</td>
+            <td>{{ user.username }}</td>
+            <td>{{ user.email }}</td>
+            <td>{{ user.password_hash }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+<a href="{{ url_for('main') }}" class="btn btn-primary">메인 페이지로 돌아가기</a>
+{% endblock %}

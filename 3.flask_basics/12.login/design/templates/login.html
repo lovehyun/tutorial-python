@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+
+{% block title %}로그인{% endblock %}
+
+{% block content %}
+    <h1>로그인</h1>
+    <form method="POST" action="/login" class="col-md-4">
+        <div class="form-group">
+            <label for="username">사용자 이름:</label>
+            <input type="text" class="form-control" id="username" name="username" required>
+        </div>
+        <div class="form-group">
+            <label for="password">비밀번호:</label>
+            <input type="password" class="form-control" id="password" name="password" required>
+        </div>
+        <button type="submit" class="btn btn-primary">로그인</button>
+    </form>
+{% endblock %}

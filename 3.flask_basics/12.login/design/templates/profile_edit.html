@@ -1,0 +1,23 @@
+<!-- templates/profile_edit.html -->
+{% extends 'base.html' %}
+{% block title %}프로필 수정{% endblock %}
+
+{% block content %}
+<h1>프로필 수정</h1>
+<form action="{{ url_for('profile_edit') }}" method="post">
+    <div class="form-group">
+        <label>새로운 비밀번호:</label>
+        <input type="password" name="new_password" class="form-control" required>
+    </div>
+    <div class="form-group">
+        <label>새로운 이메일:</label>
+        <input type="email" name="new_email" value="{{ current_user.email }}" class="form-control">
+    </div>
+    <input type="submit" class="btn btn-primary" value="수정">
+</form>
+
+<!-- 회원 탈퇴 버튼 -->
+<form action="{{ url_for('profile_delete') }}" method="post" onsubmit="return confirm('정말로 회원 탈퇴하시겠습니까?');">
+    <input type="submit" class="btn btn-danger mt-2" value="회원 탈퇴">
+</form>
+{% endblock %}
