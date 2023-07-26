@@ -1,0 +1,34 @@
+body {
+    font-family: sans-serif;
+}
+
+.modal-wrapper {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.modal {
+    background: white;
+    padding: 24px 16px;
+    border-radius: 4px;
+    width: 320px;
+}
+
+.modal-title {
+    font-size: 24px;
+    font-weight: bold;
+}
+.modal p {
+    font-size: 16px;
+}
+
+.close-wrapper {
+    text-align: right;
+}

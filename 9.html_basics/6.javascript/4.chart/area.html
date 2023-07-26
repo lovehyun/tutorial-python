@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Area Chart Example</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+  <canvas id="areaChart" width="400" height="200"></canvas>
+
+  <script>
+    var ctx = document.getElementById('areaChart').getContext('2d');
+    var areaChart = new Chart(ctx, {
+      type: 'line',
+      data: {
+        labels: ['January', 'February', 'March', 'April', 'May', 'June'],
+        datasets: [{
+          label: 'Data',
+          data: [10, 20, 15, 25, 30, 20],
+          borderColor: 'rgba(0, 123, 255, 1)',
+          backgroundColor: 'rgba(0, 123, 255, 0.5)',
+          fill: true
+        }]
+      },
+      options: {
+        plugins: {
+          filler: {
+            propagate: true
+          }
+        }
+      }
+    });
+  </script>
+</body>
+</html>
+

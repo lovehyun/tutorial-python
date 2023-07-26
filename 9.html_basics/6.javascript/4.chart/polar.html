@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Polar Area Chart Example</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+  <canvas id="polarAreaChart" width="400" height="400"></canvas>
+
+  <script>
+    var ctx = document.getElementById('polarAreaChart').getContext('2d');
+    var polarAreaChart = new Chart(ctx, {
+      type: 'polarArea',
+      data: {
+        labels: ['Red', 'Blue', 'Yellow', 'Green', 'Purple'],
+        datasets: [{
+          data: [11, 16, 7, 3, 14],
+          backgroundColor: ['red', 'blue', 'yellow', 'green', 'purple']
+        }]
+      },
+      options: {}
+    });
+  </script>
+</body>
+</html>
+

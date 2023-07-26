@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Toggle Text Color Example</title>
+    <style>
+        p {
+            color: red; /* 초기 색상을 빨간색으로 설정합니다. */
+        }
+    </style>
+    <script>
+        function toggleTextColor() {
+            var textElement = document.getElementById("myText");
+            var currentColor = textElement.style.color;
+
+            if (currentColor === "red") {
+                textElement.style.color = "blue";
+            } else {
+                textElement.style.color = "red";
+            }
+        }
+    </script>
+</head>
+<body>
+    <p id="myText">이 텍스트의 색상을 토글해보세요!</p>
+
+    <button onclick="toggleTextColor()">텍스트 색상 토글</button>
+</body>
+</html>

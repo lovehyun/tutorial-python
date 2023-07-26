@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Scatter Chart Example</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+  <canvas id="scatterChart" width="400" height="200"></canvas>
+
+  <script>
+    var ctx = document.getElementById('scatterChart').getContext('2d');
+    var scatterChart = new Chart(ctx, {
+      type: 'scatter',
+      data: {
+        datasets: [{
+          label: 'Data',
+          data: [
+            {x: 10, y: 20},
+            {x: 15, y: 10},
+            {x: 7, y: 8},
+            {x: 12, y: 15}
+          ],
+          backgroundColor: 'rgba(0, 123, 255, 0.5)'
+        }]
+      },
+      options: {}
+    });
+  </script>
+</body>
+</html>
+

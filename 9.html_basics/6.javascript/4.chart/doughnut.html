@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Doughnut Chart Example</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+  <canvas id="doughnutChart" width="400" height="200"></canvas>
+
+  <script>
+    var ctx = document.getElementById('doughnutChart').getContext('2d');
+    var doughnutChart = new Chart(ctx, {
+      type: 'doughnut',
+      data: {
+        labels: ['Red', 'Blue', 'Yellow'],
+        datasets: [{
+          data: [30, 20, 50],
+          backgroundColor: ['red', 'blue', 'yellow']
+        }]
+      },
+      options: {}
+    });
+  </script>
+</body>
+</html>
+

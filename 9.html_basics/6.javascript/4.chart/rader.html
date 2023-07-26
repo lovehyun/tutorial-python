@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Radar Chart Example</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+  <canvas id="radarChart" width="400" height="400"></canvas>
+
+  <script>
+    var ctx = document.getElementById('radarChart').getContext('2d');
+    var radarChart = new Chart(ctx, {
+      type: 'radar',
+      data: {
+        labels: ['Eating', 'Drinking', 'Sleeping', 'Designing', 'Coding', 'Cycling', 'Running'],
+        datasets: [{
+          label: 'Data',
+          data: [65, 59, 90, 81, 56, 55, 40],
+          borderColor: 'rgba(0, 123, 255, 1)',
+          backgroundColor: 'rgba(0, 123, 255, 0.5)',
+          fill: true
+        }]
+      },
+      options: {}
+    });
+  </script>
+</body>
+</html>
+

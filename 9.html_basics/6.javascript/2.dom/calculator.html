@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Calculator</title>
+    <style>
+        .calculator {
+            display: grid;
+            grid-template-columns: repeat(4, lfr);
+            grid-gap: 10px;
+            max-width: 300px;
+            margin: 0 auto;
+            text-align: center;
+        }
+        .calculator input {
+            grid-column: span 4;
+            padding: 10px;
+            font-size: 18px;
+        }
+        .calculator button {
+            padding: 10px;
+            font-size: 18px;
+        }
+    </style>
+</head>
+<body>
+    <div class="calculator">
+        <input type="text" id="result" readonly>
+        <button onclick="document.getElementById('result').value += this.innerText">+</button>
+        <button onclick="document.getElementById('result').value += this.innerText">-</button>
+        <button onclick="document.getElementById('result').value += this.innerText">*</button>
+        <button onclick="document.getElementById('result').value += this.innerText">/</button>
+        <button onclick="document.getElementById('result').value += this.innerText">7</button>
+        <button onclick="document.getElementById('result').value += this.innerText">8</button>
+        <button onclick="document.getElementById('result').value += this.innerText">9</button>
+        <button onclick="calculate()">=</button>
+        <button onclick="document.getElementById('result').value += this.innerText">4</button>
+        <button onclick="document.getElementById('result').value += this.innerText">5</button>
+        <button onclick="document.getElementById('result').value += this.innerText">6</button>
+        <button onclick="clearResult()">C</button>
+        <button onclick="document.getElementById('result').value += this.innerText">1</button>
+        <button onclick="document.getElementById('result').value += this.innerText">2</button>
+        <button onclick="document.getElementById('result').value += this.innerText">3</button>
+        <button onclick="document.getElementById('result').value += this.innerText">0</button>
+    </div>
+    <script>
+        function calculate() {
+            input = document.getElementById("result").value;
+            try {
+                result = eval(input);
+                input = result;
+            } catch (error) {
+                input = "ERROR"
+            }
+
+            document.getElementById("result").value = result;
+        }
+        function clearResult() {
+            document.getElementById("result").value="";
+        }
+    </script>
+</body>
+</html>

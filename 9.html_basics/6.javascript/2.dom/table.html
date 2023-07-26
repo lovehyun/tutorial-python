@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Table Color Example</title>
+    <style>
+        table {
+            border-collapse: collapse;
+        }
+
+        td {
+            padding: 10px;
+            border: 1px solid black;
+            background-color: #ffffff;
+        }
+    </style>
+    <script>
+        function changeCellColor() {
+            // 테이블 셀의 배경색을 변경하는 함수입니다.
+            var cells = document.getElementsByTagName("td");
+            for (var i = 0; i < cells.length; i++) {
+                cells[i].style.backgroundColor = "lightblue"; // 변경할 색상을 여기에 입력하세요.
+            }
+        }
+    </script>
+</head>
+
+<body>
+    <table>
+        <tr>
+            <td>셀 1</td>
+            <td>셀 2</td>
+            <td>셀 3</td>
+        </tr>
+        <tr>
+            <td>셀 4</td>
+            <td>셀 5</td>
+            <td>셀 6</td>
+        </tr>
+        <tr>
+            <td>셀 7</td>
+            <td>셀 8</td>
+            <td>셀 9</td>
+        </tr>
+    </table>
+
+    <button onclick="changeCellColor()">셀 색상 변경</button>
+</body>
+
+</html>

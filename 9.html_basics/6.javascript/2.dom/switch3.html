@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Hello World</title>
+    <script>
+        function fruitDisplay(fruit) {
+            var fruitString = "";
+
+            switch (fruit) {
+                case "apple":
+                    fruitString = "이것은 사과입니다";
+                    break;
+                case "banana":
+                    fruitString = "이것은 바나나입니다";
+                    break;
+                case "orange":
+                    fruitString = "이것은 오렌지입니다";
+                    break;
+            }
+
+            var result = document.getElementById("fruitResult");
+            var textNode = document.createTextNode(fruitString + " ");
+            var lineBreak = document.createElement("br");
+            result.appendChild(textNode);
+            result.appendChild(lineBreak);
+        }
+
+        document.addEventListener("DOMContentLoaded", function() {
+            var selectElement = document.getElementById("fruitSelector");
+            selectElement.addEventListener("change", function() {
+                fruitDisplay(this.value);
+            });
+        });
+    </script>
+</head>
+<body>
+    <h1>자바스크립트로 switch/case 처리하기</h1>
+    <select id="fruitSelector">
+        <option value="">-- Select --</option>
+        <option value="apple">Apple</option>
+        <option value="banana">Banana</option>
+        <option value="orange">Orange</option>
+    </select>
+    <div id="fruitResult"></div>
+</body>
+</html>
