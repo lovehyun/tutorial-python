@@ -1,0 +1,32 @@
+<!-- templates/cart.html -->
+<!DOCTYPE html>
+<html>
+<head>
+    <title>장바구니</title>
+</head>
+<body>
+    <h1>장바구니</h1>
+    <table border="1">
+        <tr>
+            <th>상품 이름</th>
+            <th>수량</th>
+            <th>가격</th>
+        </tr>
+        {% for item_name, item_info in cart_items.items() %}
+        <tr>
+            <td>{{ item_info.name }}</td>
+            <td>{{ item_info.quantity }}</td>
+            <td>{{ item_info.price * item_info.quantity }}원</td>
+            <td><a href="{{ url_for('remove_item_from_cart', item_name=item_name) }}">X</a></td>
+        </tr>
+        {% endfor %}
+    </table>
+    <p>총 가격: {{ total_price }}원</p>
+    <form action="{{ url_for('clear_cart') }}" method="get">
+        <input type="submit" value="장바구니 비우기">
+    </form>
+    <p>
+    <a href="{{ url_for('index') }}">상품 목록으로 돌아가기</a>
+    </p>
+</body>
+</html>

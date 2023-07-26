@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>장바구니</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        .card-img-top {
+            height: 50px;
+            object-fit: cover;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 class="my-4">장바구니</h1>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>상품 이미지</th>
+                    <th>상품 이름</th>
+                    <th>수량</th>
+                    <th>가격</th>
+                    <th>삭제</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item_name, item_info in cart_items.items() %}
+                <tr>
+                    <td>
+                        <img class="card-img-top" src="{{ url_for('static', filename='images/' + item_info.image) }}" alt="상품 이미지">
+                    </td>
+                    <td>{{ item_info.name }}</td>
+                    <td>{{ item_info.quantity }}</td>
+                    <td>{{ item_info.price * item_info.quantity }}원</td>
+                    <td>
+                        <a href="{{ url_for('remove_item_from_cart', item_name=item_name) }}" class="btn btn-danger btn-sm">삭제</a>
+                    </td>
+                </tr>
+                {% endfor %}
+                <tr>
+                    <td colspan="3">총 가격</td>
+                    <td>{{ total_price }}원</td>
+                    <td>
+                        <a href="{{ url_for('clear_cart') }}" class="btn btn-danger btn-sm">전체 비우기</a>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <h2 class="mt-4"><a href="{{ url_for('index') }}">상품 목록으로 돌아가기</a></h2>
+    </div>
+</body>
+</html>

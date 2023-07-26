@@ -1,0 +1,18 @@
+<!-- templates/index.html -->
+<!DOCTYPE html>
+<head>
+    <title>상품 목록</title>
+</head>
+<body>
+    <h1>상품 목록</h1>
+    <ul>
+        {% for item_name, item_info in items.items() %}
+            <li>
+                {{ item_info.name }} (가격: {{ item_info.price }}원)
+                <a href="{{ url_for('add_to_cart', item_name=item_name) }}">카트에 추가</a>
+            </li>
+        {% endfor %}
+    </ul>
+    <a href="{{ url_for('view_cart') }}">장바구니 보기</a>
+</body>
+</html>
