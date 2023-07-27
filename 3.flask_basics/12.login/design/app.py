@@ -57,7 +57,7 @@ def login():
             flash('로그인 되었습니다.', 'success')
             return redirect(url_for('main'))
         else:
-            flash('아이디나 비밀번호가 잘못되었습니다.', 'error')
+            flash('아이디나 비밀번호가 잘못되었습니다.', 'danger')
             # return "아이디나 비밀번호가 잘못되었습니다."
 
     return redirect(url_for('main'))
