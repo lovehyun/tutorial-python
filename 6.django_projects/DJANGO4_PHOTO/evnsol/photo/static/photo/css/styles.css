@@ -1,0 +1,23 @@
+/* styles.css */
+
+.photo-table {
+  border-collapse: collapse;
+  width: 100%;
+}
+
+.photo-table th,
+.photo-table td {
+  border: 1px solid black;
+  padding: 8px;
+}
+
+.photo-title {
+  font-weight: bold;
+}
+
+.photo-table img {
+  width: 300px;
+  height: 400px;
+  /* object-fit: cover; */
+  object-fit: contain;
+}
