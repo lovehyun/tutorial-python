@@ -1,0 +1,59 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <div class="cell-container" style="overflow: auto; max-height: 80vh">
+        <form action="" method="post">
+            {{ form.csrf }}
+            <div class="input text">
+                {{ form.name.label }} {{ form.name() }}
+                {{ form.gender.label }} {{ form.gender() }}
+                <input type="submit" value="Submit">
+            </div>
+        </form>
+
+        <div class="table-responsive">
+            <table class="table" id="users">
+                <thead>
+                    <tr>
+                        <th scope="col">id</th>
+                        <th scope="col">name</th>
+                        <th scope="col">gender</th>
+                        <th scope="col">age</th>
+                        <th scope="col">birthday</th>
+                    </tr>
+                </thead>
+                <tbody>
+                {% for user in pagination %}
+                    <tr id={{ user[0] }} class="table-light">
+                        <td scope="row"> 
+                            <a href="{{ url_for('user.user_detail', user_id=user[0]) }}">
+                                {{ user[0] }}
+                            </a>
+                        </td>
+                        <td> {{ user[1] }} </td>
+                        <td> {{ user[2] }} </td>
+                        <td> {{ user[3] }} </td>
+                        <td> {{ user[4] }} </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    {% if pagination %}
+        {% set total_pages = pagination | length %}
+        {% for page in range(1, total_pages + 1) %}
+            {% if page %}
+                {% if query %}
+                <a href="{{ url_for('user.users', page_num=page, name=query['name'], gender=query['gender']) }}">{{ page }}</a>
+                {% else %}
+                <a href="{{ url_for('user.users', page_num=page) }}">{{ page }}</a>
+                {% endif %}
+            {% else %}
+                ...
+            {% endif %}
+        {% endfor %}
+    {% endif %}
+
+{% endblock %}

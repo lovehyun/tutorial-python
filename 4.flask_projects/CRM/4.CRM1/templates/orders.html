@@ -1,0 +1,37 @@
+<!-- /templates/orders.html  -->
+
+{% extends 'base.html' %}
+
+{% block content %}
+    <div class="cell-container" style="overflow: auto; max-height: 80vh">
+        <div class="table-responsive">
+            <table class="table" id="orders">
+                <thead>
+                    <tr>
+                        <th scope="col">id</th>
+                        <th scope="col">ordered_at</th>
+                        <th scope="col">store_id</th>
+                        <th scope="col">user_id</th>
+                    </tr>
+                </thead>
+                <tbody>
+                {% for order in pagination.items %}
+                    <tr id={{ order.id }}>
+                        <td> {{ order.id }} </td>
+                        <td> {{ order.orderat }} </td>
+                        <td> {{ order.storeid }} </td>
+                        <td> {{ order.userid }} </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    {% for page in pagination.iter_pages(left_edge=3, right_edge=3, left_current=5, right_current=5) %}
+        {% if page %}
+            <a href="{{ url_for('.orders', page_num=page) }}">{{ page }}</a>
+        {% else %}
+            ...
+        {% endif %}
+    {% endfor %}
+{% endblock %}
