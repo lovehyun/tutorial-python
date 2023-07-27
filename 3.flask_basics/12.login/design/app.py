@@ -102,7 +102,7 @@ def register():
             new_user.set_password(password)
             db.session.add(new_user)
             db.session.commit()
-            flash('계정이 생성되었습니다. 이제 로그인하세요!', 'success')
+            flash('계정이 생성되었습니다. 이제 로그인하세요!', 'info')
             return redirect(url_for('main'))
 
     return render_template('register.html')
