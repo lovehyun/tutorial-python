@@ -96,7 +96,9 @@ def register():
             flash('이미 사용 중인 아이디입니다.', 'danger')
             # return "이미 사용 중인 아이디입니다."
         else:
-            new_user = User(username=username, email=email)
+            new_user = User(username=username)
+            if email:  # Check if email is provided
+                new_user.email = email
             new_user.set_password(password)
             db.session.add(new_user)
             db.session.commit()
