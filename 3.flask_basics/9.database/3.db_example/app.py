@@ -53,6 +53,13 @@ def add_post():
 
     return render_template('add_post.html')
 
+@app.route('/del_post/<int:post_id>', methods=['POST'])
+def del_post(post_id):
+    post = Post.query.get_or_404(post_id)
+    db.session.delete(post)
+    db.session.commit()
+    return redirect(url_for('index'))
+
 if __name__ == '__main__':
     with app.app_context():
         # 데이터베이스 생성

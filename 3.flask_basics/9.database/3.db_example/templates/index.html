@@ -11,6 +11,9 @@
             <h2>{{ post.title }}</h2>
             <p>{{ post.content }}</p>
             <p>Author: {{ post.author.username }}</p>
+            <form action="{{ url_for('del_post', post_id=post.id) }}" method="post">
+                <input type="submit" value="삭제">
+            </form>
         </li>
         {% endfor %}
     </ul>
