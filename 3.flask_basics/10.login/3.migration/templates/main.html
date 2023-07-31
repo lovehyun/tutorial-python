@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Main Page</title>
+</head>
+<body>
+    {% if current_user.is_authenticated %}
+        <h1>안녕하세요, {{ current_user.username }}님!</h1>
+        <a href="{{ url_for('logout') }}">로그아웃</a>
+        <h2>프로필 수정</h2>
+        <form action="{{ url_for('profile_edit') }}" method="get">
+            <input type="submit" value="프로필 수정하기">
+        </form>
+        <p><a href="{{ url_for('view_users') }}">사용자 계정 목록 보기</a></p>
+    {% else %}
+        <h1>로그인</h1>
+        <form action="{{ url_for('login') }}" method="post">
+            <label>아이디: <input type="text" name="username" required></label><br>
+            <label>비밀번호: <input type="password" name="password" required></label><br>
+            <input type="submit" value="로그인">
+        </form>
+        <p>아직 회원이 아니신가요? <a href="{{ url_for('register') }}">회원 가입하기</a></p>
+    {% endif %}
+</body>
+</html>
