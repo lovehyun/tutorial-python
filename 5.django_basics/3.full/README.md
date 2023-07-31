@@ -7,6 +7,7 @@
     ```
     $ django-admin startapp todo
     ```
+    앱을 생성하고 installed_app 에 추가한다.
     
 2. 모델 정의: **`todo/models.py`** 파일에 다음과 같이 모델을 정의합니다.
     
