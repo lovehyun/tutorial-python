@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Message List</title>
+</head>
+<body>
+    <h1>Message List</h1>
+    <ul>
+        {% for message in messages %}
+            <li>{{ message.text }}</li>
+        {% endfor %}
+    </ul>
+</body>
+</html>
