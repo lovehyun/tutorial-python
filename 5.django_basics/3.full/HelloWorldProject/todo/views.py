@@ -1,34 +1,34 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from .models import Todo
+from .models import Task
 
-def todo_list(request):
-    todos = Todo.objects.all()
-    return render(request, 'todo/todo_list.html', {'todos': todos})
+def task_list(request):
+    tasks = Task.objects.all()
+    return render(request, 'todo/task_list.html', {'tasks': tasks})
 
-def todo_detail(request, pk):
-    todo = get_object_or_404(Todo, pk=pk)
-    return render(request, 'todo/todo_detail.html', {'todo': todo})
+def task_detail(request, pk):
+    task = get_object_or_404(Task, pk=pk)
+    return render(request, 'todo/task_detail.html', {'task': task})
 
-def todo_create(request):
+def task_create(request):
     if request.method == 'POST':
         title = request.POST['title']
         description = request.POST['description']
-        todo = Todo.objects.create(title=title, description=description)
-        return redirect('todo_detail', pk=todo.pk)
-    return render(request, 'todo/todo_create.html')
+        task = Task.objects.create(title=title, description=description)
+        return redirect('task_detail', pk=task.pk)
+    return render(request, 'todo/task_create.html')
 
-def todo_update(request, pk):
-    todo = get_object_or_404(Todo, pk=pk)
+def task_update(request, pk):
+    task = get_object_or_404(Task, pk=pk)
     if request.method == 'POST':
         title = request.POST['title']
         description = request.POST['description']
-        todo.title = title
-        todo.description = description
-        todo.save()
-        return redirect('todo_detail', pk=todo.pk)
-    return render(request, 'todo/todo_update.html', {'todo': todo})
+        task.title = title
+        task.description = description
+        task.save()
+        return redirect('task_detail', pk=task.pk)
+    return render(request, 'todo/task_update.html', {'task': task})
 
-def todo_delete(request, pk):
-    todo = get_object_or_404(Todo, pk=pk)
-    todo.delete()
-    return redirect('todo_list')
+def task_delete(request, pk):
+    task = get_object_or_404(Task, pk=pk)
+    task.delete()
+    return redirect('task_list')

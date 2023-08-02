@@ -1,0 +1,6 @@
+<h1>{{ task.title }}</h1>
+<p>{{ task.description }}</p>
+<p>Created: {{ task.created_at }}</p>
+<p>Updated: {{ task.updated_at }}</p>
+<a href="{% url 'task_update' task.pk %}">Update</a>
+<a href="{% url 'task_delete' task.pk %}">Delete</a>
