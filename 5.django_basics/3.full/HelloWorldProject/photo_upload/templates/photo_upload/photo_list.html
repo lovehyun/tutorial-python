@@ -1,0 +1,4 @@
+{% for photo in photos %}
+    <img src="{{ photo.image.url }}" alt="{{ photo.title }}">
+    <p>{{ photo.title }}</p>
+{% endfor %}
