@@ -66,6 +66,8 @@ class TaskViewTests(TestCase):
         response = self.client.get(reverse('task_update', args=(task.pk,)))
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'todo/task_update.html')
+        self.assertEqual(task.title, 'Test Task')
+        self.assertEqual(task.description, 'This is a test task')
 
         data = {
             'title': 'Updated Task',
@@ -73,6 +75,7 @@ class TaskViewTests(TestCase):
         }
         response = self.client.post(reverse('task_update', args=(task.pk,)), data)
         self.assertEqual(response.status_code, 302)
+
         task.refresh_from_db()
         self.assertEqual(task.title, 'Updated Task')
         self.assertEqual(task.description, 'This is an updated task')
@@ -83,6 +86,8 @@ class TaskViewTests(TestCase):
     #    그리고 응답이 성공적인지(상태 코드 302) 및 데이터베이스에서 Task 객체가 삭제되었는지 확인합니다.
     def test_task_delete_view(self):
         task = Task.objects.create(title='Test Task', description='This is a test task')
+        self.assertEqual(Task.objects.count(), 1)
+        
         response = self.client.post(reverse('task_delete', args=(task.pk,)))
         self.assertEqual(response.status_code, 302)
         self.assertEqual(Task.objects.count(), 0)
