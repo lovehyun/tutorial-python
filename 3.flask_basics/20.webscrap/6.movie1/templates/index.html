@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Movie Rankings</title>
+</head>
+<body>
+    <h1>Movie Rankings</h1>
+
+    {% if movie_rankings %}
+        <table border="1">
+            <tr>
+                <th>Rank</th>
+                <th>Title</th>
+                <th>Rating</th>
+                <th>Reservation Rate</th>
+                <th>Short Description</th>
+                <th>URL</th>
+            </tr>
+            {% for movie in movie_rankings %}
+                <tr>
+                    <td>{{ movie['rank'] }}</td>
+                    <td>{{ movie['title'] }}</td>
+                    <td>{{ movie['rating'] }}</td>
+                    <td>{{ movie['reservation_rate'] }}</td>
+                    <td>{{ movie['description'] }}</td>
+                    <td>{{ movie['url'] }}</td>
+                    <!-- <td><a href="{{ movie['url'] }}">Link</a></td> -->
+                </tr>
+            {% endfor %}
+        </table>
+    {% endif %}
+</body>
+</html>

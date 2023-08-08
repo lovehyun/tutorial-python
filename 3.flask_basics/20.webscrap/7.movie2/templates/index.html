@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Movie Rankings</title>
+</head>
+<body>
+    <h1>Movie Rankings</h1>
+    <ul>
+        {% for fetch_date in fetch_dates %}
+            <li><a href="{{ url_for('weekly_ranking', fetch_date=fetch_date) }}">{{ fetch_date }}</a></li>
+        {% endfor %}
+    </ul>
+
+    {% if movie_rankings %}
+        <h2>Weekly Ranking for {{ selected_fetch_date }}</h2>
+        <table border="1">
+            <tr>
+                <th>Rank</th>
+                <th>Title</th>
+                <th>Rating</th>
+                <th>Reservation Rate</th>
+                <th>URL</th>
+            </tr>
+            {% for movie in movie_rankings %}
+                <tr>
+                    <td>{{ movie['rank'] }}</td>
+                    <td>{{ movie['title'] }}</td>
+                    <td>{{ movie['rating'] }}</td>
+                    <td>{{ movie['reservation_rate'] }}</td>
+                    <td><a href="{{ movie['url'] }}">Link</a></td>
+                </tr>
+            {% endfor %}
+        </table>
+    {% endif %}
+</body>
+</html>

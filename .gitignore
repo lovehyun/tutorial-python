@@ -6,6 +6,7 @@ __pycache__
 *.csv
 *.sqlite
 *.sqlite3
+*.db
 
 # flask instance files
 instance/
