@@ -39,8 +39,6 @@ def get_weekly_ranking(fetch_date):
             'url': poster_link_url,
         })
 
-    app.logger.info("Retrieved Movie Rankings: %s", movie_rankings)
-
     return movie_rankings
 
 @app.route('/')
@@ -61,7 +59,7 @@ def weekly_ranking():
 
     if fetch_date is not None:
         movie_rankings = get_weekly_ranking(fetch_date)
-        return render_template('weekly_ranking.html', fetch_date=fetch_date, movie_rankings=movie_rankings)
+        return render_template('weekly_ranking2.html', fetch_date=fetch_date, movie_rankings=movie_rankings)
     else:
         return redirect(url_for('index'))
 

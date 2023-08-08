@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Movie Rankings</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <h1>Weekly Ranking for {{ fetch_date }}</h1>
+    <div class="card-container">
+        {% for movie in movie_rankings %}
+            <div class="card">
+                <div class="card-img">
+                    <img src="{{ movie['img'] }}" alt="{{ movie['title'] }}">
+                </div>
+                <div class="card-content">
+                    <h2>{{ movie['title'] }}</h2>
+                    <p>Rating: {{ movie['rating'] }}</p>
+                    <p>Reservation Rate: {{ movie['reservation_rate'] }}</p>
+                    <a href="{{ movie['url'] }}">Link</a>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+    <script src="{{ url_for('static', filename='scripts.js') }}"></script>
+</body>
+</html>

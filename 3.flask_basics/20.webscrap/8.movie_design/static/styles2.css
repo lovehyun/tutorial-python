@@ -1,0 +1,67 @@
+.movie-carousel {
+    position: relative;
+    overflow: hidden;
+    padding: 20px 40px; /* Add padding to create space around the entire carousel - top/bottom and left/right */
+}
+
+.card-container {
+    display: flex;
+    flex-wrap: nowrap; /* Prevent wrapping to enable horizontal scrolling */
+    gap: 20px;
+    overflow-x: auto; /* Enable horizontal scrolling for cards */
+    padding: 20px 0; /* Add some top and bottom padding for better visualization */
+}
+
+.card {
+    flex: 0 0 auto; /* Ensure card size remains fixed */
+    width: 300px; /* Customize the card width */
+    background-color: #f2f2f2;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    padding: 10px;
+    /* Add left and right margins to create space for the carousel buttons */
+    /* margin: 0 10px; */
+}
+
+.card img {
+    width: 100%;
+    height: 400px; /* Customize the poster image height */
+    object-fit: cover;
+    border-radius: 10px 10px 0 0; /* Rounded top corners for the poster */
+}
+
+/* Your existing card styles here */
+
+.carousel-prev,
+.carousel-next {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 24px;
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
+    z-index: 1;
+    /* Increase the size of the arrow buttons */
+    width: 40px;
+    height: 40px;
+    line-height: 40px;
+    text-align: center;
+    font-weight: bold;
+}
+
+.carousel-prev:hover,
+.carousel-next:hover {
+    /* Add hover effect for the arrow buttons */
+    background-color: rgba(0, 0, 0, 0.2);
+    border-radius: 50%;
+    color: #fff;
+}
+
+.carousel-prev {
+    left: 10px;
+}
+
+.carousel-next {
+    right: 10px;
+}

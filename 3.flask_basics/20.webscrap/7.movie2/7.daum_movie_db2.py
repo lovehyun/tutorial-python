@@ -12,6 +12,7 @@ def create_table():
     cursor.execute('''CREATE TABLE IF NOT EXISTS movies (
                         id INTEGER PRIMARY KEY AUTOINCREMENT,
                         title TEXT,
+                        poster_img_url TEXT,
                         poster_link_url TEXT,
                         short_description TEXT
                       )''')
@@ -41,13 +42,18 @@ def get_movie_data():
         title_tag = movie.select_one('div > div.thumb_cont > strong')
         if title_tag:
             movie_title = title_tag.text.strip()
-            movie_selected = movie.select_one('div > div.thumb_item > div.poster_info > a')
+            movie_selected = movie.select_one('div > div.thumb_item')
             if movie_selected:
-                relative_url = movie_selected['href']
+                poster_img = movie_selected.select_one('div.poster_movie > img')
+                poster_img_url = poster_img['src']
+                poster_link = movie_selected.select_one('div.poster_info > a')
+                relative_url = poster_link['href']
                 poster_link_url = urljoin('https://movie.daum.net', relative_url)
                 short_description = movie_selected.text.strip()
+
                 movie_data.append({
                     'title': movie_title,
+                    'poster_img_url': poster_img_url,
                     'poster_link_url': poster_link_url,
                     'short_description': short_description,
                     'soup': movie  # 추후 파싱을 위한 추가 데이터 임시 저장
@@ -61,8 +67,8 @@ def insert_movie_data(movie_data):
     cursor = conn.cursor()
 
     for movie in movie_data:
-        cursor.execute('''INSERT INTO movies (title, poster_link_url, short_description)
-                          VALUES (?, ?, ?)''', (movie['title'], movie['poster_link_url'], movie['short_description']))
+        cursor.execute('''INSERT INTO movies (title, poster_img_url, poster_link_url, short_description)
+                          VALUES (?, ?, ?, ?)''', (movie['title'], movie['poster_img_url'], movie['poster_link_url'], movie['short_description']))
         conn.commit()
 
     conn.close()
