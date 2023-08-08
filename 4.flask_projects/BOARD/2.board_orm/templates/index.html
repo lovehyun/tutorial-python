@@ -50,7 +50,8 @@
             });
             console.log('done');
         });
-
+    </script>
+    <script>
         function makeCard(id, title, message) {
             let card_content = 
                 `<div class="card" id="card_${id}">
@@ -70,10 +71,9 @@
             let text = $("#input-text").val();
 
             $.ajax({
-                type: "POST",
-                url: "/create",
-                // contentType: "application/x-www-form-urlencoded",  // 기본값
-                data: {title: title, message: text},
+                type: "POST", 
+                url: "/create", 
+                data: {title: title, message: text}, 
                 success: function(response) {
                     if (response['result'] == 'success') {
                         alert("저장 완료!");
@@ -105,7 +105,7 @@
         function modifyPost(id) {
             console.log("modify card:", id)
             let card_id = "#card_" + id;
-            let card_old_title = $(card_id).find(".card-title").text()
+            let card_old_title = $(card_id).find('.card-title').text()
             let card_old_message = $(card_id).find(".card-text").text()
             
             console.log("title:", card_old_title)
@@ -137,7 +137,7 @@
             $.ajax({
                 type: "POST", 
                 url: "/modify",
-                data: {id: id, title: title, message: text},
+                data: {id: id, title: title, message: text}, 
                 success: function(response) {
                     if (response['result'] == 'success') {
                         alert("수정 완료!");
@@ -169,8 +169,7 @@
         </div>
 
        <div id="card-list" class="card-columns">
-        <!-- card examples -->
-        <!-- 
+        <!-- card examples
             <div class="card">
                 <div class="card-body">
                     <a class="card-title" id="input-title">example1</a>

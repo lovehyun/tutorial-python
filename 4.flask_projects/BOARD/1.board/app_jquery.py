@@ -11,6 +11,12 @@ def index():
 
 @app.route('/create', methods=['POST'])
 def create():
+    # contentType: 'application/json', 으로 보냈으면,
+    # data = request.get_json()  # JSON 데이터를 가져옴
+    # title = data['title']
+    # message = data['message']
+
+    # contentType: 'application/x-www-form-urlencoded', 으로 보냈으면 (기본값),
     title = request.form['title']
     message = request.form['message']
     sql = "INSERT INTO board(title, message) VALUES('{}', '{}')".format(title, message)
@@ -39,6 +45,7 @@ def list():
 def delete():
     id = request.form['id']
     print("id:", id)
+
     sql = "DELETE FROM board WHERE id={}".format(id)
     db.execute(sql)
     db.commit()
@@ -48,7 +55,8 @@ def delete():
 def modify():
     title = request.form['title']
     message = request.form['message']
-    id = request.json.get('id')
+    id = request.form['id']
+    
     sql = "UPDATE board SET title='{}', message='{}' WHERE id={}".format(title, message, id)
     db.execute(sql)
     db.commit()
