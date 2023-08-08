@@ -10,27 +10,33 @@
     gap: 20px;
     overflow-x: auto; /* Enable horizontal scrolling for cards */
     padding: 20px 0; /* Add some top and bottom padding for better visualization */
+    margin-top: 100px; /* Add a margin at the top to separate from other content */
 }
 
 .card {
     flex: 0 0 auto; /* Ensure card size remains fixed */
-    width: 300px; /* Customize the card width */
+    width: 200px; /* Customize the card width */
     background-color: #f2f2f2;
     border-radius: 10px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     padding: 10px;
     /* Add left and right margins to create space for the carousel buttons */
     /* margin: 0 10px; */
+    /* Add transition for smooth zoom effect */
+    transition: transform 0.2s ease-in-out;
 }
 
 .card img {
     width: 100%;
-    height: 400px; /* Customize the poster image height */
+    height: 300px; /* Customize the poster image height */
     object-fit: cover;
     border-radius: 10px 10px 0 0; /* Rounded top corners for the poster */
 }
 
-/* Your existing card styles here */
+/* Zoom-in effect on hover */
+.card:hover {
+    transform: scale(1.1); /* Increase the scale by 20% on hover */
+}
 
 .carousel-prev,
 .carousel-next {
@@ -64,4 +70,25 @@
 
 .carousel-next {
     right: 10px;
+}
+
+/* Set semi-transparent background image */
+body {
+    background-image: linear-gradient(rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.8));
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+}
+
+/* Set initial semi-transparent background overlay */
+.background-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    /* background-color: black; */
+    opacity: 0.5; /* Set the initial opacity for the background overlay */
+    pointer-events: none; /* Make sure the overlay doesn't interfere with clicks on the cards */
+    z-index: -1; /* Position the background-overlay element behind other content */
 }

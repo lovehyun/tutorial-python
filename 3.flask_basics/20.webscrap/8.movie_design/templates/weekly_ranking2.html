@@ -9,9 +9,9 @@
     <div class="movie-carousel">
         <div class="card-container">
             {% for movie in movie_rankings %}
-                <div class="card">
+                <div class="card" onclick="changeBackground(`{{ movie['img'] }}`)">
                     <img src="{{ movie['img'] }}" alt="{{ movie['title'] }}">
-                    <h2>{{ movie['title'] }}</h2>
+                    <h3>{{ movie['title'] }}</h3>
                     <p>Rating: {{ movie['rating'] }}</p>
                     <p>Reservation Rate: {{ movie['reservation_rate'] }}</p>
                     <a href="{{ movie['url'] }}">Link</a>
@@ -21,6 +21,7 @@
         <button class="carousel-prev">&#8249;</button>
         <button class="carousel-next">&#8250;</button>
     </div>
+    <div class="background-overlay"></div> <!-- Add a new element for the background overlay -->
     <script src="{{ url_for('static', filename='scripts2.js') }}"></script>
 </body>
 </html>
