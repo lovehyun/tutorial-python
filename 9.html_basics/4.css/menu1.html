@@ -1,12 +1,12 @@
 <style>
-    .h-container .item { /* 자식요소 */
+    .h-container .item { /* 자식요소 : .h-container > .item 바로 자식 vs 그냥 하위 */
         float: left;
         width: 100px;
         text-align: center;
         border-right: 1px solid #ddd;
     }
 
-    .h-container .item.last { /* 같은 계층 동시적용 */
+    .h-container .item.last {
         float: right;
         border-right: none;
     }
