@@ -22,16 +22,9 @@ logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 # SQLite3 DB 설정
-# 모든 Row 의 결과를 [] 배열에서 {} 딕셔너리 형태로 변환해서 출력
-def dict_factory(cursor, row):
-    d = {}
-    for idx, col in enumerate(cursor.description):
-        d[col[0]] = row[idx]
-    return d
-
 # conn = sqlite3.connect(':memory:', check_same_thread=False) # 메모리에 DB 생성 (파일로 저장하려면 파일 경로를 지정)
 conn = sqlite3.connect('history.db', check_same_thread=False)
-conn.row_factory = dict_factory # 딕셔너리로 변환
+conn.row_factory = sqlite3.Row
 cursor = conn.cursor()
 
 # 대화 히스토리 테이블 생성
@@ -90,8 +83,9 @@ def index():
 def get_history():
     try:
         recent_conversation = get_recent_conversation()
-        # return jsonify({'conversationHistory': recent_conversation})
-        return json.dumps({'conversationHistory': recent_conversation}, ensure_ascii=False)
+        formatted_rows = [{'role': row['role'], 'content': row['content']} for row in recent_conversation]
+        # return jsonify({'conversationHistory': formatted_rows})
+        return json.dumps({'conversationHistory': formatted_rows}, ensure_ascii=False)
     except Exception as e:
         print('Error getting recent conversation:', str(e))
         return jsonify({'error': 'Internal Server Error'}), 500

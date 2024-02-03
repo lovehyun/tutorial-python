@@ -15,12 +15,12 @@ CORS(app)  # Cross-Origin Resource Sharing 설정
 port = int(os.environ.get("PORT", 5000))
 
 
+# DB 가져오는 코드 - 연결 및 접속 종료
 def get_db():
     db = getattr(g, '_database', None)
     if db is None:
         db = g._database = sqlite3.connect('history.db')
     return db
-
 
 @app.teardown_appcontext
 def close_connection(exception):
@@ -35,7 +35,6 @@ def dict_factory(cursor, row):
     for idx, col in enumerate(cursor.description):
         d[col[0]] = row[idx]
     return d
-
 
 # OpenAI 셋업
 openai.api_key = os.environ.get('OPENAI_API_KEY')
@@ -55,14 +54,12 @@ def init_db():
         cursor.execute("CREATE TABLE IF NOT EXISTS session (id INTEGER PRIMARY KEY AUTOINCREMENT, start_time DATETIME DEFAULT CURRENT_TIMESTAMP)")
         conn.commit()
 
-
 init_db()
 
 
 @app.route('/')
 def index():
     return send_from_directory(app.static_folder, 'index.html')
-
 
 # 사용자의 대화를 받아 처리하고 챗봇 응답을 반환
 @app.route('/api/chat', methods=['POST'])

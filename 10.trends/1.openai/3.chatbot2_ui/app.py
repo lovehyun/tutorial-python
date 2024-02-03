@@ -41,6 +41,8 @@ def get_chatgpt_response(user_input):
                 'model': 'gpt-3.5-turbo',
                 'messages': [
                     {'role': 'system', 'content': 'You are a helpful assistant.'},
+                    # {'role': 'system', 'content': 'You are a first-class hotel chef providing culinary recommendations.'},
+                    # {'role': 'system', 'content': 'You are a travel guide providing assistance and information for travelers.'},
                     {'role': 'user', 'content': user_input},
                 ],
             },
