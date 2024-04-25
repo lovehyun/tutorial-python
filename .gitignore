@@ -18,5 +18,8 @@ migrations/
 # project files
 .env
 
+# streamlit secrets
+secrets.toml
+
 # vscode settings
 .vscode/
