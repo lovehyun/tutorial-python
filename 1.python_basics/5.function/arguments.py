@@ -4,6 +4,12 @@ users = [
     {"name": "Charlie", "age": 35, "location": "Daegu", "car": "Audi"},
 ]
 
+def find_user(name):
+    for user in users:
+        if user["name"] == name:
+        # if user["name"].lower() == name.lower():
+            return user
+
 def find_users(name):
     result = []
     for user in users:
@@ -11,7 +17,22 @@ def find_users(name):
             result.append(user)
     return result
 
+
+# ---------------------
 # 미션1. 이름 및 나이로 검색 구현
+def find_user2(name=None, age=None):
+    for user in users:
+        if name is not None and age is not None:
+            if user["name"] == name and user["age"] == age:
+                return user
+        elif name is not None:
+            if user["name"] == name:
+                return user
+        elif age is not None:
+            if user["age"] == age:
+                return user
+    return None
+
 
 # ---------------------
 # 미션2. 다양한 변화하는 검색 조건을 입력 인자에 어떻게 받을 것인가?
@@ -22,12 +43,12 @@ search_criteria = {
     # "car": "Mercedes"
 }
 
-def find_users2(criteria):
+def find_users2(condition):
     result = []
     for user in users:
-        if user.get("age") >= criteria.get("min_age", 0) and \
-            user.get("location") == criteria.get("location", "") and \
-            user.get("car") == criteria.get("car", ""):
+        if user.get("age") >= condition.get("min_age", 0) and \
+            user.get("location") == condition.get("location", "") and \
+            user.get("car") == condition.get("car", ""):
             result.append(user)
     return result
 
@@ -38,6 +59,7 @@ matching_users = find_users2(search_criteria)
 print("Matching Users2:")
 for user in matching_users:
     print(user)
+
 
 # ---------------------
 # 미션3. 다양한 변화하는 검색 조건을 입력 인자에 어떻게 받을 것인가?
@@ -52,19 +74,27 @@ search_criteria3 = {
     "car": "BMW"
 }
 
-def find_users3(criteria):
+# 파이썬 스러운 is None 및 get 등을 통해서 구현
+def find_users3(search):
     result = []
+
     for user in users:
-        if (criteria.get("min_age") is None or user.get("age") >= criteria.get("min_age")) and \
-            (criteria.get("location") is None or user.get("location") == criteria.get("location")) and \
-            (criteria.get("car") is None or user.get("car") == criteria.get("car")):
-            result.append(user)
+        # 미니 미션3-1. min_age는 어떻게 구현?
+        # if (search.get("min_age") is None or user.get("age") >= search.get("min_age")) and \
+
+        # 해당 항목이 없으면 무시 (is None) or 있으면 뒤에 조건 비교
+        if (search.get("age") is None or user.get("age") == search.get("age")) and \
+            (search.get("name") is None or user.get("name") == search.get("name")) and \
+            (search.get("location") is None or user.get("location") == search.get("location")) and \
+            (search.get("car") is None or user.get("car") == search.get("car")):
+                result.append(user)
     return result
 
-def find_users4(criteria):
+# 참고. 레거시 코드 문법을 통해 구현
+def find_users4(search):
     result = []
     for user in users:
-        if matches_criteria(user, criteria):
+        if matches_criteria(user, search):
             result.append(user)
     return result
 
@@ -93,6 +123,7 @@ for user in matching_users:
     print(user)
 
 
+# ---------------------
 # 미션4. 유닛테스트 만들기
 # 미션4-1. 유닛테스트 효율화하기
 search_bob1 = { "name": "Bob" } # expect 1
