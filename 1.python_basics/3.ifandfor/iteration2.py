@@ -1,7 +1,7 @@
 import time
 
 def nested_loops_example():
-    n = 10
+    n = 100
     count = 0
 
     for i in range(n):  # O(n)
