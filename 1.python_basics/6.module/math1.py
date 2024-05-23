@@ -1,3 +1,10 @@
+# https://docs.python.org/ko/3/library/math.html
+
+# 모듈명.함수명
+# math.pow()
+# 모듈명.상수명
+# math.pi
+
 # Math 모듈 활용
 import math
 

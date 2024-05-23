@@ -1,5 +1,8 @@
 # [표현식 for 항목 in iterable if 조건문]
 
+# 1부터 10까지의 숫자 리스트
+nums = [num for num in range(1, 10+1)]
+
 # 1부터 10까지의 제곱 값들로 이루어진 리스트 생성
 squares = [x ** 2 for x in range(1, 11)]
 print(squares)
@@ -15,3 +18,8 @@ word = "hello"
 upper_letters = [char.upper() for char in word]
 print(upper_letters)
 # 출력: ['H', 'E', 'L', 'L', 'O']
+
+# 문자열 합치기
+upper_letters = ''.join([char.upper() for char in word])
+print(upper_letters)
+# 출력: HELLO
