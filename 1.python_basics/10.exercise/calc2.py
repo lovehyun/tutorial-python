@@ -5,7 +5,7 @@ def get_mode_input():
 
 
 def is_valid_mode(mode):
-    valid_modes = ['plus', 'minus', 'multiply', 'division']
+    valid_modes = ['+', '-', '*', '/']
     if mode not in valid_modes:
         print("유효하지 않은 연산모드입니다. 가능한 모드: ", valid_modes)
     else:
@@ -23,13 +23,13 @@ def get_number_inputs():
 
 
 def operation(mode, val1, val2):
-    if mode == 'plus':
+    if mode == '+':
         result = val1 + val2
-    elif mode == 'minus':
+    elif mode == '-':
         result = val1 - val2
-    elif mode == 'multiply':
+    elif mode == '*':
         result = val1 * val2
-    elif mode == 'division':
+    elif mode == '/':
         if val2 != 0:
             result = val1 / val2
         else:

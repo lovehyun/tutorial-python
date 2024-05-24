@@ -7,16 +7,16 @@ val2 = int(input("숫자2를 입력하시오: "))
 
 result = None
 
-if mode == 'plus':
+if mode == '+':
     print('덧셈을 시작합니다')
     result = val1 + val2
-elif mode == 'minus':
+elif mode == '-':
     print('뺄셈을 시작합니다')
     result = val1 + val2
-elif mode == 'multiply':
+elif mode == '*':
     print('곱셈을 시작합니다')
     result = val1 + val2
-elif mode == 'division':
+elif mode == '/':
     print('나눗셈을 시작합니다')
     result = val1 + val2
 else:

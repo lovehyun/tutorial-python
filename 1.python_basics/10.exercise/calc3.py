@@ -10,7 +10,7 @@ class Calculator:
                 return
 
     def is_valid_mode(self):
-        valid_modes = ['plus', 'minus', 'multiply', 'division']
+        valid_modes = ['+', '-', '*', '/']
         if self.mode not in valid_modes:
             print("유효하지 않은 연산모드입니다. 가능한 모드: ", valid_modes)
             return False
@@ -27,13 +27,13 @@ class Calculator:
                 print('숫자가 아닌 다른 값이 입력되었습니다. 다시 시도하세요.')
 
     def operation(self):
-        if self.mode == 'plus':
+        if self.mode == '+':
             result = self.val1 + self.val2
-        elif self.mode == 'minus':
+        elif self.mode == '-':
             result = self.val1 - self.val2
-        elif self.mode == 'multiply':
+        elif self.mode == '*':
             result = self.val1 * self.val2
-        elif self.mode == 'division':
+        elif self.mode == '/':
             if self.val2 != 0:
                 result = self.val1 / self.val2
             else:
