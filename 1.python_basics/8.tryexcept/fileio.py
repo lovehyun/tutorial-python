@@ -1,3 +1,4 @@
+# 1 파일입출력시 다양한 에러
 try:
     with open("file.txt", "r") as file:
         contents = file.read()
@@ -6,3 +7,4 @@ except FileNotFoundError:
     print("파일을 찾을 수 없습니다.")
 except IOError:
     print("파일을 읽을 수 없습니다.")
+

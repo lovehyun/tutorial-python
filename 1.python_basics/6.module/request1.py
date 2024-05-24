@@ -14,6 +14,12 @@ data = response.json()  # JSON 데이터를 파싱합니다.
 print("JSON 데이터:")
 print(data)
 
+# 2-1. JSON 데이터 파싱
+response = requests.get("https://jsonplaceholder.typicode.com/users")
+data = response.json()
+for user in data:
+    print("이름: {}, ID: {}".format(user['name'], user['username']))
+
 
 # 3. POST 요청 보내기
 url = "https://httpbin.org/post"
