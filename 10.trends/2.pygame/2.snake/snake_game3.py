@@ -33,14 +33,14 @@ font_style = pygame.font.SysFont("bahnschrift", 25)
 score_font = pygame.font.SysFont("comicsansms", 35)
 
 # 점수 표시 함수
-def Your_score(score):
+def display_score(score):
     value = score_font.render("Your Score: " + str(score), True, black)
     dis.blit(value, [0, 0])
 
 # 뱀 그리기 함수
-def our_snake(snake_block, snake_List):
+def draw_snake(snake_block, snake_List):
     for x in snake_List:
-        pygame.draw.rect(dis, black, [x[0], x[1], snake_block, snake_block])
+        pygame.draw.rect(dis, black, [x[0], x[1], snake_block, snake_block]) # pos, width, height
 
 # 메시지 표시 함수
 def message(msg, color):
@@ -69,7 +69,7 @@ def gameLoop():
         while game_close == True:
             dis.fill(blue)
             message("You Lost! Press Q-Quit or C-Play Again", red)
-            Your_score(Length_of_snake - 1)
+            display_score(Length_of_snake - 1)
             pygame.display.update()
 
             for event in pygame.event.get():
@@ -97,15 +97,16 @@ def gameLoop():
                     y1_change = snake_block
                     x1_change = 0
 
+        # 화면 벗어나면 종료
         if x1 >= dis_width or x1 < 0 or y1 >= dis_height or y1 < 0:
             game_close = True
+
         x1 += x1_change
         y1 += y1_change
         dis.fill(blue)
         pygame.draw.rect(dis, green, [foodx, foody, snake_block, snake_block])
-        snake_Head = []
-        snake_Head.append(x1)
-        snake_Head.append(y1)
+        
+        snake_Head = [x1, y1]
         snake_List.append(snake_Head)
         if len(snake_List) > Length_of_snake:
             del snake_List[0]
@@ -114,11 +115,12 @@ def gameLoop():
             if x == snake_Head:
                 game_close = True
 
-        our_snake(snake_block, snake_List)
-        Your_score(Length_of_snake - 1)
+        draw_snake(snake_block, snake_List)
+        display_score(Length_of_snake - 1)
 
         pygame.display.update()
 
+        # 음식 위치 도달
         if x1 == foodx and y1 == foody:
             foodx = round(random.randrange(0, dis_width - snake_block) / snake_block) * snake_block
             foody = round(random.randrange(0, dis_height - snake_block) / snake_block) * snake_block

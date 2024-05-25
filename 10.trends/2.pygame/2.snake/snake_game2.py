@@ -84,6 +84,7 @@ def gameLoop():
     message("Game Over!", red)
     pygame.display.update()
     time.sleep(2)
+    
     pygame.quit()
     sys.exit()
 
