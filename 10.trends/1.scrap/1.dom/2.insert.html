@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>DOM Example</title>
+</head>
+<body>
+    <div id="myDiv">Hello</div>
+    <button onclick="addElement()">Add Element</button>
+
+    <script>
+        function addElement() {
+            var newElement = document.createElement('p');
+            newElement.textContent = 'This is a new paragraph.';
+            document.getElementById('myDiv').appendChild(newElement);
+        }
+    </script>
+</body>
+</html>

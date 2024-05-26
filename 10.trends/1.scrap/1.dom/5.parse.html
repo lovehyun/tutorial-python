@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>DOM Parsing Example</title>
+</head>
+<body>
+    <table id="dataTable">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Age</th>
+                <th>City</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Alice</td>
+                <td>30</td>
+                <td>New York</td>
+            </tr>
+            <tr>
+                <td>Bob</td>
+                <td>25</td>
+                <td>Los Angeles</td>
+            </tr>
+            <tr>
+                <td>Charlie</td>
+                <td>35</td>
+                <td>Chicago</td>
+            </tr>
+        </tbody>
+    </table>
+    <button onclick="parseTable()">Parse Table</button>
+    <script>
+        function parseTable() {
+            // 테이블 요소 가져오기
+            var table = document.getElementById('dataTable');
+            
+            // 테이블 헤더 가져오기
+            var headers = [];
+            var headerCells = table.querySelectorAll('thead th');
+            headerCells.forEach(function(headerCell) {
+                headers.push(headerCell.textContent);
+            });
+            
+            // 테이블 본문 데이터 가져오기
+            var data = [];
+            var rows = table.querySelectorAll('tbody tr');
+            rows.forEach(function(row) {
+                var rowData = {};
+                var cells = row.querySelectorAll('td');
+                cells.forEach(function(cell, index) {
+                    rowData[headers[index]] = cell.textContent;
+                });
+                data.push(rowData);
+            });
+            
+            console.log(data);
+            // 예제 출력: JSON 형식의 데이터
+            // [
+            //     { "Name": "Alice", "Age": "30", "City": "New York" },
+            //     { "Name": "Bob", "Age": "25", "City": "Los Angeles" },
+            //     { "Name": "Charlie", "Age": "35", "City": "Chicago" }
+            // ]
+        }
+    </script>
+</body>
+</html>

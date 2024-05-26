@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>DOM Example</title>
+</head>
+<body>
+    <div id="styledDiv">Styled Div</div>
+    <button onclick="changeStyle()">Change Style</button>
+
+    <script>
+        function changeStyle() {
+            var div = document.getElementById('styledDiv');
+            div.style.backgroundColor = 'blue';
+            div.style.color = 'white';
+            div.style.padding = '10px';
+        }
+    </script>
+</body>
+</html>
