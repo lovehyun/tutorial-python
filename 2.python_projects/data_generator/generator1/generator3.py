@@ -1,5 +1,6 @@
 import csv
 import random
+from itertools import chain
 
 class NameGenerator:
     def __init__(self, file_path):
@@ -8,8 +9,11 @@ class NameGenerator:
     def load_data(self, file_path):
         with open(file_path, 'r') as file:
             data = file.read().splitlines()
+            # reader = csv.reader(file)
+            # data = [line for line in reader]
+            # data = list(chain.from_iterable(reader))
         return data
-
+    
     def generate_name(self):
         return random.choice(self.names)
 
