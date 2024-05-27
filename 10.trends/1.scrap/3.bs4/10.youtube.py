@@ -1,3 +1,5 @@
+# 실제로는 동적 웹페이지임으로 이대로는 동작하지 않음 (Selenium 필수)
+
 import requests
 from bs4 import BeautifulSoup
 
