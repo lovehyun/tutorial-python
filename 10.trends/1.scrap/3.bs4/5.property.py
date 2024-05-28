@@ -22,3 +22,9 @@ print(link_tag['href'])
 # 이미지 태그의 src 속성 값 출력
 img_tag = soup.img
 print(img_tag['src'])
+
+
+# 스크린샷 저장하기
+soup.save_screenshot('example_com.png')
+
+soup.quit()

@@ -10,6 +10,9 @@ soup = BeautifulSoup(data.text, 'html.parser')
 # print(soup)
 
 gifts = soup.select('#giftList > tr')
+# print(gifts)
+# giftList = soup.find('table', id='giftList')
+# gifts = giftList.find_all('tr')
 print(len(gifts))
 
 my_gifts = gifts[1:]

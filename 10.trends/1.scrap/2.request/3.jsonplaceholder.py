@@ -5,13 +5,14 @@ url = 'https://jsonplaceholder.typicode.com/users'
 
 # API로부터 데이터 가져오기
 response = requests.get(url)
-data = response.json()
+users = response.json()
 
 # 데이터 파싱 및 출력
 print(f"{'ID':<5} {'Name':<25} {'Username':<15} {'Email':<30}")
 print('-' * 75)
 
-for user in data:
+for user in users:
+    # print(user)
     id = user['id']
     name = user['name']
     username = user['username']
