@@ -7,7 +7,7 @@ from tabulate import tabulate
 load_dotenv()
 
 # API 키 설정
-API_KEY = os.getenv('API_KEY')
+API_KEY = os.getenv('YOUTUBE_API_KEY')
 
 # YouTube Data API 엔드포인트 설정
 url = 'https://www.googleapis.com/youtube/v3/search'

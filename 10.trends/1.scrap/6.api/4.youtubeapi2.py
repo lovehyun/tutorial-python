@@ -8,7 +8,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 # .env 파일에서 API_KEY 읽어오기
-API_KEY = os.getenv('API_KEY')
+API_KEY = os.getenv('YOUTUBE_API_KEY')
 
 # YouTube Data API 엔드포인트 및 검색 쿼리 설정
 search_query = 'Python programming'
