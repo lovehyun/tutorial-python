@@ -1,3 +1,5 @@
+# 1. 영화 랭킹 및 제목 조회
+
 from selenium import webdriver
 from selenium.webdriver.chrome.service import Service as ChromeService
 from webdriver_manager.chrome import ChromeDriverManager
@@ -27,9 +29,12 @@ boxoffice_list_content = bs.find('div', id='boxoffice_list_content')
 boxoffice_li_list = boxoffice_list_content.find_all('li', class_='boxoffice_li')
 
 # 각 boxoffice_li에 대해 mov_name, people_num 클래스를 가진 div의 텍스트 출력
-for rank, boxoffice_li in enumerate(boxoffice_li_list, start=1):
+for _, boxoffice_li in enumerate(boxoffice_li_list, start=1):
+    rank_span = boxoffice_li.find('span', class_='grade')
     mov_name_div = boxoffice_li.find('div', class_='mov_name')
     people_num_div = boxoffice_li.find('div', class_='people_num')
+
+    rank = rank_span.get_text(strip=True)
     mov_name = mov_name_div.get_text(strip=True) if mov_name_div else ''
     people_num = people_num_div.get_text(strip=True) if people_num_div else ''
     print(f"순위: {rank}, 영화 제목: {mov_name}, 관객 수: {people_num}")

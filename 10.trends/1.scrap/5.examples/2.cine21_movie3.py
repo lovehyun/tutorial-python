@@ -1,3 +1,5 @@
+# 2. 엑셀파일 저장
+
 from selenium import webdriver
 from selenium.webdriver.chrome.service import Service as ChromeService
 from webdriver_manager.chrome import ChromeDriverManager
@@ -61,6 +63,7 @@ df = pd.DataFrame(data)
 # 엑셀 파일로 저장
 df.to_excel('boxoffice_rankings.xlsx', index=False)
 
+
 # 이미지 삽입을 위해 직접 엑셀 워크북 생성
 wb = Workbook()
 ws = wb.active
@@ -71,13 +74,11 @@ ws.append(['순위', '포스터', '영화 제목', '관객 수', '웹사이트 �
 # 데이터 입력
 for row_num, item in enumerate(data, start=2):
     ws.cell(row=row_num, column=1, value=item['순위'])
-
     ws.cell(row=row_num, column=3, value=item['영화 제목'])
     # 영화 제목 셀의 폭 조정
     ws.column_dimensions['C'].width = 30
 
     ws.cell(row=row_num, column=4, value=item['관객 수'])
-
     ws.cell(row=row_num, column=5, value=item['웹사이트 정보'])
     # 하이퍼링크 추가
     ws.cell(row=row_num, column=5).hyperlink = Hyperlink(item['웹사이트 정보'])

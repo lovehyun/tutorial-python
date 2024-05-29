@@ -24,6 +24,31 @@ def get_naver_sportsnews():
         news_content_url = a_tag['href']
         print(news_content_url)
 
+        # print(f"Title: {title}")
+        # print(f"URL: {news_content_url}")
+
+        # 해당 뉴스 기사 페이지 내용을 가져오는 함수 호출
+        get_news_content(news_content_url)
+        break
+
+
+# 개별 뉴스 기사 페이지의 내용을 가져오는 함수
+def get_news_content(url):
+    data = requests.get(url)
+    soup = BeautifulSoup(data.text, 'html.parser')
+
+    # 예시: 기사 제목 및 본문 내용 가져오기
+    print(soup)
+    headline = soup.select_one('h2')
+    content = soup.select_one('div#_article_content')
+
+    if headline:
+        print(f"Headline: {headline.text.strip()}")
+    if content:
+        print(f"Content: {content.text.strip()[:200]}...")  # 본문 내용 일부 출력
+
+    print('-' * 80)  # 구분선 출력
+
 
 # 동적으로 삽입되는 뉴스기사라 requests 로 가져올 수 없음.
 def get_naver_sportsnews_recommend():

@@ -18,9 +18,9 @@ boxoffice_li_list = boxoffice_list_content.find_all('li', class_='boxoffice_li')
 print(boxoffice_li_list)
 
 # 각 boxoffice_li에 대해 mov_name, people_num 클래스를 가진 div의 텍스트 출력
-for boxoffice_li in boxoffice_li_list:
-    mov_name_div = boxoffice_li.find('div', class_='mov_name')
-    people_num_div = boxoffice_li.find('div', class_='people_num')
-    mov_name = mov_name_div.get_text(strip=True) if mov_name_div else ''
-    people_num = people_num_div.get_text(strip=True) if people_num_div else ''
-    print(f"영화 제목: {mov_name}, 관객 수: {people_num}")
+# for boxoffice_li in boxoffice_li_list:
+#     mov_name_div = boxoffice_li.find('div', class_='mov_name')
+#     people_num_div = boxoffice_li.find('div', class_='people_num')
+#     mov_name = mov_name_div.get_text(strip=True) if mov_name_div else ''
+#     people_num = people_num_div.get_text(strip=True) if people_num_div else ''
+#     print(f"영화 제목: {mov_name}, 관객 수: {people_num}")

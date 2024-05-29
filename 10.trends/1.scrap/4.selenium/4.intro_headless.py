@@ -22,6 +22,9 @@ driver.get("https://www.google.com")
 search_box = driver.find_element(By.NAME, 'q')
 search_box.send_keys("Python programming")
 
+# 요소의 텍스트 가져오기
+element = driver.find_element_by_tag_name('h1')
+
 # 엔터 키 누르기 (검색 실행)
 search_box.submit()
 
