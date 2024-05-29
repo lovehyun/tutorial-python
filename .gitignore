@@ -17,6 +17,7 @@ migrations/
 
 # project files
 .env
+secret.txt
 
 # streamlit secrets
 secrets.toml
