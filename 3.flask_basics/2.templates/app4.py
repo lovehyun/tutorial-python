@@ -2,14 +2,14 @@ from flask import Flask, render_template, request
 
 app = Flask(__name__)
 
+users = [
+    {'name': 'Alice', 'age': 25, 'phone': '123-456-7890'},
+    {'name': 'Bob', 'age': 30, 'phone': '987-654-3210'},
+    {'name': 'Charlie', 'age': 35, 'phone': '555-123-4567'}
+]
+
 @app.route('/')
-def index():
-    users = [
-        {'name': 'Alice', 'age': 25, 'phone': '123-456-7890'},
-        {'name': 'Bob', 'age': 30, 'phone': '987-654-3210'},
-        {'name': 'Charlie', 'age': 35, 'phone': '555-123-4567'}
-    ]
-    
+def index():    
     # 사용자로부터 전달된 GET 매개변수 "name" 가져오기
     user_name = request.args.get('name')
     

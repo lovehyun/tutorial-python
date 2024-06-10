@@ -1,14 +1,33 @@
-from flask import Flask, render_template
+from flask import Flask, request, render_template, jsonify
 
 app = Flask(__name__)
 
-# 기존 사용자 목록
-existing_users = ['Alice', 'Bob', 'Charlie']
+users = [
+    {'id': 1, 'name': 'Alice', 'age': 25, 'phone': '123-456-7890'},
+    {'id': 2, 'name': 'Alice', 'age': 30, 'phone': '123-654-9870'},
+    {'id': 3, 'name': 'Bob', 'age': 30, 'phone': '987-654-3210'},
+    {'id': 4, 'name': 'Charlie', 'age': 35, 'phone': '555-123-4567'}
+]
 
-@app.route("/")
-@app.route("/<name>")
-def user(name=""):
-    return render_template("users5.html", name=name, existing_users=existing_users)
+@app.route('/')
+def index():
+    name_query = request.args.get('name')
+    age_query = request.args.get('age')
 
-if __name__ == "__main__":
-    app.run(port=5000, debug=True)
+    filtered_users = users
+
+    if name_query:
+        filtered_users = [user for user in filtered_users if name_query.lower() in user['name'].lower()]
+    
+    if age_query:
+        try:
+            age_query = int(age_query)
+            filtered_users = [user for user in filtered_users if user['age'] == age_query]
+        except ValueError:
+            # 나이가 정수로 변환되지 않으면 빈 리스트 반환
+            filtered_users = []
+
+    return render_template('users5.html', users=filtered_users)
+
+if __name__ == '__main__':
+    app.run(debug=True)

@@ -5,8 +5,9 @@ app = Flask(__name__)
 # 샘플 데이터
 users = [
     {'id': 1, 'name': 'Alice', 'age': 25, 'phone': '123-456-7890'},
-    {'id': 2, 'name': 'Bob', 'age': 30, 'phone': '987-654-3210'},
-    {'id': 3, 'name': 'Charlie', 'age': 35, 'phone': '555-123-4567'}
+    {'id': 2, 'name': 'Alice', 'age': 30, 'phone': '123-654-4321'},
+    {'id': 3, 'name': 'Bob', 'age': 30, 'phone': '987-654-3210'},
+    {'id': 4, 'name': 'Charlie', 'age': 35, 'phone': '555-123-4567'}
 ]
 
 @app.route('/users')
@@ -63,6 +64,8 @@ def search_user2():
             results = [user for user in results if user['phone'][-4:] == phone_query]
         else:
             return jsonify({'error': 'Phone parameter must be the last 4 digits'}), 400
+            # 한글 깨짐 이슈 해결법
+            # return json.dumps({'error': '전화번호는 4자리 숫자로 입력해야 합니다.'}, ensure_ascii=False, indent=4)
 
     return jsonify(results)
 

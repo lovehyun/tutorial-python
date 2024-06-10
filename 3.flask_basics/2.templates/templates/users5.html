@@ -1,20 +1,25 @@
-<!doctype html>
+<!DOCTYPE html>
 <html>
 <head>
-    <title>Home page</title>
+    <title>User Information</title>
 </head>
 <body>
-    <h1>Home page!</h1>
-    {% if name in existing_users %}
-        <h1>Welcome back, {{ name }}!</h1>
-    {% else %}
-        <h1>Welcome, new user!</h1>
-    {% endif %}
+    <h1>User Information:</h1>
 
-    <ol>
-    {% for x in existing_users %}
-        <li>{{ x }}</li>
-    {% endfor %}
-    </ol>
+    <form action="/" method="get">
+        <input type="text" name="name" placeholder="Search by name">
+        <input type="number" name="age" placeholder="Search by age">
+        <input type="submit" value="Search">
+    </form>
+
+    <ul>
+        {% for user in users %}
+        <li>
+            Name: {{ user['name'] }}<br>
+            Age: {{ user['age'] }}<br>
+            Phone: {{ user['phone'] }}
+        </li>
+        {% endfor %}
+    </ul>
 </body>
 </html>
