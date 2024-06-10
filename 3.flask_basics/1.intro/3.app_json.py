@@ -1,4 +1,8 @@
-from flask import Flask, render_template
+# 모든 사용자 보기: http://127.0.0.1:5000/
+# Alice 사용자 검색: http://127.0.0.1:5000/user/Alice
+# Bob 사용자 검색: http://127.0.0.1:5000/user/Bob
+
+from flask import Flask, jsonify
 
 app = Flask(__name__)
 
@@ -10,10 +14,10 @@ users = [
 
 @app.route('/')
 def index():
-    return render_template('users3.html', users=users)
+    return jsonify(users)
 
 @app.route('/user/<name>')
-def get_user_by_name(name):    
+def get_user_by_name(name):
     # 이름이 일치하는 사용자 필터링
     user = None
     for u in users:
@@ -21,13 +25,15 @@ def get_user_by_name(name):
             user = u
             break
 
-    # 위 5줄을 간결한 한줄짜리 코드로 변경 - next() 함수 사용
-    # user = next((user for user in users if user['name'].lower() == name.lower()), None)
+        # 나이로도 검색하기
+        # if str(u['age']) == name:
+        #     user = u
+        #     break
     
     if user:
-        return render_template('users3.html', users=[user])
+        return jsonify(user)
     else:
-        return render_template('users3.html', users=[])
+        return jsonify({'error': 'User not found'}), 404
 
 if __name__ == '__main__':
     app.run(debug=True)
