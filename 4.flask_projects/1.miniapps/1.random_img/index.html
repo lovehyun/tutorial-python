@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Random Dog Image</title>
+</head>
+<body>
+    <h1>Random Dog Image</h1>
+    <button id="fetch-dog-button">Fetch Random Dog</button>
+    <div id="dog-image-container">
+        <img id="dog-image" src="" alt="Random Dog" style="display:none; width: 300px; height: auto;">
+    </div>
+
+    <script>
+        document.getElementById('fetch-dog-button').addEventListener('click', function() {
+            fetch('http://127.0.0.1:5000/random-dog')
+                .then(response => response.json())
+                .then(data => {
+                    const dogImage = document.getElementById('dog-image');
+                    dogImage.src = data.url;
+                    dogImage.style.display = 'block';
+                })
+                .catch(error => console.error('Error fetching dog image:', error));
+        });
+    </script>
+</body>
+</html>
