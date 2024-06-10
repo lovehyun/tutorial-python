@@ -1,0 +1,20 @@
+<!doctype html>
+<html>
+<head>
+    <title>Home page</title>
+</head>
+<body>
+    <h1>Home page!</h1>
+    {% if name in existing_users %}
+        <h1>Welcome back, {{ name }}!</h1>
+    {% else %}
+        <h1>Welcome, new user!</h1>
+    {% endif %}
+
+    <ol>
+    {% for x in existing_users %}
+        <li>{{ x }}</li>
+    {% endfor %}
+    </ol>
+</body>
+</html>
