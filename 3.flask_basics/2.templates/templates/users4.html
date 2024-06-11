@@ -11,14 +11,19 @@
         <input type="submit" value="Search">
     </form>
 
-    <ul>
+    <table border="1">
+        <tr>
+            <th>Name</th>
+            <th>Age</th>
+            <th>Phone</th>
+        </tr>
         {% for user in users %}
-        <li>
-            Name: {{ user['name'] }}<br>
-            Age: {{ user['age'] }}<br>
-            Phone: {{ user['phone'] }}
-        </li>
+        <tr>
+            <td>{{ user['name'] }}</td>
+            <td>{{ user['age'] }}</td>
+            <td>{{ user['phone'] }}</td>
+        </tr>
         {% endfor %}
-    </ul>
+    </table>
 </body>
 </html>

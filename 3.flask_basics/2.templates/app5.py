@@ -22,7 +22,7 @@ def index():
     if age_query:
         try:
             age_query = int(age_query)
-            filtered_users = [user for user in filtered_users if user['age'] == age_query]
+            filtered_users = [user for user in filtered_users if age_query == user['age']]
         except ValueError:
             # 나이가 정수로 변환되지 않으면 빈 리스트 반환
             filtered_users = []

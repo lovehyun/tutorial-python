@@ -13,7 +13,7 @@ def index():
     return render_template('users3.html', users=users)
 
 @app.route('/user/<name>')
-def get_user_by_name(name):    
+def get_user_by_name(name):
     # 이름이 일치하는 사용자 필터링
     user = None
     for u in users:

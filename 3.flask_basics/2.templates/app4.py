@@ -12,12 +12,13 @@ users = [
 def index():    
     # 사용자로부터 전달된 GET 매개변수 "name" 가져오기
     user_name = request.args.get('name')
+    filtered_users = users
     
     # 사용자 이름이 전달되었을 경우 해당 사용자 정보 필터링
     if user_name:
-        users = [user for user in users if user['name'] == user_name]
+        filtered_users = [user for user in users if user['name'].lower() == user_name.lower()]
     
-    return render_template('users4.html', users=users)
+    return render_template('users4.html', users=filtered_users)
 
 if __name__ == '__main__':
     app.run(debug=True)
