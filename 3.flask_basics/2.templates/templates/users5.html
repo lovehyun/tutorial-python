@@ -2,11 +2,67 @@
 <html>
 <head>
     <title>User Information</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f4f4f4;
+        }
+        h1 {
+            color: #333;
+        }
+
+        /* 입력 폼 디자인 적용 */
+        .search-form {
+            margin-bottom: 20px;
+        }
+        .search-form input[type="text"],
+        .search-form input[type="number"] {
+            padding: 10px;
+            margin-right: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        .search-form input[type="submit"] {
+            padding: 10px 15px; /* 상하 좌우 */
+            background-color: #429142;
+            border: none;
+            border-radius: 4px;
+            color: white;
+            cursor: pointer;
+        }
+        .search-form input[type="submit"]:hover {
+            background-color: #4cae4c;
+        }
+
+        /* 테이블 및 셀 디자인 적용 */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background-color: white;
+        }
+        th, td {
+            padding: 15px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        th {
+            background-color: #f0f0f0;
+        }
+        tr:hover {
+            background-color: #f8f8f8;
+        }
+
+        /* 마지막 tr의 td 아래쪽 보더 짙게 설정 */
+        table tr:last-child td {
+            border-bottom: 1px solid #333;
+        }
+    </style>
 </head>
 <body>
     <h1>User Information:</h1>
 
-    <form action="/" method="get">
+    <form action="/" method="get" class="search-form">
         <input type="text" name="name" placeholder="Search by name">
         <input type="number" name="age" placeholder="Search by age">
         <input type="submit" value="Search">
