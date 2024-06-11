@@ -3,35 +3,22 @@ import csv
 
 app = Flask(__name__)
 
+# 모든 CSV 데이터를 저장하기 위한 전역 변수
+all_csv_data = []
+
+def load_csv_data(filepath):
+    """주어진 파일 경로에서 CSV 데이터를 불러오는 함수."""
+    global all_csv_data
+    with open(filepath, newline='', encoding='UTF8') as csvfile:
+        csv_reader = csv.reader(csvfile)
+        for row in csv_reader:
+            all_csv_data.append(row)
+
 @app.route('/')
 def index():
-    data = []
-    with open('data.csv', 'r', encoding='utf-8') as file:
-        csv_data = csv.DictReader(file)
-
-        for row in csv_data:
-            clean_row = {fieldname.strip(): value.strip() for fieldname, value in row.items()}
-            data.append(clean_row)
-            # data.append(row)
-
-    print(data)
-    return render_template('index.html', data=data)
-
-@app.route('/another')
-def another():
-    data = []
-    with open('data.csv', 'r', encoding='utf-8') as file:
-        csv_data = csv.reader(file)
-
-        # Get the header row
-        header = next(csv_data)
-
-        for row in csv_data:
-            clean_row = {fieldname.strip(): value.strip() for fieldname, value in zip(header, row)}
-            data.append(clean_row)
-
-    print(data)
-    return render_template('index.html', data=data)
+    return render_template('table3.html', data=all_csv_data)
 
 if __name__ == '__main__':
+    # 서버가 시작될 때 한 번 CSV 데이터를 불러오기
+    load_csv_data('./data.csv')  # CSV 파일 경로를 여기에 지정
     app.run(debug=True)
