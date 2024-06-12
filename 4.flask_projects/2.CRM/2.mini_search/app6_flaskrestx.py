@@ -100,5 +100,5 @@ class User(Resource):
             api.abort(404, "User {} doesn't exist".format(id))
 
 if __name__ == '__main__':
-    load_csv_data('data.csv')
+    load_csv_data('user.csv')
     app.run(debug=True)
