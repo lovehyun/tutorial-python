@@ -1,5 +1,4 @@
-from flask import Flask, render_template
-from flask import request, jsonify
+from flask import Flask, render_template, request, jsonify
 from database import Database
 
 app = Flask(__name__)

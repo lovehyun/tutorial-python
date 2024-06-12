@@ -49,25 +49,17 @@
 
         document.addEventListener('DOMContentLoaded', function() {
             console.log('ready');
+
             fetch('/list')
-                .then(function(response) {
-                    if (response.ok) {
-                        return response.json();
-                    } else {
-                        throw new Error('서버 응답 오류');
+                .then(response => response.json())
+                .then(data => {
+                    for (let item of data) {
+                        makeCard(item.id, item.title, item.message);
                     }
                 })
-                .then(function(response) {
-                    let table = response;
-                    console.log('table: ', table.length);
-                    for (let i = 0; i < table.length; i++) {
-                        makeCard(table[i]["id"], table[i]["title"], table[i]["message"]);
-                    }
-                })
-                .catch(function(error) {
-                    console.log('error:', error);
-                });
-            console.log('done');
+                .catch(error => console.error('Error:', error));
+
+                console.log('done');
         });
 
         // function makeCard(id, title, message) {
@@ -85,23 +77,26 @@
         // }
 
         function makeCard(id, title, message) {
-            let card_content = 
-                `<div class="card" id="card_${id}">
-                    <div class="card-body">
-                        <p class="card-id">${id}</p>
-                        <p class="card-title">${title}</p>
-                        <p class="card-text">${message}</p>
-                        <button type="button" class="btn btn-info" onclick="modifyPost(${id})">수정</button>
-                        <button type="button" class="btn btn-warning" onclick="deletePost(${id})">삭제</button>
-                    </div>
-                </div>`;
-            document.getElementById("card-list").innerHTML += card_content;
+            const cardList = document.getElementById('card-list');
+            const card = document.createElement('div');
+            
+            card.className = 'card';
+            card.id = `card_${id}`;
+            card.innerHTML = `
+                <div class="card-body">
+                    <p class="card-id">${id}</p>
+                    <p class="card-title">${title}</p>
+                    <p class="card-text">${message}</p>
+                    <button type="button" class="btn btn-info" onclick="modifyPost(${id})">수정</button>
+                    <button type="button" class="btn btn-warning" onclick="deletePost(${id})">삭제</button>
+                </div>
+            `;
+            cardList.appendChild(card);
         }
 
         // function uploadPost() {
         //     let title = $("#input-title").val();
         //     let text = $("#input-text").val();
-
         //     $.ajax({
         //         type: "POST", 
         //         url: "/create", 
@@ -118,8 +113,8 @@
         // }
 
         function uploadPost() {
-            let title = document.getElementById("input-title").value;
-            let text = document.getElementById("input-text").value;
+            const title = document.getElementById("input-title").value;
+            const text = document.getElementById("input-text").value;
 
             fetch('/create', {
                 method: 'POST',
@@ -128,24 +123,16 @@
                 },
                 body: JSON.stringify({ title: title, message: text })
             })
-            .then(function(response) {
-                if (response.ok) {
-                    return response.json();
-                } else {
-                    throw new Error('서버 응답 오류');
-                }
-            })
-            .then(function(response) {
-                if (response['result'] == 'success') {
+            .then(response => response.json())
+            .then(data => {
+                if (data.result === 'success') {
                     alert("저장 완료!");
                     window.location.reload();
                 } else {
                     alert("서버 오류!");
                 }
             })
-            .catch(function(error) {
-                console.log('error:', error);
-            });
+            .catch(error => console.error('Error:', error));
         }
 
         // function deletePost(id) {
@@ -167,6 +154,7 @@
 
         function deletePost(id) {
             console.log("delete card: ", id);
+
             fetch('/delete', {
                 method: 'POST',
                 headers: {
@@ -174,24 +162,16 @@
                 },
                 body: JSON.stringify({ id: id })
             })
-            .then(function(response) {
-                if (response.ok) {
-                    return response.json();
-                } else {
-                    throw new Error('서버 응답 오류');
-                }
-            })
-            .then(function(response) {
-                if (response['result'] == 'success') {
+            .then(response => response.json())
+            .then(data => {
+                if (data.result === 'success') {
                     alert("삭제 완료!");
                     window.location.reload();
                 } else {
                     alert("서버 오류!");
                 }
             })
-            .catch(function(error) {
-                console.log('error:', error);
-            });
+            .catch(error => console.error('Error:', error));
         }
 
         // function modifyPost(id) {
@@ -221,29 +201,26 @@
         // }
 
         function modifyPost(id) {
-            console.log("modify card:", id);
-            let card_id = "#card_" + id;
-            let card_old_title = document.querySelector(card_id + ' .card-title').textContent;
-            let card_old_message = document.querySelector(card_id + ' .card-text').textContent;
-            
-            console.log("title:", card_old_title);
-            console.log("message:", card_old_message);
+            const cardId = `#card_${id}`;
+            const cardTitle = document.querySelector(`${cardId} .card-title`).textContent;
+            const cardText = document.querySelector(`${cardId} .card-text`).textContent;
 
-            let card_body =
-                `<div class="card" id="card_new${id}">
-                    <div class="card-body">
-                        <div class="form-group">
-                            <input class="card-title" id="mod-title" value="${card_old_title}">
-                        </div>
-                        <div class="form-group">
-                            <input class="card-text" id="mod-text" value="${card_old_message}">
-                        </div>
-                        <div class="form-group">
-                            <button type="submit" onclick="updatePost(${id})" class="btn btn-primary">저장</button>
-                        </div>
+            console.log("title:", cardTitle);
+            console.log("message:", cardText);
+            const card = document.querySelector(cardId);
+            card.innerHTML = `
+                <div class="card-body">
+                    <div class="form-group">
+                        <input class="card-title form-control" id="mod-title" value="${cardTitle}">
                     </div>
-                </div>`;
-            document.querySelector(card_id).innerHTML = card_body;
+                    <div class="form-group">
+                        <input class="card-text form-control" id="mod-text" value="${cardText}">
+                    </div>
+                    <div class="form-group">
+                        <button type="submit" onclick="updatePost(${id})" class="btn btn-primary">저장</button>
+                    </div>
+                </div>
+            `;
         }
 
         // function updatePost(id) {
@@ -270,8 +247,8 @@
         function updatePost(id) {
             console.log("update card:", id);
 
-            let title = document.getElementById("mod-title").value;
-            let text = document.getElementById("mod-text").value;
+            const title = document.getElementById("mod-title").value;
+            const text = document.getElementById("mod-text").value;
 
             fetch('/modify', {
                 method: 'POST',
@@ -280,24 +257,16 @@
                 },
                 body: JSON.stringify({ id: id, title: title, message: text })
             })
-            .then(function(response) {
-                if (response.ok) {
-                    return response.json();
-                } else {
-                    throw new Error('서버 응답 오류');
-                }
-            })
-            .then(function(response) {
-                if (response['result'] == 'success') {
+            .then(response => response.json())
+            .then(data => {
+                if (data.result === 'success') {
                     alert("수정 완료!");
                     window.location.reload();
                 } else {
                     alert("서버 오류!");
                 }
             })
-            .catch(function(error) {
-                console.log('error:', error);
-            });
+            .catch(error => console.error('Error:', error));
         }
     </script>
     <title>메모장 1.0</title>
@@ -306,7 +275,7 @@
     <div class="wrap">
         <div class="input-container">
             <div class="form-group">
-                <H1>메모장</H1>
+                <h1>메모장</h1>
             </div>
             <div class="form-group">
                 <input class="form-control" id="input-title" name="title" placeholder="제목을 입력하세요">
@@ -319,7 +288,7 @@
             </div>
         </div>
 
-       <div id="card-list" class="card-columns">
+        <div id="card-list" class="card-columns">
         <!-- card examples
             <div class="card">
                 <div class="card-body">
