@@ -1,0 +1,24 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profile</title>
+</head>
+<body>
+    <h2>Welcome, {{ user.name }}</h2>
+    <p>ID: {{ user.id }}<br>
+    Password: {{ user.pw }}</p>
+
+    <form method="post" action="/profile">
+        <label for="new_password">New Password:</label>
+        <input type="password" name="new_password" id="new_password" required>
+        <br>
+        <input type="submit" value="Update Password">
+    </form>
+    {% if message %}
+        <p style="color:green;">{{ message }}</p>
+    {% endif %}
+    <a href="{{ url_for('logout') }}">Logout</a>
+</body>
+</html>

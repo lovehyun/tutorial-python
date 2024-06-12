@@ -3,7 +3,8 @@ from datetime import timedelta
 
 app = Flask(__name__)
 app.secret_key = "hello"
-app.permanent_session_lifetime = timedelta(minutes=5)
+app.permanent_session_lifetime = timedelta(minutes=5) # 영구 세션의 유지 시간 설정
+# app.permanent_session_lifetime = timedelta(days=7)
 
 @app.route("/")
 def home():
@@ -12,8 +13,8 @@ def home():
 @app.route("/login", methods=["POST", "GET"])
 def login():
     if request.method == "POST":
-        session.permanent = True
         user = request.form["name"]
+        session.permanent = True # 영구 세션으로 설정
         session["user"] = user
         return redirect(url_for("user"))
     else:
@@ -23,12 +24,19 @@ def login():
         return render_template("login.html")
 
 @app.route("/user")
-def user():
+@app.route("/user/<user>")
+def user(user=None):
     if "user" in session:
         user = session["user"]
-        return f"<h1>{user}</h1>"
+        return render_template("user.html", user=user)
     else:
         return redirect(url_for("login"))
+
+@app.route("/product")
+def product():
+    user = session.get("user", None)
+
+    return render_template("product.html", user=user)
 
 @app.route("/logout")
 def logout():

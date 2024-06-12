@@ -14,9 +14,14 @@ def login():
     else:
         return render_template("login.html")
 
-@app.route("/<user>")
-def user(user):
-    return f"<h1>{user}<h1>"
+@app.route("/user")
+@app.route("/user/<user>")
+def user(user=None):
+        return render_template("user.html", user=user)
+
+@app.route("/product")
+def product():
+        return render_template("product.html")
 
 if __name__ == "__main__":
     app.run(debug=True, port=5000)
