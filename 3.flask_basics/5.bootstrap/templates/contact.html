@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block title %}Contact{% endblock %}
+{% block content %}
+<h1>Contact Us</h1>
+<!-- 부트스트랩 폼 -->
+<form>
+    <div class="mb-3">
+        <!-- 라벨과 입력 필드 -->
+        <label for="name" class="form-label">Name</label>
+        <input type="text" class="form-control" id="name" placeholder="Your name">
+    </div>
+    <div class="mb-3">
+        <label for="email" class="form-label">Email</label>
+        <input type="email" class="form-control" id="email" placeholder="Your email">
+    </div>
+    <div class="mb-3">
+        <label for="message" class="form-label">Message</label>
+        <textarea class="form-control" id="message" rows="3" placeholder="Your message"></textarea>
+    </div>
+    <!-- 제출 버튼 -->
+    <button type="submit" class="btn btn-primary">Submit</button>
+</form>
+{% endblock %}

@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+{% block title %}Features{% endblock %}
+{% block content %}
+<h1>Our Features</h1>
+<!-- 그리드 시스템을 사용하여 행(row) 구성 -->
+<div class="row">
+    <!-- 각 열을 중간 크기 이상의 화면에서 4칸씩 차지하도록 설정(col-md-4) -->
+    <div class="col-md-4">
+        <!-- 카드 컴포넌트 시작 -->
+        <div class="card">
+            <!-- 카드 본문 -->
+            <div class="card-body">
+                <!-- 카드 제목 -->
+                <h5 class="card-title">Feature 1</h5>
+                <!-- 카드 내용 -->
+                <p class="card-text">Details about feature 1.</p>
+                <!-- 버튼 -->
+                <a href="#" class="btn btn-primary">Learn More</a>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Feature 2</h5>
+                <p class="card-text">Details about feature 2.</p>
+                <a href="#" class="btn btn-primary">Learn More</a>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Feature 3</h5>
+                <p class="card-text">Details about feature 3.</p>
+                <a href="#" class="btn btn-primary">Learn More</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

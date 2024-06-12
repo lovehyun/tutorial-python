@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+{% block title %}Pricing{% endblock %}
+{% block content %}
+<h1>Pricing</h1>
+<!-- 부트스트랩 테이블 -->
+<table class="table">
+    <thead>
+        <tr>
+            <!-- 테이블 헤더 -->
+            <th scope="col">Plan</th>
+            <th scope="col">Price</th>
+            <th scope="col">Features</th>
+        </tr>
+    </thead>
+    <tbody>
+        <!-- 테이블 행 -->
+        <tr>
+            <td>Basic</td>
+            <td>$10/month</td>
+            <td>Feature 1, Feature 2</td>
+        </tr>
+        <tr>
+            <td>Premium</td>
+            <td>$20/month</td>
+            <td>Feature 1, Feature 2, Feature 3</td>
+        </tr>
+        <tr>
+            <td>Enterprise</td>
+            <td>$30/month</td>
+            <td>All features included</td>
+        </tr>
+    </tbody>
+</table>
+{% endblock %}
