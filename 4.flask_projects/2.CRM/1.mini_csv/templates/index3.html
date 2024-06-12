@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>CSV Data</title>
+    <!-- Bootstrap CSS 파일을 추가 -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+</head>
+<body>
+    <div class="container mt-5">
+        <!-- 페이지 제목 -->
+        <h1 class="mb-4">CSV Data</h1>
+        <!-- Bootstrap 테이블 스타일 적용 -->
+        <div class="table-responsive">
+            <table class="table table-bordered table-striped">
+                <thead class="table-primary">
+                    <!-- table-primary: 밝은 파란색 배경
+                        table-secondary: 중간 회색 배경
+                        table-success: 밝은 녹색 배경
+                        table-danger: 밝은 빨간색 배경
+                        table-warning: 밝은 노란색 배경
+                        table-info: 밝은 하늘색 배경
+                        table-light: 밝은 회색 배경
+                        table-dark: 어두운 회색 배경 -->
+                    <tr>
+                        {% for header in data[0] %}
+                        <th>{{ header }}</th>
+                        {% endfor %}
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for row in data[1:] %}
+                    <tr>
+                        {% for item in row %}
+                        <td>{{ item }}</td>
+                        {% endfor %}
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        <!-- 파일 업로드 페이지로 이동하는 버튼 -->
+        <a href="/upload" class="btn btn-primary mt-3">Upload another file</a>
+        <!-- mt-5 : margin 유틸리티 
+            방향:
+            t: 상단 (top)
+            b: 하단 (bottom)
+            l: 왼쪽 (left)
+            r: 오른쪽 (right)
+            x: 왼쪽과 오른쪽 (horizontal)
+            y: 상단과 하단 (vertical)
+            m: 모든 방향 (all)
+            
+            크기:
+            0: 0px
+            1: 0.25rem (4px)
+            2: 0.5rem (8px)
+            3: 1rem (16px)
+            4: 1.5rem (24px)
+            5: 3rem (48px) 
+        -->
+
+    </div>
+    <!-- Bootstrap JavaScript 파일을 추가 -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+</body>
+</html>
