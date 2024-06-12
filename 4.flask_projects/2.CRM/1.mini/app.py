@@ -7,8 +7,8 @@ app = Flask(__name__)
 all_csv_data = []
 
 def load_csv_data(filepath):
-    """주어진 파일 경로에서 CSV 데이터를 불러오는 함수."""
     global all_csv_data
+    
     with open(filepath, newline='', encoding='UTF8') as csvfile:
         csv_reader = csv.reader(csvfile)
         for row in csv_reader:

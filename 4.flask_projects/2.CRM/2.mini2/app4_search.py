@@ -33,7 +33,12 @@ def index():
     end_index = start_index + items_per_page
     paginated_data = filtered_data[start_index:end_index]
 
-    return render_template('index4.html', fieldnames=fieldnames, data=paginated_data, search_name=search_name, page=page, total_pages=total_pages)
+    # 'index' 값을 각 딕셔너리에 추가 (원본 데이터는 수정하지 않음)
+    headers = ['index'] + fieldnames
+    for i, item in enumerate(paginated_data, start=start_index + 1):
+        item['index'] = i
+
+    return render_template('index4.html', fieldnames=headers, data=paginated_data, search_name=search_name, page=page, total_pages=total_pages)
 
 @app.route('/user/<id>')
 def user_detail(id):

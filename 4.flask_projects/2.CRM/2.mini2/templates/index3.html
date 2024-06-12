@@ -57,6 +57,18 @@
             animation: fade-in 1.0s ease-in-out;
         }
     </style>
+    <script>
+        // 3. 사용성 추가 개선 (tr 에 하이퍼링크 추가, JS 통해서...)
+        document.addEventListener("DOMContentLoaded", function() {
+            var rows = document.querySelectorAll("tr[data-id]");  // 데이터 id가 있는 행 선택
+            rows.forEach(function(row) {
+                row.addEventListener("click", function() {
+                    var userId = row.getAttribute("data-id");
+                    window.location.href = "/user/" + userId;
+                });
+            });
+        });
+    </script>
 </head>
 <body>
     <h1>사용자 테이블 - 페이징 처리</h1>
@@ -70,7 +82,7 @@
                     {% endif %}
                 {% endfor %} -->
 
-                <!-- 2. 사용성 개선 -->
+                <!-- 2. 사용성 개선 (불필요한 id, address 제거) -->
                 {% for fieldname in fieldnames %}
                     {% if fieldname != 'Id' and fieldname != 'Address' %}
                         <th>{{ fieldname }}</th>
@@ -80,6 +92,7 @@
         </thead>
         <tbody>
             {% for row in data %} <!-- 1 / 2 / 3 순서대로 확인 -->
+            
             <!-- 1. 기본 기능 -->
             <!-- <tr>
                 {% for fieldname, value in row.items() %}
@@ -92,7 +105,8 @@
                     {% endif %}
                 {% endfor %}
             </tr> -->
-            <!-- 2. 사용성 개선 -->
+
+            <!-- 2. 사용성 개선 (불필요한 id/address 제거 및 id를 통한 상세링크 추가) -->
             <!-- <tr>
                 {% for fieldname, value in row.items() %}
                     {% if fieldname != 'Id' and fieldname != 'Address' %}
@@ -104,7 +118,18 @@
                     {% endif %}
                 {% endfor %}
             </tr> -->
-            <!-- 3. 사용성 추가 개선 -->
+
+            <!-- 3. 사용성 추가 개선 (tr 에 하이퍼링크 추가, JS 통해서...) -->
+            <!-- 데이터 id를 data-id 속성으로 추가 -->
+            <!-- <tr data-id="{{ row.id }}">
+                {% for fieldname, value in row.items() %}
+                    {% if fieldname != 'Id' and fieldname != 'Address' %}
+                        <td>{{ value }}</td>
+                    {% endif %}
+                {% endfor %}
+            </tr> -->
+
+            <!-- 4. 사용성 추가 개선 (tr 에 하이퍼링크 추가, 간단하게) -->
             <tr onclick="window.location='/user/{{ row.Id }}';"> <!-- 해당 열 클릭시 이동 -->
                 {% for fieldname, value in row.items() %}
                     {% if fieldname != 'Id' and fieldname != 'Address' %}
@@ -112,6 +137,7 @@
                     {% endif %}
                 {% endfor %}
             </tr>
+            
             {% endfor %}
         </tbody>
     </table>

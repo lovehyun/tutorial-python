@@ -97,12 +97,26 @@
                 <!-- 데이터를 표시하는 템플릿 -->
                 {% for row in data %}
                     <tr onclick="window.location='/user/{{ row.Id }}';"> <!-- 해당 열 클릭시 이동 -->
+                        <!-- dict 의 멤버 순차적으로 표시 -->
+                        <!-- {#
                         {% for fieldname, value in row.items() %}
                             {% if fieldname != 'Id' and fieldname != 'Address' %}
                                 {% if fieldname == 'Name' %}
                                     <td>{{ highlight_text(value, search_name) }}</td>
                                 {% else %}
                                 <td>{{ value }}</td>
+                                {% endif %}
+                            {% endif %}
+                        {% endfor %}
+                        #} -->
+
+                        <!-- fieldname 의 순차적으로 표시 -->
+                        {% for fieldname in fieldnames %}
+                            {% if fieldname != 'Id' and fieldname != 'Address' %}
+                                {% if fieldname == 'Name' %}
+                                    <td>{{ highlight_text(row[fieldname], search_name) }}</td>
+                                {% else %}
+                                    <td>{{ row[fieldname] }}</td>
                                 {% endif %}
                             {% endif %}
                         {% endfor %}

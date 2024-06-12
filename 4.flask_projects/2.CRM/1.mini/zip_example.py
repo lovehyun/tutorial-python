@@ -40,7 +40,17 @@ dictionary = dict(zip(keys, values))
 print(dictionary)  # {'name': 'Alice', 'age': 25, 'phone': '123-456-7890'}
 
 
-# 6. 실용 예제 - 병렬 루프 처리
+# 6. 딕셔너리 생성 - 리스트로부터
+values_list = [
+    ['Alice', 25, '123-456-7890'],
+    ['Bob', 30, '987-654-3210'],
+    ['Charlie', 22, '555-666-7777']
+]
+dictionaries = [dict(zip(keys, values)) for values in values_list]
+print(dictionary)
+
+
+# 7. 실용 예제 - 병렬 루프 처리
 names = ['Alice', 'Bob', 'Charlie']
 ages = [25, 30, 35]
 
