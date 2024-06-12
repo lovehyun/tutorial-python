@@ -1,12 +1,17 @@
 from flask import Flask, render_template
-from admin.second import second
+from admin.admin import admin_app
+from user.user import user_app
+from product.product import product_app
 
 app = Flask(__name__)
-app.register_blueprint(second, url_prefix="/admin")
+
+app.register_blueprint(admin_app, url_prefix="/admin")
+app.register_blueprint(user_app, url_prefix="/user")
+app.register_blueprint(product_app, url_prefix="/product")
 
 @app.route("/")
 def home():
-    return "<h1>Test</h1>"
+    return render_template("home.html")
 
 if __name__ == "__main__":
     app.run(debug=True, port=5000)
