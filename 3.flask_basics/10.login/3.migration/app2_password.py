@@ -1,8 +1,13 @@
 # app.py
+# pip install flask-migrate
+# 윈도우: set FLASK_APP=app2_password.py
+# 맥/LInux: export FLASK_APP=app2_password.py
 
 from flask import Flask, render_template, request, redirect, url_for, flash
 from flask_sqlalchemy import SQLAlchemy
+from flask_migrate import Migrate
 from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
+from werkzeug.security import generate_password_hash, check_password_hash
 
 """
 LoginManager: 로그인 관리를 담당하는 클래스로, Flask 애플리케이션에서 로그인 기능을 초기화하고 관리하는 역할을 합니다.
@@ -21,6 +26,7 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///users.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db = SQLAlchemy(app)
+migrate = Migrate(app, db)
 login_manager = LoginManager(app)
 login_manager.login_view = 'login'
 
@@ -29,12 +35,17 @@ class User(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(80), unique=True, nullable=False)
     password = db.Column(db.String(120), nullable=False)
+    # password_hash = db.Column(db.String(120), nullable=True)
+    # password_hash = db.Column(db.String(120), nullable=False)
+    email = db.Column(db.String(120), unique=True, nullable=True)
 
     def set_password(self, password):
         self.password = password
+        # self.password_hash = generate_password_hash(password)
 
     def check_password(self, password):
         return self.password == password
+        # return check_password_hash(self.password_hash, password)
 
 
 @login_manager.user_loader
@@ -49,7 +60,7 @@ def main():
 @login_required
 def view_users():
     users = db.session.query(User).all()
-    return render_template('users.html', users=users)
+    return render_template('users2.html', users=users)
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -80,34 +91,37 @@ def logout():
 def profile_edit():
     if request.method == 'POST':
         new_password = request.form['new_password']
+        new_email = request.form['new_email']
 
         if new_password:
             current_user.set_password(new_password)
+        current_user.email = new_email
         db.session.commit()
 
         flash('프로필이 수정되었습니다.', 'success')
         return redirect(url_for('main'))
 
-    return render_template('profile_edit.html', current_user=current_user)
+    return render_template('profile_edit2.html', current_user=current_user)
 
 @app.route('/register', methods=['GET', 'POST'])
 def register():
     if request.method == 'POST':
         username = request.form['username']
         password = request.form['password']
+        email = request.form['email']
 
         existing_user = db.session.query(User).filter_by(username=username).first()
         if existing_user:
             flash('이미 사용 중인 아이디입니다.', 'danger')
         else:
-            new_user = User(username=username)
+            new_user = User(username=username, email=email)
             new_user.set_password(password)
             db.session.add(new_user)
             db.session.commit()
             flash('계정이 생성되었습니다. 이제 로그인하세요!', 'success')
             return redirect(url_for('login'))
 
-    return render_template('register.html')
+    return render_template('register2.html')
 
 
 if __name__ == '__main__':
