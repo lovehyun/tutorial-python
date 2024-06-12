@@ -1,6 +1,3 @@
-# curl -X POST http://127.0.0.1:5000/login -H "Content-Type: application/json" -d '{"username": "user1", "password": "password1"}'
-# curl -X GET http://127.0.0.1:5000/protected -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoxLCJleHAiOjE2MTE2NzM5OTl9.6Q2d4kR9RijXW1eEHLZz5B9tvVhCvNG2Ed3Hk-pZk9s"
-
 from flask import Flask, request, jsonify, render_template
 import jwt
 import datetime
@@ -19,7 +16,7 @@ users = {
 # 메인 페이지를 렌더링하는 라우트
 @app.route('/')
 def index():
-    return render_template('index.html')
+    return render_template('index2.html')
 
 # 로그인 요청을 처리하는 라우트
 @app.route('/login', methods=['POST'])

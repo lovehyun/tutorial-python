@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+    <div class="container mt-5">
+        <h2>Login</h2>
+        <form id="login-form" method="post" action="/login">
+            <div class="form-group">
+                <label for="username">Username</label>
+                <input type="text" class="form-control" id="username" name="username" required>
+            </div>
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" class="form-control" id="password" name="password" required>
+            </div>
+            <button type="submit" class="btn btn-primary">Login</button>
+        </form>
+        <div id="message" class="mt-3"></div>
+
+        <h2 class="mt-5">Protected Resource</h2>
+        <button id="protected-resource-btn" class="btn btn-secondary">Access Protected Resource</button>
+        <div id="protected-message" class="mt-3"></div>
+    </div>
+
+    <script>
+        let token = '';
+
+        document.getElementById('login-form').addEventListener('submit', function(event) {
+            event.preventDefault();
+
+            const formData = new FormData(this);
+            const data = {};
+            formData.forEach((value, key) => {
+                data[key] = value;
+            });
+
+            fetch('/login', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data)
+            })
+            .then(response => response.json())
+            .then(data => {
+                const messageDiv = document.getElementById('message');
+                if (data.token) {
+                    token = data.token;  // 토큰 저장
+                    messageDiv.innerHTML = `<div class="alert alert-success">Login successful! Token: ${data.token}</div>`;
+                } else {
+                    messageDiv.innerHTML = `<div class="alert alert-danger">${data.message}</div>`;
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        });
+
+        document.getElementById('protected-resource-btn').addEventListener('click', function() {
+            fetch('/protected', {
+                method: 'GET',
+                headers: {
+                    'Authorization': token  // 저장된 토큰 사용
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                const protectedMessageDiv = document.getElementById('protected-message');
+                if (data.message) {
+                    protectedMessageDiv.innerHTML = `<div class="alert alert-info">${data.message}</div>`;
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        });
+    </script>
+</body>
+</html>
