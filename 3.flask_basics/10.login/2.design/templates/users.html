@@ -2,27 +2,44 @@
 {% extends 'base.html' %}
 {% block title %}사용자 계정 목록{% endblock %}
 
+{% block style %}
+{% endblock %}
+
 {% block content %}
 <h1>사용자 계정 목록</h1>
-<table class="table table-striped">
-    <thead>
-        <tr>
-            <th>ID</th>
-            <th>Username</th>
-            <th>Email</th>
-            <th>Password</th>
-        </tr>
-    </thead>
-    <tbody>
-        {% for user in users %}
-        <tr>
-            <td>{{ user.id }}</td>
-            <td>{{ user.username }}</td>
-            <td>{{ user.email }}</td>
-            <td>{{ user.password_hash }}</td>
-        </tr>
-        {% endfor %}
-    </tbody>
-</table>
-<a href="{{ url_for('main') }}" class="btn btn-primary">메인 페이지로 돌아가기</a>
+
+<form method="POST" action="{{ url_for('view_users') }}">
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>선택</th>
+                <th>ID</th>
+                <th>Username</th>
+                <th>Email</th>
+                <th>Password</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for user in users %}
+            <tr>
+                <td><input type="checkbox" name="user_ids" value="{{ user.id }}"></td>
+                <td>{{ user.id }}</td>
+                <td>{{ user.username }}</td>
+                <td>{{ user.email }}</td>
+                <td>{{ user.password_hash }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <div class="form-group">
+        <button type="submit" class="btn btn-danger" onclick="return confirmDeletion()">선택한 사용자 삭제</button>
+        <a href="{{ url_for('main') }}" class="btn btn-primary">메인 페이지로 돌아가기</a>
+    </div>
+</form>
+
+<script>
+    function confirmDeletion() {
+        return confirm('정말로 선택한 사용자를 삭제하시겠습니까?');
+    }
+</script>
 {% endblock %}

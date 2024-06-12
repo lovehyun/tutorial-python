@@ -1,6 +1,7 @@
 from flask import Flask, render_template, request, redirect, url_for, current_app
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
+from werkzeug.security import generate_password_hash, check_password_hash
 
 """
 LoginManager: 로그인 관리를 담당하는 클래스로, Flask 애플리케이션에서 로그인 기능을 초기화하고 관리하는 역할을 합니다.
@@ -15,7 +16,7 @@ app = Flask(__name__)
 
 # Flask 애플리케이션 설정
 app.config['SECRET_KEY'] = 'your-secret-key'  # 세션 데이터 암호화에 사용되는 비밀 키 설정
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///users.db'  # SQLite 데이터베이스 URI 설정
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///users2.db'  # SQLite 데이터베이스 URI 설정
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False  # SQLAlchemy 이벤트 시스템 비활성화
 
 # SQLAlchemy 및 Flask-Login 초기화
@@ -28,14 +29,17 @@ class User(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)  # 고유 사용자 ID
     username = db.Column(db.String(80), unique=True, nullable=False)  # 사용자 이름, 고유 및 필수
     password = db.Column(db.String(120), nullable=False)  # 비밀번호
+    password_hash = db.Column(db.String(120), nullable=False)  # 해시된 비밀번호 필드
+    email = db.Column(db.String(120), nullable=True)  # 이메일 필드
 
     # 비밀번호 설정 메서드
     def set_password(self, password):
         self.password = password
+        self.password_hash = generate_password_hash(password)
 
     # 비밀번호 확인 메서드
     def check_password(self, password):
-        return self.password == password
+        return check_password_hash(self.password_hash, password)
 
 # 사용자 로더 콜백 함수
 @login_manager.user_loader
@@ -53,7 +57,7 @@ def main():
 @login_required
 def view_users():
     users = User.query.all()  # 모든 사용자 조회
-    return render_template('users.html', users=users)  # 사용자 목록 페이지 렌더링
+    return render_template('users2.html', users=users)  # 사용자 목록 페이지 렌더링
 
 # 로그인 페이지
 @app.route('/login', methods=['GET', 'POST'])
@@ -85,13 +89,15 @@ def logout():
 def profile_edit():
     if request.method == 'POST':
         new_password = request.form['new_password']
+        new_email = request.form['new_email']
 
         current_user.set_password(new_password)  # 비밀번호 변경
+        current_user.email = new_email  # 이메일 변경
         db.session.commit()  # 변경 사항 저장
 
         return redirect(url_for('main'))  # 메인 페이지로 리디렉션
 
-    return render_template('profile_edit.html', current_user=current_user)  # 프로필 수정 페이지 렌더링
+    return render_template('profile_edit2.html', current_user=current_user)  # 프로필 수정 페이지 렌더링
 
 # 회원가입 페이지
 @app.route('/register', methods=['GET', 'POST'])
@@ -99,19 +105,20 @@ def register():
     if request.method == 'POST':
         username = request.form['username']
         password = request.form['password']
+        email = request.form['email']
 
         existing_user = User.query.filter_by(username=username).first()  # 사용자 조회
         if existing_user:
             return "이미 사용 중인 아이디입니다."  # 오류 메시지
 
-        new_user = User(username=username)
+        new_user = User(username=username, email=email)
         new_user.set_password(password)  # 비밀번호 설정
         db.session.add(new_user)  # 새로운 사용자 추가
         db.session.commit()  # 변경 사항 저장
 
         return redirect(url_for('main'))  # 메인 페이지로 리디렉션
 
-    return render_template('register.html')  # 회원가입 페이지 렌더링
+    return render_template('register2.html')  # 회원가입 페이지 렌더링
 
 # 애플리케이션 실행
 if __name__ == '__main__':

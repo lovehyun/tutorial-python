@@ -34,15 +34,27 @@ class User(UserMixin, db.Model):
 
 @login_manager.user_loader
 def load_user(user_id):
-    return User.query.get(int(user_id))
+    return db.session.get(User, int(user_id))
 
 @app.route('/')
 def main():
     return render_template('main.html')
 
-@app.route('/users')
+@app.route('/users', methods=['GET', 'POST'])
 @login_required
 def view_users():
+    if request.method == 'POST':
+        user_ids = request.form.getlist('user_ids')
+        if user_ids:
+            for user_id in user_ids:
+                user = db.session.get(User, user_id)
+                db.session.delete(user)
+            db.session.commit()
+            flash('선택한 사용자 계정이 삭제되었습니다.', 'success')
+        else:
+            flash('삭제할 사용자 계정을 선택하세요.', 'danger')
+        return redirect(url_for('view_users'))
+
     users = User.query.all()
     return render_template('users.html', users=users)
 
@@ -60,7 +72,6 @@ def login():
             return redirect(url_for('main'))
         else:
             flash('아이디나 비밀번호가 잘못되었습니다.', 'danger')
-            # return "아이디나 비밀번호가 잘못되었습니다."
 
     return redirect(url_for('main'))
 
@@ -96,7 +107,6 @@ def register():
         existing_user = User.query.filter_by(username=username).first()
         if existing_user:
             flash('이미 사용 중인 아이디입니다.', 'danger')
-            # return "이미 사용 중인 아이디입니다."
         else:
             new_user = User(username=username)
             if email:  # Check if email is provided
@@ -120,7 +130,6 @@ def profile_delete():
     logout_user()
 
     return redirect(url_for('main'))
-
 
 if __name__ == '__main__':
     with app.app_context():
