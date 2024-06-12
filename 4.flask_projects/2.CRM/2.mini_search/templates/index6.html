@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Pagination Example</title>
+    <style>
+        .search {
+            margin: 10px;
+            display: flex;
+        }
+        .search input {
+            height: 20px;
+        }
+        table {
+            border-collapse: collapse;
+            width: 100%;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #ffa500;
+            color: white;
+        }
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+        .pagination {
+            margin-top: 20px;
+        }
+        .pagination a {
+            padding: 8px 16px;
+            text-decoration: none;
+            border: 1px solid #ddd;
+            margin: 0 4px;
+        }
+        .pagination a.active {
+            background-color: #4CAF50;
+            color: white;
+            border: 1px solid #4CAF50;
+        }
+        .pagination a:hover:not(.active) {
+            background-color: #ddd;
+        }
+        tr td {
+            transition: padding 1.0s ease;
+        }
+        tr:hover td {
+            background-color: #b3eda8;
+            cursor: pointer;
+            padding-top: 20px;
+            padding-bottom: 20px;
+        }
+        @keyframes fade-in {
+            0% {
+                opacity: 0;
+            }
+            100% {
+                opacity: 1;
+            }
+        }
+        tr td {
+            animation: fade-in 1.0s ease-in-out;
+        }
+        .highlight {
+            background-color: yellow;
+            font-weight: bold;
+        }
+    </style>
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const searchForm = document.getElementById("search-form");
+            const searchInput = document.querySelector("input[name='name']");
+            const tableHead = document.getElementById("table-head");
+            const tableBody = document.getElementById("table-body");
+            const pagination = document.getElementById("pagination");
+            const itemsPerPageSelect = document.getElementById("items_per_page");
+
+            // URL 쿼리 매개변수를 읽어 객체로 반환하는 함수
+            function getQueryParams() {
+                const params = {};
+                window.location.search.substring(1).split("&").forEach(param => {
+                    const [key, value] = param.split("=");
+                    params[decodeURIComponent(key)] = decodeURIComponent(value);
+                });
+                return params;
+            }
+
+            // API로부터 데이터를 가져오는 함수
+            function fetchData(page = 1, searchName = '', itemsPerPage = 10) {
+                fetch(`/api/users?page=${page}&name=${searchName}&items_per_page=${itemsPerPage}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        renderTable(data);
+                        renderPagination(data);
+                    })
+                    .catch(error => console.error('Error fetching data:', error));
+            }
+
+            // 테이블 헤더와 바디를 렌더링하는 함수
+            function renderTable(data) {
+                // 테이블 헤더 렌더링
+                tableHead.innerHTML = '';
+                const headerRow = document.createElement('tr');
+                data.fieldnames.forEach(field => {
+                    if (field !== 'Id' && field !== 'Address') {
+                        const th = document.createElement('th');
+                        th.textContent = field;
+                        headerRow.appendChild(th);
+                    }
+                });
+                tableHead.appendChild(headerRow);
+
+                // 테이블 바디 렌더링
+                tableBody.innerHTML = '';
+                data.data.forEach(row => {
+                    const tr = document.createElement('tr');
+                    tr.onclick = () => window.location = `/user/${row.Id}`;
+                    data.fieldnames.forEach(field => {
+                        if (field !== 'Id' && field !== 'Address') {
+                            const td = document.createElement('td');
+                            if (field === 'Name' && data.search_name) {
+                                const highlightedText = row[field].replace(new RegExp(data.search_name, 'gi'), match => `<span class="highlight">${match}</span>`);
+                                td.innerHTML = highlightedText;
+                            } else {
+                                td.textContent = row[field];
+                            }
+                            tr.appendChild(td);
+                        }
+                    });
+                    tableBody.appendChild(tr);
+                });
+            }
+
+            // 페이지네이션 링크를 렌더링하는 함수
+            function renderPagination(data) {
+                pagination.innerHTML = '';
+                if (data.page > 1) {
+                    const prev = document.createElement('a');
+                    prev.href = `?page=${data.page - 1}&name=${data.search_name}&items_per_page=${data.items_per_page}`;
+                    prev.textContent = '« Previous';
+                    pagination.appendChild(prev);
+                }
+
+                for (let i = 1; i <= data.total_pages; i++) {
+                    const pageLink = document.createElement('a');
+                    pageLink.href = `?page=${i}&name=${data.search_name}&items_per_page=${data.items_per_page}`;
+                    pageLink.textContent = i;
+                    if (i === data.page) {
+                        pageLink.classList.add('active');
+                    }
+                    pagination.appendChild(pageLink);
+                }
+
+                if (data.page < data.total_pages) {
+                    const next = document.createElement('a');
+                    next.href = `?page=${data.page + 1}&name=${data.search_name}&items_per_page=${data.items_per_page}`;
+                    next.textContent = 'Next »';
+                    pagination.appendChild(next);
+                }
+            }
+
+            // 검색 폼 제출 이벤트 핸들러
+            searchForm.addEventListener("submit", function(event) {
+                event.preventDefault();
+                const formData = new FormData(searchForm);
+                const searchName = formData.get('name');
+                const itemsPerPage = parseInt(formData.get('items_per_page'), 10);
+                fetchData(1, searchName, itemsPerPage);
+            });
+
+            // 페이지당 항목 수 선택 변경 이벤트 핸들러
+            itemsPerPageSelect.addEventListener("change", function() {
+                const formData = new FormData(searchForm);
+                const searchName = formData.get('name');
+                const itemsPerPage = parseInt(formData.get('items_per_page'), 10);
+                fetchData(1, searchName, itemsPerPage);
+            });
+
+            // 초기 로드 시 쿼리 매개변수를 반영하여 데이터 가져오기
+            const queryParams = getQueryParams();
+            if (queryParams.items_per_page) {
+                itemsPerPageSelect.value = queryParams.items_per_page;
+            }
+            if (queryParams.name) {
+                searchInput.value = queryParams.name;
+            }
+
+            fetchData(queryParams.page || 1, queryParams.name || '', queryParams.items_per_page || 10);
+        });
+    </script>
+</head>
+<body>
+    <h1>사용자 테이블 - 페이징 처리</h1>
+    <div class="search">
+        <form id="search-form">
+            <input type="text" name="name" placeholder="사용자 이름 검색">
+            <button type="submit">검색</button>
+            <label for="items_per_page">페이지당 항목 수:</label>
+            <select name="items_per_page" id="items_per_page">
+                <option value="5">5</option>
+                <option value="10" selected>10</option>
+                <option value="20">20</option>
+            </select>
+        </form>
+    </div>
+    <div class="container">
+        <table>
+            <thead id="table-head">
+                <!-- 헤더를 JavaScript에서 렌더링 -->
+            </thead>
+            <tbody id="table-body">
+                <!-- 데이터 행을 JavaScript에서 렌더링 -->
+            </tbody>
+        </table>
+    </div>
+    <div class="pagination" id="pagination">
+        <!-- 페이지네이션을 JavaScript에서 렌더링 -->
+    </div>
+</body>
+</html>
