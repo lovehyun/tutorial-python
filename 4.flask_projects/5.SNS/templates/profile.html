@@ -1,0 +1,11 @@
+<!-- profile.html -->
+{% extends "layout.html" %}
+
+{% block content %}
+<div class="container">
+    <h2>프로필</h2>
+    <p><strong>사용자 이름:</strong> {{ current_user.username }}</p>
+    <p><strong>이메일:</strong> {{ current_user.email }}</p>
+    <p><a href="{{ url_for('edit_profile') }}">프로필 수정</a></p>
+</div>
+{% endblock %}

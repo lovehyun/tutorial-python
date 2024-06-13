@@ -1,0 +1,22 @@
+{% extends "layout.html" %}
+
+{% block title %}Home{% endblock %}
+
+{% block content %}
+    <h1>Welcome to the Social Network</h1>
+    {% for tweet in tweets %}
+        <div class="tweet">
+            <p>{{ tweet.content }}</p>
+            <small>{{ tweet.user.username }}</small>
+            {% if current_user.has_liked(tweet) %}
+                <form action="/unlike/{{ tweet.id }}" method="POST">
+                    <button type="submit">Unlike</button>
+                </form>
+            {% else %}
+                <form action="/like/{{ tweet.id }}" method="POST">
+                    <button type="submit">Like</button>
+                </form>
+            {% endif %}
+        </div>
+    {% endfor %}
+{% endblock %}
