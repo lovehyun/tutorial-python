@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profile</title>
+    <script>
+        async function loadProfile() {
+            const response = await fetch('/api/profile');
+            const result = await response.json();
+            if (result.status === 'success') {
+                const user = result.user;
+                document.getElementById('welcome').innerText = `Welcome, ${user.name}`;
+                document.getElementById('id').innerText = `ID: ${user.id}`;
+                document.getElementById('password').innerText = `Password: ${user.pw}`;
+            } else {
+                window.location.href = '/';
+            }
+        }
+
+        async function updatePassword(event) {
+            event.preventDefault();
+            const new_password = document.getElementById('new_password').value;
+
+            const response = await fetch('/api/profile', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ new_password })
+            });
+
+            const result = await response.json();
+            document.getElementById('message').innerText = result.message;
+        }
+
+        async function logout() {
+            await fetch('/api/logout', {
+                method: 'POST'
+            });
+            window.location.href = '/';
+        }
+
+        window.onload = loadProfile;
+    </script>
+</head>
+<body>
+    <h2 id="welcome"></h2>
+    <p id="id"></p>
+    <p id="password"></p>
+
+    <form onsubmit="updatePassword(event)">
+        <label for="new_password">New Password:</label>
+        <input type="password" id="new_password" name="new_password" required>
+        <br>
+        <input type="submit" value="Update Password">
+    </form>
+    <p id="message" style="color:green;"></p>
+    <button onclick="logout()">Logout</button>
+</body>
+</html>
