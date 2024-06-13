@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>JSON Data Example</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <script>
+        async function sendData() {
+            const data = {
+                name: document.getElementById('name').value,
+                age: document.getElementById('age').value
+            };
+
+            const response = await fetch('/submit_json', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data)
+            });
+
+            const result = await response.text();
+            document.getElementById('result').innerText = result;
+        }
+    </script>
+</head>
+<body>
+    <div class="container">
+        <h1 class="my-4">JSON Data Example</h1>
+        <div class="form-group">
+            <label for="name">Name:</label>
+            <input type="text" id="name" class="form-control">
+        </div>
+        <div class="form-group">
+            <label for="age">Age:</label>
+            <input type="number" id="age" class="form-control">
+        </div>
+        <button onclick="sendData()" class="btn btn-primary">Send JSON</button>
+        <p id="result"></p>
+    </div>
+</body>
+</html>

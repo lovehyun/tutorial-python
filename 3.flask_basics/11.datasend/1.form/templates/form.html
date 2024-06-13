@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Form Data Example</title>
+</head>
+<body>
+    <h1>Form Data Example</h1>
+    <form action="{{ url_for('submit_form') }}" method="post">
+        <label for="name">Name:</label>
+        <input type="text" id="name" name="name">
+        <label for="age">Age:</label>
+        <input type="number" id="age" name="age">
+        <input type="submit" value="Submit">
+    </form>
+</body>
+</html>

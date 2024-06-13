@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Multipart Form Data Example</title>
+</head>
+<body>
+    <h1>Multipart Form Data Example</h1>
+    <form action="{{ url_for('submit_multipart') }}" method="post" enctype="multipart/form-data">
+        <label for="name">Name:</label>
+        <input type="text" id="name" name="name"><br><br>
+        <label for="file">File:</label>
+        <input type="file" id="file" name="file"><br><br>
+        <input type="submit" value="Submit">
+    </form>
+</body>
+</html>
