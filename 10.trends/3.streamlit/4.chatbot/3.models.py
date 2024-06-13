@@ -1,3 +1,5 @@
+# pip install streamlit openai streamlit_chat
+
 from openai import OpenAI
 import streamlit as st
 from streamlit_chat import message
