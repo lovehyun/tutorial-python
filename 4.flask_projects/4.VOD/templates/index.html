@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Netflix Clone</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <h1>Welcome to Netflix Clone</h1>
+    <a href="{{ url_for('logout') }}">Logout</a>
+    <div class="videos">
+        {% for video in videos %}
+            <div class="video">
+                <h2>{{ video.title }}</h2>
+                <a href="{{ url_for('video', video_id=video.id) }}">Watch</a>
+            </div>
+        {% endfor %}
+    </div>
+</body>
+</html>

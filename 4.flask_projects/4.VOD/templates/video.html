@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ video.title }}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <h1>{{ video.title }}</h1>
+    <video width="640" height="360" controls>
+        <source src="{{ url_for('stream', filename=video.filename) }}" type="video/mp4">
+        Your browser does not support the video tag.
+    </video>
+    <br>
+    <a href="{{ url_for('index') }}">Back to Home</a>
+</body>
+</html>

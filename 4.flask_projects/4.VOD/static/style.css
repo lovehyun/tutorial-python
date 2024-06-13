@@ -1,0 +1,22 @@
+body {
+    font-family: Arial, sans-serif;
+}
+
+.videos {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.video {
+    margin: 10px;
+    padding: 10px;
+    border: 1px solid #ccc;
+    width: 30%;
+}
+
+form {
+    display: flex;
+    flex-direction: column;
+    width: 300px;
+    margin: auto;
+}
