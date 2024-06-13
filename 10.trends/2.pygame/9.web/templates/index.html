@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Pygame Web Game Example</title>
+    <script src="https://cdn.socket.io/4.0.0/socket.io.min.js"></script>
+    <script type="text/javascript">
+        document.addEventListener('DOMContentLoaded', (event) => {
+            var socket = io.connect('http://' + document.domain + ':' + location.port);
+
+            document.addEventListener('keydown', (event) => {
+                var key = event.key;
+                if (key === 'ArrowLeft') {
+                    socket.emit('keydown', 'left');
+                } else if (key === 'ArrowRight') {
+                    socket.emit('keydown', 'right');
+                } else if (key === 'ArrowUp') {
+                    socket.emit('keydown', 'up');
+                } else if (key === 'ArrowDown') {
+                    socket.emit('keydown', 'down');
+                }
+            });
+
+            document.addEventListener('keyup', (event) => {
+                var key = event.key;
+                if (key === 'ArrowLeft') {
+                    socket.emit('keyup', 'left');
+                } else if (key === 'ArrowRight') {
+                    socket.emit('keyup', 'right');
+                } else if (key === 'ArrowUp') {
+                    socket.emit('keyup', 'up');
+                } else if (key === 'ArrowDown') {
+                    socket.emit('keyup', 'down');
+                }
+            });
+        });
+    </script>
+</head>
+<body>
+    <h1>Pygame Web Game Example</h1>
+    <img src="{{ url_for('video_feed') }}" width="640" height="480">
+</body>
+</html>
