@@ -24,7 +24,7 @@
                 </tr>
             </thead>
             <tbody>
-                {% for item_name, item_info in cart_items.items() %}
+                {% for item_id, item_info in cart_items.items() %}
                 <tr>
                     <td>
                         <img class="card-img-top" src="{{ url_for('static', filename='images/' + item_info.image) }}" alt="상품 이미지">
@@ -33,7 +33,7 @@
                     <td>{{ item_info.quantity }}</td>
                     <td>{{ item_info.price * item_info.quantity }}원</td>
                     <td>
-                        <a href="{{ url_for('remove_item_from_cart', item_name=item_name) }}" class="btn btn-danger btn-sm">삭제</a>
+                        <a href="{{ url_for('remove_item_from_cart', item_id=item_id) }}" class="btn btn-danger btn-sm">삭제</a>
                     </td>
                 </tr>
                 {% endfor %}

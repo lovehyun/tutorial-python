@@ -6,10 +6,10 @@
 <body>
     <h1>상품 목록</h1>
     <ul>
-        {% for item_name, item_info in items.items() %}
+        {% for item in items %}
             <li>
-                {{ item_info.name }} (가격: {{ item_info.price }}원)
-                <a href="{{ url_for('add_to_cart', item_name=item_name) }}">카트에 추가</a>
+                {{ item.name }} (가격: {{ item.price }}원)
+                <a href="{{ url_for('add_to_cart', item_id=item.id) }}">카트에 추가</a>
             </li>
         {% endfor %}
     </ul>

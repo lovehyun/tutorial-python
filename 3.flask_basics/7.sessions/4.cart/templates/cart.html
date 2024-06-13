@@ -12,12 +12,12 @@
             <th>수량</th>
             <th>가격</th>
         </tr>
-        {% for item_name, item_info in cart_items.items() %}
+        {% for item_id, item_info in cart_items.items() %}
         <tr>
             <td>{{ item_info.name }}</td>
             <td>{{ item_info.quantity }}</td>
             <td>{{ item_info.price * item_info.quantity }}원</td>
-            <td><a href="{{ url_for('remove_item_from_cart', item_name=item_name) }}">X</a></td>
+            <td><a href="{{ url_for('remove_item_from_cart', item_id=item_id) }}">X</a></td>
         </tr>
         {% endfor %}
     </table>
