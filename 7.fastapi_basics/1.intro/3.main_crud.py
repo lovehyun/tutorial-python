@@ -1,5 +1,16 @@
 # 설치: pip install fastapi uvicorn
-# 실행: uvicorn myapp:app --reload
+# 실행: uvicorn main_crud:app --reload
+# 테스트: 
+#   1. 루트 경로 테스트:
+#      curl -X GET "http://127.0.0.1:8000/"
+#   2. 특정 아이템 조회 (GET 요청):
+#      curl -X GET "http://127.0.0.1:8000/items/1"
+#   3. 아이템 생성 (POST 요청):
+#      curl -X POST "http://127.0.0.1:8000/items/" -H "Content-Type: application/json" -d '{"name": "ItemName", "description": "This is an item", "price": 10.5, "tax": 1.5}'
+#   4. 아이템 업데이트 (PUT 요청):
+#      curl -X PUT "http://127.0.0.1:8000/items/1" -H "Content-Type: application/json" -d '{"name": "UpdatedItemName", "description": "This is an updated item", "price": 12.5, "tax": 2.0}'
+#   5. 아이템 삭제 (DELETE 요청):
+#      curl -X DELETE "http://127.0.0.1:8000/items/1"
 
 from fastapi import FastAPI
 from pydantic import BaseModel
@@ -49,6 +60,6 @@ def delete_item(item_id: int):
         return {"message": "Item deleted successfully"}
     return {"Error": "Item not found"}
 
-if __name__ == "__main__":
-    import uvicorn
-    uvicorn.run(app, host="0.0.0.0", port=8000)
+# if __name__ == "__main__":
+#     import uvicorn
+#     uvicorn.run(app, host="0.0.0.0", port=8000)
