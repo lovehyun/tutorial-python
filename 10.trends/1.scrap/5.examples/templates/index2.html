@@ -1,0 +1,70 @@
+<!doctype html>
+<html>
+<head>
+    <title>Movie Scraper</title>
+    <script src="https://cdn.socket.io/4.0.0/socket.io.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', (event) => {
+            const socket = io();
+            const progress = document.getElementById('progress');
+            
+            socket.on('progress', (data) => {
+                if (data.completed) {
+                    progress.textContent = `Scraping completed!`;
+                } else {
+                    progress.textContent = `Scraping page ${data.page} of ${data.total_pages}...`;
+                }
+            });
+
+            socket.on('movie_data', (data) => {
+                const li = document.createElement('li');
+                li.textContent = `순위: ${data.rank}, 영화 제목: ${data.mov_name}, 관객 수: ${data.people_num}`;
+                movieList.appendChild(li);
+            });
+        });
+    </script>
+</head>
+<body>
+    <h1>Movie Scraper</h1>
+    <form method="POST">
+        <button type="submit" name="action" value="scrape">
+            {% if scraping_thread and scraping_thread.is_alive() %}
+                Stop Scrape Data From Web
+            {% else %}
+                Start Scrape Data From Web
+            {% endif %}
+        </button>
+        <button type="submit" name="action" value="view">View Data from Database</button>
+        <button type="submit" name="action" value="clear">Clear Database</button>
+    </form>
+    
+    <div id="progress"></div>
+    
+    {% if view %}
+        <h2>Movies in Database</h2>
+        {% if movies %}
+            <ul>
+                {% for movie in movies %}
+                    <li>순위: {{ movie.rank }}, 영화 제목: {{ movie.title }}, 관객 수: {{ movie.audience }}</li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p>No movies found in database.</p>
+        {% endif %}
+    {% endif %}
+    
+    {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            <ul>
+                {% for message in messages %}
+                    <li>{{ message }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+    {% endwith %}
+
+    <h2>Scraping Results</h2>
+    <ul id="movieList"></ul>
+
+</body>
+</html>

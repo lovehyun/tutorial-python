@@ -1,0 +1,37 @@
+<!doctype html>
+<html>
+<head>
+    <title>Movie Scraper</title>
+</head>
+<body>
+    <h1>Movie Scraper</h1>
+    <form method="POST">
+        <button type="submit" name="action" value="scrape">Scrape Data from Web</button>
+        <button type="submit" name="action" value="view">View Data from Database</button>
+        <button type="submit" name="action" value="clear">Clear Database</button>
+    </form>
+    
+    {% if view %}
+        <h2>Movies in Database</h2>
+        {% if movies %}
+            <ul>
+                {% for movie in movies %}
+                    <li>순위: {{ movie.rank }}, 영화 제목: {{ movie.title }}, 관객 수: {{ movie.audience }}</li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p>No movies found in database.</p>
+        {% endif %}
+    {% endif %}
+
+    {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            <ul>
+                {% for message in messages %}
+                    <li>{{ message }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+    {% endwith %}
+</body>
+</html>
