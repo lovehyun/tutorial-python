@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block title %}Home Page{% endblock %}
+{% block content %}
+<h1>Home Page</h1>
+{% if session.user %}
+    <p>Welcome, {{ session.user }}!</p>
+    <h2>Your Posts</h2>
+    {% if posts %}
+        <ul>
+            {% for post in posts %}
+                <li>{{ post.title }} - {{ post.content }}</li>
+                <form action="{{ url_for('del_post', post_id=post.id) }}" method="post" style="display:inline;">
+                    <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+                </form>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>You haven't written any posts yet.</p>
+    {% endif %}
+{% else %}
+    <p>Please log in to see your posts.</p>
+{% endif %}
+{% endblock %}

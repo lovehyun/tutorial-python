@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% block title %}View All Users{% endblock %}
+{% block content %}
+    {% for user, posts in users_with_posts %}
+        <h2>User: {{ user.username }}</h2>
+        <p>Email: {{ user.email }}</p>
+        <h3>Posts:</h3>
+        {% if posts %}
+            <ul>
+                {% for post in posts %}
+                    <li>{{ post.title }} - {{ post.content }}</li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p>No posts yet.</p>
+        {% endif %}
+        <hr>
+    {% endfor %}
+{% endblock %}

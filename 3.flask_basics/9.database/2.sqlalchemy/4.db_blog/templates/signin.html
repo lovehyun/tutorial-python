@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block title %}Sign Up{% endblock %}
+{% block content %}
+    {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            {% for msg in messages %}
+                <p>{{ msg }}</p>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+    <form method="post">
+        <label for="name">Username:</label>
+        <input type="text" id="username" name="username" required>
+        <br>
+        <label for="password">Password:</label>
+        <input type="password" id="password" name="password" required>
+        <br>
+        <label for="email">Email:</label>
+        <input type="email" id="email" name="email" required>
+        <br>
+        <button type="submit">Sign Up</button>
+    </form>
+{% endblock %}
