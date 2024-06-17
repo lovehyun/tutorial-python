@@ -8,6 +8,7 @@ html_doc = """
 <body>
     <a href="https://www.example.com">예제 링크</a>
     <img src="example.jpg" alt="예제 이미지">
+    <img src="example2.jpg" alt="예제 이미지2" width="500" height="600">
 </body>
 </html>
 """
@@ -23,8 +24,9 @@ print(link_tag['href'])
 img_tag = soup.img
 print(img_tag['src'])
 
+# 두 번째 이미지 태그 가져오기
+img_tags = soup.find_all('img')
+img_tag2 = img_tags[1] if len(img_tags) > 1 else None
 
-# 스크린샷 저장하기
-soup.save_screenshot('example_com.png')
-
-soup.quit()
+print(f"Src: {img_tag['src']}, Alt: {img_tag.get('alt', 'No alt')}, Width: {img_tag.get('width', 'No width')}, Height: {img_tag.get('height', 'No height')}")
+print(f"Src: {img_tag2['src']}, Alt: {img_tag2.get('alt', 'No alt')}, Width: {img_tag2.get('width', 'No width')}, Height: {img_tag2.get('height', 'No height')}")

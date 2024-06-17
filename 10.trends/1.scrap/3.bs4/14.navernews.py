@@ -28,8 +28,7 @@ def get_naver_sportsnews():
         # print(f"URL: {news_content_url}")
 
         # 해당 뉴스 기사 페이지 내용을 가져오는 함수 호출
-        get_news_content(news_content_url)
-        break
+        # get_news_content(news_content_url)
 
 
 # 개별 뉴스 기사 페이지의 내용을 가져오는 함수
