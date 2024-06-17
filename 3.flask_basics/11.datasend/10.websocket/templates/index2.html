@@ -1,0 +1,44 @@
+<!doctype html>
+<html>
+<head>
+    <title>Flask WebSocket Example</title>
+    <script src="https://cdn.socket.io/4.0.0/socket.io.min.js"></script>
+    <script type="text/javascript">
+        document.addEventListener('DOMContentLoaded', function() {
+            var socket = io();
+
+            socket.on('connect', function() {
+                console.log('Connected to server');
+            });
+
+            socket.on('number', function(data) {
+                var li = document.createElement("li");
+                li.appendChild(document.createTextNode(data.number));
+                document.getElementById("numbers").appendChild(li);
+            });
+
+            document.getElementById('startbutton').onclick = function() {
+                socket.emit('start');
+            };
+
+            document.getElementById('stopbutton').onclick = function() {
+                socket.emit('stop');
+            };
+
+            document.getElementById('clearbutton').onclick = function() {
+                var list = document.getElementById("numbers");
+                while (list.firstChild) {
+                    list.removeChild(list.firstChild);
+                }
+            };
+        });
+    </script>
+</head>
+<body>
+    <h1>Flask WebSocket Example</h1>
+    <button id="startbutton">Start</button>
+    <button id="stopbutton">Stop</button>
+    <button id="clearbutton">Clear</button>
+    <ul id="numbers"></ul>
+</body>
+</html>
