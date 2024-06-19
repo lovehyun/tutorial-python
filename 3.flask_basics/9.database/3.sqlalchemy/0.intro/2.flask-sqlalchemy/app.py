@@ -1,3 +1,5 @@
+# pip install flask-sqlalchemy
+
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 
@@ -15,7 +17,7 @@ class User(db.Model):
     name = db.Column(db.String(80))
     age = db.Column(db.Integer)
 
-# 데이터베이스 테이블 생성
+# 데이터베이스 테이블 생성 (초기화)
 with app.app_context():
     db.create_all()
 

@@ -37,6 +37,9 @@ def delete_user(id):
     if user:
         db.session.delete(user)
         db.session.commit()
+        flash(f'User id={id} has deleted')
+    else:
+        flash('User not found')
     return redirect(url_for('index'))
 
 if __name__ == '__main__':

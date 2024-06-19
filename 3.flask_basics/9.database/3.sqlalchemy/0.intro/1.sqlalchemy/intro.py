@@ -1,3 +1,5 @@
+# pip install sqlalchemy
+
 # 여기서는 SQLAlchemy의 주요 구성 요소들을 임포트하고 있습니다:
 # - create_engine: 데이터베이스 연결을 생성하는 함수.
 # - Column, Integer, String: 데이터베이스 테이블의 컬럼을 정의하는 데 사용되는 클래스들.
