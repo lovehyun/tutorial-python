@@ -10,9 +10,10 @@
     {% endwith %}
 <form action="#" method="POST">
     <p>Change Account</p>
-    <p><input type="email" name="email" placeholder="Enter Email" value="{{email if email}}"/>
-    <input type="submit" name="action" value="submit"/></p>
-    <p>Delete Account
-    <input type="submit" name="action" value="delete" onclick="return confirm('Are you sure you want to delete your account?')"/>
+    <br>Password: <input type="password" name="password" placeholder="Enter Password"/>
+    <br><input type="email" name="email" placeholder="Enter Email" value="{{email if email}}"/>
+    <p><input type="submit" name="action" value="submit"/></p>
+    <p>Delete Account</p>
+    <p><input type="submit" name="action" value="delete" onclick="return confirm('Are you sure you want to delete your account?')"/>
 </form>
 {% endblock %}

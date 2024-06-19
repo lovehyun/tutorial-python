@@ -74,7 +74,8 @@ def signin():
 
 @app.route("/view")
 def view():
-    return render_template("view.html", values=User.query.all())
+    users = User.query.all()
+    return render_template("view.html", users=users)
 
 @app.route("/user", methods=["POST", "GET"])
 def user():
@@ -85,12 +86,18 @@ def user():
         if request.method == "POST":
             action = request.form["action"]
             if action == "submit":
-                email = request.form["email"]
-                session["email"] = email
+                email = request.form.get("email")
+                password = request.form.get("password")
                 found_user = User.query.filter_by(username=user).first()
-                found_user.email = email
+
+                if email:
+                    session["email"] = email
+                    found_user.email = email
+                if password:
+                    found_user.password = password
+
                 db.session.commit()
-                flash("Email was saved!")
+                flash("Account details were saved!")
             elif action == "delete":
                 found_user = User.query.filter_by(username=user).delete()
                 db.session.commit()

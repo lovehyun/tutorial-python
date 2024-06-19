@@ -20,7 +20,9 @@ with app.app_context():
     db.create_all()
 
     # 새로운 사용자 추가
-    new_user = User(name='John Doe', age=30)
+    new_user = User(name='Alice', age=30)
+    db.session.add(new_user)
+    new_user = User(name='Bob', age=20)
     db.session.add(new_user)
     db.session.commit()
 

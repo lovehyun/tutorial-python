@@ -78,7 +78,7 @@ def login():
 @app.route("/logout")
 def logout():
     flash("You have been logged out!", "info")
-    session.pop("user", None)
+    session.pop("user", None) # user 가 없을때 KeyError를 방지하기 위해서 None 을 추가
     return redirect(url_for("login"))
 
 if __name__ == "__main__":

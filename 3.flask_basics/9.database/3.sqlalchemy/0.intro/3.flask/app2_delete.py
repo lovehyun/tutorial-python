@@ -16,9 +16,7 @@ db.init_app(app)
 @app.route('/')
 def index():
     users = User.query.all()
-    for user in users:
-        print(user)  # This will call the __repr__ method of the User class
-    return render_template('index.html', users=users)
+    return render_template('index2.html', users=users)
 
 @app.route('/add', methods=['POST'])
 def add_user():
@@ -33,6 +31,14 @@ def add_user():
     db.session.commit()
     return redirect(url_for('index'))
 
+@app.route('/delete/<int:id>')
+def delete_user(id):
+    user = db.session.get(User, id)
+    if user:
+        db.session.delete(user)
+        db.session.commit()
+    return redirect(url_for('index'))
+
 if __name__ == '__main__':
     # 데이터베이스 초기화
     db_path = os.path.join(app.instance_path, DATABASE_NAME)
@@ -43,7 +49,6 @@ if __name__ == '__main__':
 
     # 사용자가 없으면, 기본 사용자 추가
     with app.app_context():
-        # if not db.session.query(User).first():  # 둘다 동일한 코드
         if not User.query.first():
             print('사용자 초기화...')
             user1 = User(name="user1", age=30)

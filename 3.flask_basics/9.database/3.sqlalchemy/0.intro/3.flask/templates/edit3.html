@@ -1,0 +1,15 @@
+<!doctype html>
+<html>
+<head>
+    <title>Edit User</title>
+</head>
+<body>
+    <h1>Edit User</h1>
+    <form action="{{ url_for('update_user', id=user.id) }}" method="post">
+        <input type="text" name="name" value="{{ user.name }}" placeholder="Name">
+        <input type="number" name="age" value="{{ user.age }}" placeholder="Age">
+        <button type="submit">Update User</button>
+    </form>
+    <a href="{{ url_for('index') }}">Cancel</a>
+</body>
+</html>

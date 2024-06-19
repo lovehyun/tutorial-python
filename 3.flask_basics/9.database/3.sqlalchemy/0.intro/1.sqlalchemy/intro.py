@@ -5,7 +5,7 @@
 # - sessionmaker: 데이터베이스 세션을 생성하는 함수.
 
 from sqlalchemy import create_engine, Column, Integer, String
-from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy.orm import declarative_base
 from sqlalchemy.orm import sessionmaker
 
 # 데이터베이스 엔진 생성 (SQLite 사용)

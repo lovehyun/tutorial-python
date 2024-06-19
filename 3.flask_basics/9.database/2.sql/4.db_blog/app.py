@@ -119,14 +119,21 @@ def user():
             cur = conn.cursor()
             if action == "submit":
                 email = request.form["email"]
-                session["email"] = email
-                cur.execute("UPDATE users SET email = ? WHERE username = ?", (email, username))
+                password = request.form["password"]
+
+                if email:
+                    session["email"] = email
+                    cur.execute("UPDATE users SET email = ? WHERE username = ?", (email, user))
+                if password:
+                    cur.execute("UPDATE users SET password = ? WHERE username = ?", (password, user))
+                
                 conn.commit()
-                flash("Email was saved!")
+                flash("Account details were saved!")
             elif action == "delete":
                 cur.execute("DELETE FROM users WHERE username = ?", (username,))
                 conn.commit()
                 conn.close()
+                flash("Account deleted!")
                 return redirect(url_for("logout"))
             conn.close()
         else:

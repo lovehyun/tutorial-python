@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% block title %}View All Users{% endblock %}
 {% block content %}
-    {% for item in values %}
-        <p>Name: {{ item.name }}, Password: {{ item.password }}, Email: {{ item.email }}</p>
+    {% for user in users %}
+        <p>Username: {{ user.username }}, Password: {{ user.password }}, Email: {{ user.email }}</p>
     {% endfor %}
 {% endblock %}

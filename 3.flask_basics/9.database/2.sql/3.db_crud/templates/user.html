@@ -8,11 +8,40 @@
             {% endfor %}
         {% endif %}
     {% endwith %}
+    
 <form action="#" method="POST">
     <p>Change Account</p>
-    <p><input type="email" name="email" placeholder="Enter Email" value="{{email if email}}"/>
-    <input type="submit" name="action" value="submit"/></p>
-    <p>Delete Account
-    <input type="submit" name="action" value="delete"/></p>
+    <p>Username: {{ session.user }}
+    <br>Password: <input type="password" name="password" placeholder="Enter Password"/>
+    <br>Email: <input type="email" name="email" placeholder="Enter Email" value="{{email if email}}"/>
+    </p>
+    <p><input type="submit" name="action" value="submit"/></p>
+    <p>Delete Account</p>
+    <p><input type="submit" name="action" value="delete"/></p>
 </form>
 {% endblock %}
+
+<!--
+<form id="delete-form" onsubmit="deleteAccount(event)">
+    <p>Delete Account</p>
+    <p><input type="submit" name="action" value="delete"/></p>
+</form>
+
+<script>
+function deleteAccount(event) {
+    event.preventDefault();
+    fetch('{{ url_for("delete_user") }}', {
+        method: 'DELETE',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+    }).then(response => {
+        if (response.status === 204) {
+            window.location.href = '{{ url_for("logout") }}';
+        } else {
+            alert('Error deleting account.');
+        }
+    });
+}
+</script>
+-->

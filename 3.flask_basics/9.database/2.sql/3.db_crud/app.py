@@ -98,9 +98,9 @@ def view():
     conn = get_db_connection()
     cur = conn.cursor()
     cur.execute("SELECT * FROM users")
-    values = cur.fetchall()
+    users = cur.fetchall()
     conn.close()
-    return render_template("view.html", values=values)
+    return render_template("view.html", users=users)
 
 @app.route("/user", methods=["POST", "GET"])
 def user():
@@ -115,10 +115,16 @@ def user():
             
             if action == "submit":
                 email = request.form["email"]
-                session["email"] = email
-                cur.execute("UPDATE users SET email = ? WHERE username = ?", (email, user))
+                password = request.form["password"]
+
+                if email:
+                    session["email"] = email
+                    cur.execute("UPDATE users SET email = ? WHERE username = ?", (email, user))
+                if password:
+                    cur.execute("UPDATE users SET password = ? WHERE username = ?", (password, user))
+                
                 conn.commit()
-                flash("Email was saved!")
+                flash("Account details were saved!")
             elif action == "delete":
                 cur.execute("DELETE FROM users WHERE username = ?", (user,))
                 conn.commit()
@@ -134,6 +140,23 @@ def user():
     else:
         flash("You are not logged in!")
         return redirect(url_for("login"))
+
+# @app.route("/user/delete", methods=["DELETE"])
+# def delete_user():
+#     if "user" in session:
+#         user = session["user"]
+#         conn = get_db_connection()
+#         cur = conn.cursor()
+#         cur.execute("DELETE FROM users WHERE username = ?", (user,))
+#         conn.commit()
+#         conn.close()
+#         session.pop("user", None)
+#         session.pop("email", None)
+#         flash("Your account has been deleted.")
+#         return '', 204
+#     else:
+#         flash("You are not logged in!")
+#         return redirect(url_for("login"))
 
 @app.route("/logout")
 def logout():
