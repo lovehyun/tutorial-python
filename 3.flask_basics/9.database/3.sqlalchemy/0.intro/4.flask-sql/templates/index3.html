@@ -1,0 +1,32 @@
+<!doctype html>
+<html>
+<head>
+    <title>Flask SQLite Example</title>
+</head>
+<body>
+    <h1>Users</h1>
+    {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            <ul class="flashes">
+                {% for message in messages %}
+                    <p style="color:red">{{ message }}</p>
+                {% endfor %}
+            </ul>
+        {% endif %}
+    {% endwith %}
+
+    <form action="/add" method="post">
+        <input type="text" name="name" placeholder="Name">
+        <input type="number" name="age" placeholder="Age">
+        <button type="submit">Add User</button>
+    </form>
+    <ul>
+        {% for user in users %}
+            <li>{{ user.name }} ({{ user.age }} years old)
+                <a href="{{ url_for('delete_user', id=user.id) }}">Delete</a>
+                <a href="{{ url_for('edit_user', id=user.id) }}">Edit</a>
+            </li>
+        {% endfor %}
+    </ul>
+</body>
+</html>

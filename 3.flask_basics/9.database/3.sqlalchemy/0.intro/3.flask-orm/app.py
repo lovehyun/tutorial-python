@@ -22,6 +22,10 @@ def index():
 
 @app.route('/add', methods=['POST'])
 def add_user():
+    # GET 방식이었다면...
+    # name = request.args.get('name')
+    # age = request.args.get('age')
+    
     name = request.form.get('name')
     age = request.form.get('age')
     if not name or not age:
