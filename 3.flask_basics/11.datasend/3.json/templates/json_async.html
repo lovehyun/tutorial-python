@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>JSON Data Example</title>
+    <script>
+        async function sendData(event) {
+            event.preventDefault();  // 폼의 기본 제출 기능을 비활성화
+
+            const data = {
+                name: document.getElementById('name').value,
+                age: document.getElementById('age').value
+            };
+
+            const response = await fetch('/submit_json', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data)
+            });
+
+            const result = await response.text();
+            document.getElementById('result').innerText = result;
+        }
+
+        async function sendData2() {
+            const data = {
+                name: document.getElementById('name2').value,
+                age: document.getElementById('age2').value
+            };
+
+            const response = await fetch('/submit_json', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data)
+            });
+
+            const result = await response.text();
+            document.getElementById('result').innerText = result;
+        }
+
+        function attachEvent() {
+            const button = document.getElementById('submitButton');
+            button.addEventListener('click', function(event) {
+                sendData(event);
+            });
+        }
+
+        document.addEventListener('DOMContentLoaded', attachEvent);
+    </script>
+</head>
+<body>
+    <h1>JSON, Form Data Example</h1>
+    <form id="dataForm">
+        <label for="name">Name:</label>
+        <input type="text" id="name" name="name">
+        <label for="age">Age:</label>
+        <input type="number" id="age" name="age">
+        <button type="submit" id="submitButton" onclick="sendData(event)">Send JSON</button>
+    </form>
+    
+    <h1>JSON, None Form Data Example</h1>
+    <label for="name">Name:</label>
+    <input type="text" id="name2">
+    <label for="age">Age:</label>
+    <input type="number" id="age2">
+    <button onclick="sendData2()">Send JSON</button>
+
+    <p id="result"></p>
+</body>
+</html>

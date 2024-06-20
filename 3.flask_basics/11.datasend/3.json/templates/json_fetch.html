@@ -3,22 +3,28 @@
 <head>
     <title>JSON Data Example</title>
     <script>
-        async function sendData() {
+        function sendData(event) {
+            event.preventDefault(); // 폼의 기본 제출 기능을 비활성화
+            
             const data = {
                 name: document.getElementById('name').value,
                 age: document.getElementById('age').value
             };
 
-            const response = await fetch('/submit_json', {
+            fetch('/submit_json', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
                 },
                 body: JSON.stringify(data)
+            })
+            .then(response => response.text())
+            .then(result => {
+                document.getElementById('result').innerText = result;
+            })
+            .catch(error => {
+                console.error('Error:', error);
             });
-
-            const result = await response.text();
-            document.getElementById('result').innerText = result;
         }
     </script>
 </head>
