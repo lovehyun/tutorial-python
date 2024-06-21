@@ -18,6 +18,9 @@ app.secret_key = "hello"
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///movies.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
+# 영화 사이트 주소
+base_url = 'http://www.cine21.com'
+
 # SQLAlchemy와 SocketIO 초기화
 db = SQLAlchemy(app)
 socketio = SocketIO(app, async_mode='threading')
@@ -27,19 +30,22 @@ stop_scraping = False
 
 # 영화 데이터를 저장할 Movie 모델 정의
 class Movie(db.Model):
+    __tablename__ = 'movies'
     id = db.Column(db.Integer, primary_key=True)
     rank = db.Column(db.String(10), nullable=False)
     title = db.Column(db.String(200), nullable=False)
     audience = db.Column(db.String(100), nullable=False)
+    link = db.Column(db.String(100), nullable=True)
 
-    def __init__(self, rank, title, audience):
+    def __init__(self, rank, title, audience, link):
         self.rank = rank
         self.title = title
         self.audience = audience
+        self.link = link
 
 # 영화 데이터를 데이터베이스에 저장하는 함수
-def save_to_db(rank, title, audience):
-    movie = Movie(rank=rank, title=title, audience=audience)
+def save_to_db(rank, title, audience, link=""):
+    movie = Movie(rank=rank, title=title, audience=audience, link=link)
     db.session.add(movie)
     db.session.commit()
 
@@ -58,13 +64,16 @@ def get_movie_lists(driver):
         mov_name_div = boxoffice_li.find_element(By.CSS_SELECTOR, 'div.mov_name')
         people_num_div = boxoffice_li.find_element(By.CSS_SELECTOR, 'div.people_num')
 
+        a_link = boxoffice_li.find_element(By.TAG_NAME, 'a')
+        mov_link = a_link.get_attribute('href')
+
         rank = rank_span.text.strip()
         mov_name = mov_name_div.text.strip() if mov_name_div else ''
-        people_num = people_num_div.text.strip() if people_num_div else ''
+        people_num = people_num_div.text.strip().replace('관객수|', '') if people_num_div else ''
         
-        print(f"순위: {rank}, 영화 제목: {mov_name}, 관객 수: {people_num}")
-        socketio.emit('movie_data', {'rank': rank, 'mov_name': mov_name, 'people_num': people_num}, namespace='/')
-        save_to_db(rank, mov_name, people_num)
+        print(f"순위: {rank}, 영화 제목: {mov_name}, 관객 수: {people_num}, 사이트: {mov_link}")
+        socketio.emit('movie_data', {'rank': rank, 'mov_name': mov_name, 'people_num': people_num, 'link': mov_link}, namespace='/')
+        save_to_db(rank, mov_name, people_num, mov_link)
 
 # 영화를 스크래핑하고 저장하는 함수
 def scrape_and_save_movies():
@@ -75,8 +84,8 @@ def scrape_and_save_movies():
         options = webdriver.ChromeOptions()
         driver = webdriver.Chrome(service=ChromeService(ChromeDriverManager().install()), options=options)
 
-        url = 'http://www.cine21.com/rank/boxoffice/domestic'
-        driver.get(url)
+        ranking_url = base_url + '/rank/boxoffice/domestic'
+        driver.get(ranking_url)
         driver.implicitly_wait(2)
         wait = WebDriverWait(driver, 10)
 
@@ -92,9 +101,10 @@ def scrape_and_save_movies():
 
             if page < total_pages:
                 page_a_tags = wait.until(EC.presence_of_all_elements_located((By.CSS_SELECTOR, "div.page a")))
-                page_a_tags[page - 1].click()
+                page_a_tags[page].click()
                 wait.until(EC.presence_of_all_elements_located((By.CSS_SELECTOR, 'div#boxoffice_list_content li.boxoffice_li')))
                 time.sleep(2)
+
         driver.quit()
         socketio.emit('progress', {'page': total_pages, 'total_pages': total_pages, 'completed': True}, namespace='/')
 

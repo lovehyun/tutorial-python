@@ -16,8 +16,9 @@ options = webdriver.ChromeOptions()
 driver = webdriver.Chrome(service=ChromeService(ChromeDriverManager().install()), options=options)
 
 # 웹 페이지에 접속
-url = 'http://www.cine21.com/rank/boxoffice/domestic'
-driver.get(url)
+base_url = 'http://www.cine21.com'
+ranking_url = base_url + '/rank/boxoffice/domestic'
+driver.get(ranking_url)
 
 # 페이지 로딩을 위해 적정시간 대기
 driver.implicitly_wait(2)
@@ -33,16 +34,17 @@ cur.execute('''
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         rank TEXT NOT NULL,
         title TEXT NOT NULL,
-        audience TEXT NOT NULL
+        audience TEXT NOT NULL,
+        link TEXT
     )
 ''')
 conn.commit()
 
-def save_to_db(rank, title, audience):
+def save_to_db(rank, title, audience, link=""):
     cur.execute('''
-        INSERT INTO movies (rank, title, audience)
-        VALUES (?, ?, ?)
-    ''', (rank, title, audience))
+        INSERT INTO movies (rank, title, audience, link)
+        VALUES (?, ?, ?, ?)
+    ''', (rank, title, audience, link))
     conn.commit()
 
 def get_movie_lists():
@@ -58,12 +60,15 @@ def get_movie_lists():
         mov_name_div = boxoffice_li.find_element(By.CSS_SELECTOR, 'div.mov_name')
         people_num_div = boxoffice_li.find_element(By.CSS_SELECTOR, 'div.people_num')
 
+        a_link = boxoffice_li.find_element(By.TAG_NAME, 'a')
+        mov_link = base_url + a_link.get_attribute('href')
+
         rank = rank_span.text.strip()
         mov_name = mov_name_div.text.strip() if mov_name_div else ''
         people_num = people_num_div.text.strip() if people_num_div else ''
         
         print(f"순위: {rank}, 영화 제목: {mov_name}, 관객 수: {people_num}")
-        save_to_db(rank, mov_name, people_num)
+        save_to_db(rank, mov_name, people_num, mov_link)
 
 # 첫 페이지 가져오기
 get_movie_lists()

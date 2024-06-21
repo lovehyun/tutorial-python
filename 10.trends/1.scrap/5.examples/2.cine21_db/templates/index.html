@@ -16,7 +16,10 @@
         {% if movies %}
             <ul>
                 {% for movie in movies %}
-                    <li>순위: {{ movie.rank }}, 영화 제목: {{ movie.title }}, 관객 수: {{ movie.audience }}</li>
+                    <li>순위: {{ movie.rank }}, 
+                        영화 제목: <a href="{{ movie.link }}" target="_blank">{{ movie.title }}</a>,
+                        관객 수: {{ movie.audience }}
+                    </li>
                 {% endfor %}
             </ul>
         {% else %}

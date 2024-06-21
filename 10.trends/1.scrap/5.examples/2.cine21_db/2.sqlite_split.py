@@ -1,14 +1,13 @@
-# 2. 페이지 반복하며 10페이지 모두다 조회
-
 from selenium import webdriver
 from selenium.webdriver.chrome.service import Service as ChromeService
 from webdriver_manager.chrome import ChromeDriverManager
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
-
 import time
 
+# database 모듈에서 함수들 불러오기
+import cine_database as db_handler
 
 # 크롬 드라이버 경로 설정 및 headless 모드 활성화
 options = webdriver.ChromeOptions()
@@ -28,6 +27,9 @@ driver.implicitly_wait(2)
 # 페이지 로딩 대기 변수 정의
 wait = WebDriverWait(driver, 10)
 
+# SQLite3 데이터베이스 초기화
+conn, cur = db_handler.init_db()
+
 def get_movie_lists():
     # boxoffice_list_content ID를 가진 div 찾기
     boxoffice_list_content = driver.find_element(By.CSS_SELECTOR, 'div#boxoffice_list_content')
@@ -35,7 +37,7 @@ def get_movie_lists():
     # boxoffice_list_content 내의 모든 boxoffice_li 클래스를 가진 li 요소들 찾기
     boxoffice_li_list = boxoffice_list_content.find_elements(By.CSS_SELECTOR, 'li.boxoffice_li')
 
-    # 각 boxoffice_li에 대해 mov_name, people_num 클래스를 가진 div의 텍스트 출력
+    # 각 boxoffice_li에 대해 mov_name, people_num 클래스를 가진 div의 텍스트 출력 및 저장
     for _, boxoffice_li in enumerate(boxoffice_li_list, start=1):
         rank_span = boxoffice_li.find_element(By.CSS_SELECTOR, 'span.grade')
         mov_name_div = boxoffice_li.find_element(By.CSS_SELECTOR, 'div.mov_name')
@@ -47,20 +49,15 @@ def get_movie_lists():
         rank = rank_span.text.strip()
         mov_name = mov_name_div.text.strip() if mov_name_div else ''
         people_num = people_num_div.text.strip() if people_num_div else ''
+        
         print(f"순위: {rank}, 영화 제목: {mov_name}, 관객 수: {people_num}")
-
+        db_handler.save_to_db(conn, cur, rank, mov_name, people_num)
 
 # 첫 페이지 가져오기
 get_movie_lists()
 
-# 두번째 페이지 가져오기
-# page_a_tags = driver.find_elements(By.CSS_SELECTOR, "div.page a")
-# page_a_tags[1].click()
-# get_movie_lists()
-
 # 두번째 페이지 및 반복적으로 가져오기
 for page in range(2, 11):
-    # page_a_tags = driver.find_elements(By.CSS_SELECTOR, "div.page a")
     page_a_tags = wait.until(EC.presence_of_all_elements_located((By.CSS_SELECTOR, "div.page a")))
     
     # 다음 페이지 링크 클릭 (첫 번째 요소는 현재 페이지를 가리키므로 제외)
@@ -75,6 +72,12 @@ for page in range(2, 11):
         
         # 영화 리스트 가져오기
         get_movie_lists()
-        
+
 # 웹 드라이버 종료
 driver.quit()
+
+# 데이터베이스의 내용을 조회하여 화면에 출력
+db_handler.query_and_display_movies(cur)
+
+# SQLite3 연결 종료
+db_handler.close_db(conn)

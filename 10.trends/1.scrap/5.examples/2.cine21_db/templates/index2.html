@@ -16,11 +16,33 @@
                 }
             });
 
+            // socket.on('movie_data', (data) => {
+            //     const li = document.createElement('li');
+            //     li.textContent = `순위: ${data.rank}, 영화 제목: ${data.mov_name}, 관객 수: ${data.people_num}`;
+            //     movieList.appendChild(li);
+            // });
+
             socket.on('movie_data', (data) => {
                 const li = document.createElement('li');
-                li.textContent = `순위: ${data.rank}, 영화 제목: ${data.mov_name}, 관객 수: ${data.people_num}`;
+                const rankText = document.createTextNode(`순위: ${data.rank}, `);
+                
+                // 영화 제목을 위한 a 요소 생성
+                const a = document.createElement('a');
+                a.href = data.link; // movie.link에 해당하는 데이터 속성 사용
+                a.target = '_blank'; // 새로운 탭에서 열기
+                a.textContent = data.mov_name; // 영화 제목 텍스트 설정
+                
+                const audienceText = document.createTextNode(`, 관객 수: ${data.people_num}`);
+                
+                // li 요소에 텍스트 추가
+                li.appendChild(rankText);
+                li.appendChild(a);
+                li.appendChild(audienceText);
+                
+                // movieList에 li 요소 추가
                 movieList.appendChild(li);
             });
+
         });
     </script>
 </head>
@@ -45,7 +67,10 @@
         {% if movies %}
             <ul>
                 {% for movie in movies %}
-                    <li>순위: {{ movie.rank }}, 영화 제목: {{ movie.title }}, 관객 수: {{ movie.audience }}</li>
+                <li>순위: {{ movie.rank }}, 
+                    영화 제목: <a href="{{ movie.link }}" target="_blank">{{ movie.title }}</a>,
+                    관객 수: {{ movie.audience }}
+                </li>
                 {% endfor %}
             </ul>
         {% else %}

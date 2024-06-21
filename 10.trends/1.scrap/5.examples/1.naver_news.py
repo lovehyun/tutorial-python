@@ -11,6 +11,7 @@ bs = BeautifulSoup(response.text, 'html.parser')
 
 # 헤드라인 섹션 - section_article 클래스를 가진 div 태그 찾기
 section_articles = bs.find_all('div', class_='section_article as_headline _TEMPLATE')
+# section_articles = bs.select('div.section_article.as_headline._TEMPLATE')
 
 # 각 section_article에 대해 sa_text_title 클래스를 가진 태그 찾아 출력
 for section_article in section_articles:

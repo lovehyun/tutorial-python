@@ -15,21 +15,26 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///movies.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.permanent_session_lifetime = timedelta(minutes=5)
 
+base_url = 'http://www.cine21.com'
+
 db = SQLAlchemy(app)
 
 class Movie(db.Model):
+    __tablename__ = "movies"
     id = db.Column(db.Integer, primary_key=True)
     rank = db.Column(db.String(10), nullable=False)
     title = db.Column(db.String(200), nullable=False)
     audience = db.Column(db.String(100), nullable=False)
+    link = db.Column(db.String(100), nullable=True)
 
-    def __init__(self, rank, title, audience):
+    def __init__(self, rank, title, audience, link):
         self.rank = rank
         self.title = title
         self.audience = audience
+        self.link = link
 
-def save_to_db(rank, title, audience):
-    movie = Movie(rank=rank, title=title, audience=audience)
+def save_to_db(rank, title, audience, link=""):
+    movie = Movie(rank=rank, title=title, audience=audience, link=link)
     db.session.add(movie)
     db.session.commit()
 
@@ -42,19 +47,22 @@ def get_movie_lists(driver):
         mov_name_div = boxoffice_li.find_element(By.CSS_SELECTOR, 'div.mov_name')
         people_num_div = boxoffice_li.find_element(By.CSS_SELECTOR, 'div.people_num')
 
+        a_link = boxoffice_li.find_element(By.TAG_NAME, 'a')
+        mov_link = a_link.get_attribute('href')
+
         rank = rank_span.text.strip()
         mov_name = mov_name_div.text.strip() if mov_name_div else ''
-        people_num = people_num_div.text.strip() if people_num_div else ''
+        people_num = people_num_div.text.strip().replace('관객수|', '') if people_num_div else ''
         
         print(f"순위: {rank}, 영화 제목: {mov_name}, 관객 수: {people_num}")
-        save_to_db(rank, mov_name, people_num)
+        save_to_db(rank, mov_name, people_num, mov_link)
 
 def scrape_and_save_movies():
     options = webdriver.ChromeOptions()
     driver = webdriver.Chrome(service=ChromeService(ChromeDriverManager().install()), options=options)
 
-    url = 'http://www.cine21.com/rank/boxoffice/domestic'
-    driver.get(url)
+    ranking_url = base_url + '/rank/boxoffice/domestic'
+    driver.get(ranking_url)
     driver.implicitly_wait(2)
     wait = WebDriverWait(driver, 10)
 
@@ -67,6 +75,7 @@ def scrape_and_save_movies():
             wait.until(EC.presence_of_all_elements_located((By.CSS_SELECTOR, 'div#boxoffice_list_content li.boxoffice_li')))
             time.sleep(2)
             get_movie_lists(driver)
+
     driver.quit()
 
 @app.route("/", methods=["GET", "POST"])

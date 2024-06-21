@@ -4,7 +4,7 @@
 from selenium import webdriver
 
 # Chrome 드라이버 초기화
-driver = webdriver.Chrome('path/to/your/chromedriver')
+driver = webdriver.Chrome()
 
 # 웹 페이지 열기
 driver.get('https://www.google.com')
@@ -17,7 +17,7 @@ driver.quit()
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 
-driver = webdriver.Chrome('path/to/your/chromedriver')
+driver = webdriver.Chrome()
 driver.get('https://www.google.com')
 
 # 요소 찾기
@@ -30,10 +30,3 @@ search_box.send_keys('Selenium')
 search_box.send_keys(Keys.RETURN)
 
 driver.quit()
-
-
-# driver = webdriver.Chrome('path/to/your/chromedriver')
-# driver.get('https://www.example.com')
-
-# # 요소의 텍스트 가져오기
-# element = driver.find_element_by_tag_name('h1')
