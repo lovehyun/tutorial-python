@@ -30,10 +30,10 @@
                     clearTable();
                     data.forEach(store => {
                         const row = table.insertRow();
-                        row.insertCell(0).textContent = store[0];
-                        row.insertCell(1).textContent = store[1];
-                        row.insertCell(2).textContent = store[2];
-                        row.insertCell(3).textContent = store[3];
+                        row.insertCell(0).textContent = store.Id;
+                        row.insertCell(1).textContent = store.Name;
+                        row.insertCell(2).textContent = store.Type;
+                        row.insertCell(3).textContent = store.Address;
                     });
                 })
                 .catch(error => console.error('Error fetching store data:', error));
@@ -48,10 +48,10 @@
                     clearTable();
                     data.forEach(store => {
                         const row = table.insertRow();
-                        row.insertCell(0).textContent = store[0];
-                        row.insertCell(1).textContent = store[1];
-                        row.insertCell(2).textContent = store[2];
-                        row.insertCell(3).textContent = store[3];
+                        row.insertCell(0).textContent = store.Id;
+                        row.insertCell(1).textContent = store.Name;
+                        row.insertCell(2).textContent = store.Type;
+                        row.insertCell(3).textContent = store.Address;
                     });
                 })
                 .catch(error => console.error('Error searching store data:', error));
