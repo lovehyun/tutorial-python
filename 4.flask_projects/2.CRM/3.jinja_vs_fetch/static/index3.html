@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Store List</title>
+</head>
+<body>
+    <h1>Store List</h1>
+    <input type="text" id="search-input" placeholder="Search by store name">
+    <button onclick="searchStores()">Search</button>
+    <table border="1" id="store-table">
+        <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Type</th>
+            <th>Address</th>
+        </tr>
+    </table>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            fetchStores();
+        });
+
+        function fetchStores() {
+            fetch('/api/stores')
+                .then(response => response.json())
+                .then(data => {
+                    const table = document.getElementById('store-table');
+                    clearTable();
+                    data.forEach(store => {
+                        const row = table.insertRow();
+                        row.insertCell(0).textContent = store[0];
+                        row.insertCell(1).textContent = store[1];
+                        row.insertCell(2).textContent = store[2];
+                        row.insertCell(3).textContent = store[3];
+                    });
+                })
+                .catch(error => console.error('Error fetching store data:', error));
+        }
+
+        function searchStores() {
+            const name = document.getElementById('search-input').value;
+            fetch(`/api/stores?name=${encodeURIComponent(name)}`)
+                .then(response => response.json())
+                .then(data => {
+                    const table = document.getElementById('store-table');
+                    clearTable();
+                    data.forEach(store => {
+                        const row = table.insertRow();
+                        row.insertCell(0).textContent = store[0];
+                        row.insertCell(1).textContent = store[1];
+                        row.insertCell(2).textContent = store[2];
+                        row.insertCell(3).textContent = store[3];
+                    });
+                })
+                .catch(error => console.error('Error searching store data:', error));
+        }
+
+        function clearTable() {
+            const table = document.getElementById('store-table');
+            while (table.rows.length > 1) {
+                table.deleteRow(1);
+            }
+        }
+    </script>
+</body>
+</html>

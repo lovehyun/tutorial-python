@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Store List</title>
+</head>
+<body>
+    <h1>Store List</h1>
+    <table border="1">
+        <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Type</th>
+            <th>Address</th>
+        </tr>
+        {% for store in stores %}
+        <tr>
+            <td>{{ store[0] }}</td>
+            <td>{{ store[1] }}</td>
+            <td>{{ store[2] }}</td>
+            <td>{{ store[3] }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+</body>
+</html>
