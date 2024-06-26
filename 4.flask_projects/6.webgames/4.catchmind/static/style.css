@@ -1,0 +1,14 @@
+canvas {
+    border: 1px solid black;
+    display: block;
+    margin: 20px auto;
+}
+
+#guessInput {
+    display: block;
+    margin: 20px auto;
+    width: 80%;
+    height: 50px;
+    padding: 10px;
+    font-size: 16px;
+}

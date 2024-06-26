@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Catch Mind Game</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.socket.io/4.0.0/socket.io.min.js"></script> <!-- CDN 링크 추가 -->
+    <script defer src="game2.js"></script>
+</head>
+<body>
+    <canvas id="gameCanvas" width="800" height="600"></canvas>
+    <textarea id="guessInput" placeholder="Enter your guess"></textarea>
+    <button id="clearCanvas" disabled>Clear Canvas</button>
+    <div id="status">Connecting...</div>
+    <div id="wordDisplay"></div>
+</body>
+</html>
