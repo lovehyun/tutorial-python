@@ -45,7 +45,8 @@ def login():
         user = query_db('SELECT * FROM users WHERE username = ?', [username], one=True)
         if user and bcrypt.checkpw(password, user['password']):
             flash('로그인 성공!', 'success')
-            return redirect(url_for('index'))
+            # return redirect(url_for('index'))
+            return redirect(url_for('dashboard'))
         else:
             flash('로그인 실패. 사용자 이름 또는 비밀번호가 올바르지 않습니다.', 'danger')
     return render_template('login2_bootstrap.html')
@@ -61,7 +62,11 @@ def register():
         db.commit()
         flash('회원가입 성공!', 'success')
         return redirect(url_for('login'))
-    return render_template('register2_bootstrap.html')
+    return render_template('register3_bootstrap.html')
+
+@app.route('/dashboard')
+def dashboard():
+    return render_template('dashboard3.html')
 
 if __name__ == '__main__':
     app.run(debug=True)
