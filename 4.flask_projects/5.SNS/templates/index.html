@@ -7,16 +7,23 @@
     {% for tweet in tweets %}
         <div class="tweet">
             <p>{{ tweet.content }}</p>
-            <small>{{ tweet.user.username }}</small>
-            {% if current_user.has_liked(tweet) %}
-                <form action="/unlike/{{ tweet.id }}" method="POST">
-                    <button type="submit">Unlike</button>
-                </form>
-            {% else %}
-                <form action="/like/{{ tweet.id }}" method="POST">
-                    <button type="submit">Like</button>
-                </form>
-            {% endif %}
+            <p>{{ tweet.user.username }}</p>
+            <div class="tweet-actions">
+                {% if current_user.is_authenticated %}
+                    {% if current_user.has_liked(tweet) %}
+                        <form action="/unlike/{{ tweet.id }}" method="POST">
+                            <button type="submit">Unlike</button>
+                        </form>
+                    {% else %}
+                        <form action="/like/{{ tweet.id }}" method="POST">
+                            <button type="submit">Like</button>
+                        </form>
+                    {% endif %}
+                {% else %}
+                    <p><a href="{{ url_for('login') }}">Log in to like</a></p>
+                {% endif %}
+                <span class="likes-count">Likes: {{ tweet.likes_count }}</span> <!-- 좋아요 수 표시 -->
+            </div>
         </div>
     {% endfor %}
 {% endblock %}

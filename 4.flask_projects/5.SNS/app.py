@@ -25,6 +25,7 @@ class User(UserMixin, db.Model):
         if not self.has_liked(tweet):
             like = Like(user_id=self.id, tweet_id=tweet.id)
             db.session.add(like)
+            tweet.likes_count += 1  # 트윗의 좋아요 수 증가
             db.session.commit()
 
     # 사용자가 특정 트윗의 좋아요를 취소하는 함수
@@ -32,6 +33,7 @@ class User(UserMixin, db.Model):
         like = Like.query.filter_by(user_id=self.id, tweet_id=tweet.id).first()
         if like:
             db.session.delete(like)
+            tweet.likes_count -= 1  # 트윗의 좋아요 수 감소
             db.session.commit()
 
     # 사용자가 특정 트윗을 좋아요했는지 확인하는 함수
@@ -44,6 +46,7 @@ class Tweet(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     user = db.relationship('User', backref=db.backref('tweets', lazy=True))
     likes = db.relationship('Like', backref='tweet', lazy=True)
+    likes_count = db.Column(db.Integer, default=0)  # 좋아요 수를 저장하는 필드 추가
 
 class TweetForm(FlaskForm):
     content = TextAreaField('트윗', validators=[DataRequired(), Length(max=280)])
@@ -57,7 +60,7 @@ class EditProfileForm(FlaskForm):
 # 로그인 관련 함수
 @login_manager.user_loader
 def load_user(user_id):
-    return User.query.get(int(user_id))
+    return db.session.get(User, int(user_id))
 
 # 로그인 폼
 class LoginForm(FlaskForm):
@@ -91,6 +94,7 @@ def login():
         user = User.query.filter_by(email=form.email.data).first()
         if user and user.password == form.password.data:
             login_user(user)
+            flash('로그인에 성공하였습니다!', 'success')
             return redirect(url_for('index'))
         else:
             flash('이메일 또는 비밀번호가 올바르지 않습니다.', 'danger')
@@ -100,6 +104,7 @@ def login():
 @login_required
 def logout():
     logout_user()
+    flash('로그아웃 되었습니다!', 'success')
     return redirect(url_for('index'))
 
 @app.route('/register', methods=['GET', 'POST'])
@@ -109,6 +114,7 @@ def register():
         new_user = User(username=form.username.data, email=form.email.data, password=form.password.data)
         db.session.add(new_user)
         db.session.commit()
+        flash('회원가입이 완료되었습니다!', 'success')
         return redirect(url_for('login'))
     return render_template('register.html', form=form)
 
@@ -154,29 +160,19 @@ def tweet():
 @login_required
 def like_tweet(tweet_id):
     tweet = Tweet.query.get_or_404(tweet_id)
-    like = Like.query.filter_by(user_id=current_user.id, tweet_id=tweet_id).first()
-    if like:
-        db.session.delete(like)
-        db.session.commit()
-        return jsonify({'liked': False})
-    else:
-        new_like = Like(user_id=current_user.id, tweet_id=tweet_id)
-        db.session.add(new_like)
-        db.session.commit()
-        return jsonify({'liked': True})
+    current_user.like_tweet(tweet)
+    flash('트윗을 좋아합니다!', 'success')
+
+    return redirect(url_for('index'))  # 원래 페이지로 리디렉션
 
 @app.route('/unlike/<int:tweet_id>', methods=['POST'])
 @login_required
 def unlike_tweet(tweet_id):
     tweet = Tweet.query.get_or_404(tweet_id)
-    like = Like.query.filter_by(user_id=current_user.id, tweet_id=tweet_id).first()
-    if like:
-        db.session.delete(like)
-        db.session.commit()
-        return jsonify({'success': True, 'unliked': True})
-    else:
-        return jsonify({'success': False, 'error': 'Like not found'})
-    
+    current_user.unlike_tweet(tweet)
+    flash('좋아요를 취소했습니다.', 'info')
+    return redirect(url_for('index'))  # 원래 페이지로 리디렉션
+
 if __name__ == '__main__':
     # 데이터베이스 초기화
     with app.app_context():

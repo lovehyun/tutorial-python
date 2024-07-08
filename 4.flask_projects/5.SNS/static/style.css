@@ -30,3 +30,13 @@ nav ul li {
     padding: 10px;
     margin-bottom: 10px;
 }
+
+.tweet-actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.likes-count {
+    color: #555;
+}
