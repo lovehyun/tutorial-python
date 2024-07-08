@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Revenue Chart</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <div style="width: 600px; height: 400px;">
+        <canvas id="revenue-chart"></canvas>
+    </div>
+
+    <script>
+        // 데이터
+        var labels = ['2023-01', '2023-02', '2023-03', '2023-04', '2023-05', '2023-06', '2023-07', '2023-08', '2023-09', '2023-10', '2023-11', '2023-12'];
+        var data = [797500, 401500, 665500, 660000, 566500, 709500, 753500, 814000, 731500, 715000, 621500, 704000];
+
+        // 차트 그리기
+        var ctx = document.getElementById('revenue-chart').getContext('2d');
+        var chart = new Chart(ctx, {
+            // type: 'bar',
+            type: 'line',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: 'Total Revenue',
+                    data: data,
+                    borderColor: 'rgba(75, 192, 192, 1)',
+                    backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        // beginAtZero: false,
+                        title: {
+                            display: true,
+                            text: '매출액'
+                        }
+                    }
+                }
+            }
+        });
+    </script>
+</body>
+</html>

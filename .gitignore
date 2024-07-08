@@ -7,6 +7,7 @@ __pycache__
 *.sqlite
 *.sqlite3
 *.db
+TEMP/
 
 # flask instance files
 instance/

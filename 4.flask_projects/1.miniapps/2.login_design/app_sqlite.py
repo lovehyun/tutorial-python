@@ -27,13 +27,13 @@ def init_database():
     cursor.close()
     db.close()
 
-def query_db(query, args=(), one=False):
+def query_db(query, args=(), isOne=False):
     db = connect_db()
     cur = db.execute(query, args)
-    rv = cur.fetchall()
+    res = cur.fetchall()
     cur.close()
     db.close()
-    return (rv[0] if rv else None) if one else rv
+    return (res[0] if res else None) if isOne else res
 
 @app.route('/')
 def index():
@@ -44,7 +44,7 @@ def login():
     if request.method == 'POST':
         username = request.form['username']
         password = request.form['password']
-        user = query_db('SELECT * FROM users WHERE username = ? AND password = ?', [username, password], one=True)
+        user = query_db('SELECT * FROM users WHERE username = ? AND password = ?', (username, password), isOne=True)
         if user is not None:
             flash('로그인 성공!', 'success')
             return redirect(url_for('index'))

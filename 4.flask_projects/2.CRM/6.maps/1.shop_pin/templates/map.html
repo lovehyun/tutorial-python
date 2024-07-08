@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Random Seoul Map</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+    <!-- <script src="https://unpkg.com/leaflet.markercluster/dist/leaflet.markercluster-src.js"></script> -->
+    <!-- <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster/dist/MarkerCluster.css" /> -->
+    <!-- <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster/dist/MarkerCluster.Default.css" /> -->
+</head>
+<body>
+    <h1>Random Seoul Map with {{ num_points }} Points</h1>
+    <div id="map" style="height: 600px;">
+        {{ map_html|safe }}
+    </div>
+</body>
+</html>

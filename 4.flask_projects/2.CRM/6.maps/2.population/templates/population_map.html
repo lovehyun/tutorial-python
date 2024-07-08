@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Population Map</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <style>
+        #map {
+            height: 600px;
+        }
+        .marker-label {
+            background-color: transparent !important; /* 마커 라벨 배경을 투명하게 설정 */
+            color: white; /* 글자 색상 설정 */
+            font-weight: bold; /* 글자 굵기 설정 */
+            font-size: 12px; /* 글자 크기 설정 */
+            text-align: center; /* 가운데 정렬 설정 */
+            border: none !important; /* 보더 제거 */
+        }
+    </style>
+</head>
+<body>
+    <div id="map"></div>
+
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+    <script>
+        var seoulData = {{ seoul_data | tojson | safe }};
+        var markers = [];
+
+        // 지도 생성
+        var map = L.map('map').setView([37.5665, 126.9780], 11);
+
+        // 지도 타일 레이어 추가
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors',
+            maxZoom: 18
+        }).addTo(map);
+
+        // 서울 구별 인구 밀도 동그라미 마커 추가
+        for (var i = 0; i < seoulData.length; i++) {
+            var population = parseInt(seoulData[i].population);
+            var radius = calculateMarkerRadius(population);  // 인구수에 따라 크기 계산
+
+            var marker = L.circleMarker([seoulData[i].lat, seoulData[i].lng], {
+                radius: radius,
+                fillColor: 'red',
+                color: 'red',
+                weight: 1,
+                fillOpacity: 0.5
+            }).addTo(map);
+
+            marker.bindTooltip(seoulData[i].district, {
+                permanent: true,
+                direction: 'center',
+                className: 'marker-label'
+            });
+
+            marker.bindPopup('<b>' + seoulData[i].district + '</b><br>인구: ' + seoulData[i].population);
+
+            markers.push(marker);
+        }
+
+        // 동그라미 마커 반지름 계산 함수
+        function calculateMarkerRadius(population) {
+            // 최소 반지름과 최대 반지름 설정
+            var minRadius = 20;
+            var maxRadius = 80;
+
+            // 최소 인구수와 최대 인구수 설정 (예시 값, 실제 데이터에 맞게 수정)
+            var minPopulation = 100000;
+            var maxPopulation = 1000000;
+
+            // 인구수에 따른 크기 계산
+            var radius = minRadius + ((population - minPopulation) / (maxPopulation - minPopulation)) * (maxRadius - minRadius);
+
+            return radius;
+        }
+
+    </script>
+</body>
+</html>

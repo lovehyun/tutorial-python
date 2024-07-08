@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Revenue Chart</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <div style="width: 600px; height: 400px;">
+        <canvas id="revenue-chart"></canvas>
+    </div>
+
+    <script>
+        // 데이터를 서버로부터 가져오는 함수
+        async function fetchData() {
+            const response = await fetch('/data');
+            const data = await response.json();
+            return data;
+        }
+
+        // 차트를 그리는 함수
+        async function drawChart() {
+            const data = await fetchData();
+
+            const ctx = document.getElementById('revenue-chart').getContext('2d');
+            new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: data.labels,
+                    datasets: [{
+                        label: 'Total Revenue',
+                        data: data.values,
+                        borderColor: 'rgba(75, 192, 192, 1)',
+                        backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    scales: {
+                        y: {
+                            beginAtZero: false,
+                            title: {
+                                display: true,
+                                text: '매출액'
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        // 페이지가 로드될 때 차트를 그리기
+        window.onload = drawChart;
+    </script>
+</body>
+</html>
