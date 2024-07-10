@@ -1,6 +1,6 @@
 from flask import Flask, request, send_from_directory, jsonify
 from flask_cors import CORS
-import openai
+from openai import OpenAI
 from dotenv import load_dotenv
 import os
 import time
@@ -12,10 +12,13 @@ load_dotenv()
 
 app = Flask(__name__, static_folder='public')  # 정적 파일 폴더 설정
 CORS(app)  # Cross-Origin Resource Sharing 설정
-port = int(os.environ.get("PORT", 5000))
+port = int(os.environ.get('PORT', 5000))
 
 # OpenAI 셋업
-openai.api_key = os.environ.get('OPENAI_API_KEY')
+openai_api_key = os.environ.get('OPENAI_API_KEY')
+
+# Create a client instance
+client = OpenAI(api_key=openai_api_key)
 
 # logging 설정
 logging.basicConfig(level=logging.INFO)
@@ -99,12 +102,12 @@ def get_chat_gpt_response(conversation_history):
             *conversation_history
         ]
 
-        response = openai.ChatCompletion.create(
+        response = client.chat.completions.create(
             model="gpt-3.5-turbo",
             messages=input_messages
         )
 
-        chatgpt_response = response['choices'][0]['message']['content']
+        chatgpt_response = response.choices[0].message.content
         # logger.info('ChatGPT 응답: %s', chatgpt_response)
         return chatgpt_response
 

@@ -4,7 +4,7 @@ from time import sleep
 from dotenv import load_dotenv
 import os
 
-load_dotenv()
+load_dotenv(dotenv_path='../.env')
 
 openai_api_key = os.getenv('OPENAI_API_KEY')
 
@@ -24,6 +24,12 @@ def get_chat_gpt_response(user_input):
                 'Authorization': f'Bearer {openai_api_key}',
             }
         )
+
+        response.raise_for_status()  # Raise an error for bad HTTP status codes
+        response_data = response.json()
+        print('-'*20)
+        print('Response JSON:', response_data)  # Print the entire response for debugging
+        print('-'*20)
 
         return response.json()['choices'][0]['message']['content']
     except Exception as error:
