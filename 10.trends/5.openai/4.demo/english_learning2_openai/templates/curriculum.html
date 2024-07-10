@@ -1,0 +1,132 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div style="display: flex; align-items: center; justify-content: space-between;">
+    <h2>{{ grade }}학년 - {{ curriculum_title }}</h2>
+    <div id="language_selector">
+        <label for="language_select">음성튜터</label>
+        <select id="language_select">
+            <option value="none">None</option>
+            <option value="en-US">English (US)</option>
+            <option value="ko-KR">한국어 (KR)</option>
+            <option value="auto">Auto (en-US & ko-KR)</option>
+        </select>
+    </div>
+</div>
+<p>여기에 영어 대화 및 학습 내용을 추가하세요.</p>
+
+<div id="chatbox">
+    <div id="chatlog"></div>
+    <form id="chatForm">
+        <input type="text" id="user_input" name="user_input" placeholder="영어로 대화를 시작하세요..." required>
+        <button type="submit">Send</button>
+    </form>
+</div>
+
+<style>
+    /* 채팅 로그 스타일: 스크롤 가능한 영역으로 설정하고 패딩을 추가하여 내용이 잘 보이도록 함 */
+    #chatlog {
+        border: 1px solid #ccc;
+        padding: 10px;
+        height: 300px;
+        overflow-y: scroll;
+    }
+
+    /* 채팅 폼 스타일: 입력 필드와 버튼을 가로로 배치하여 사용하기 쉽게 함 */
+    #chatForm {
+        display: flex;
+        margin-top: 10px;
+    }
+
+    /* 사용자 입력 필드 스타일: 필드를 확장하고 패딩과 폰트 크기를 설정하여 입력하기 쉽게 함 */
+    #user_input {
+        flex: 1;
+        padding: 10px;
+        font-size: 16px;
+    }
+
+    /* 채팅 폼 버튼 스타일: 버튼에 패딩과 폰트 크기를 설정하여 클릭하기 쉽게 함 */
+    #chatForm button {
+        padding: 10px 20px;
+        font-size: 16px;
+    }
+
+    /* 언어 선택기 스타일: 제목 옆에 인라인 블록으로 배치하고 약간의 왼쪽 마진을 추가하여 제목과 구분 */
+    #language_selector {
+        display: flex;
+        align-items: center;
+    }
+
+    #language_select {
+        margin-left: 10px;
+        padding: 5px;
+        font-size: 16px;
+    }
+</style>
+
+<script>
+    document.getElementById('chatForm').addEventListener('submit', function(event) {
+        event.preventDefault();
+        const userInput = document.getElementById('user_input').value;
+        const selectedLanguage = document.getElementById('language_select').value;
+        
+        // 사용자 입력 클리어
+        document.getElementById('user_input').value = '';
+
+        // 백엔드에 요청
+        fetch(window.location.href, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded'
+            },
+            body: new URLSearchParams({
+                'user_input': userInput
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            const chatLog = document.getElementById('chatlog');
+            chatLog.innerHTML += `<div><strong>학생:</strong> ${userInput}</div>`;
+            chatLog.innerHTML += `<div><strong>ChatGPT:</strong> ${data.response}</div>`;
+
+            // chatlog 자동 스크롤
+            chatLog.scrollTop = chatLog.scrollHeight;
+
+            // TTS 기능 추가
+            // 1. 기본 언어 영어
+            // const utterance = new SpeechSynthesisUtterance(data.response);
+            // utterance.lang = 'en-US';  // 영어로 설정
+            // window.speechSynthesis.speak(utterance);
+
+            // 2. 지원되는 음성 확인을 위한 JS 스크립트 (브라우저에서 확인) -->
+            // const voices = window.speechSynthesis.getVoices();
+            // voices.forEach(voice => {
+            //     console.log(`${voice.name} (${voice.lang})`);
+            // });
+            // <--
+
+            // 3. 선택을 통한 언어 변경
+            if (selectedLanguage !== 'none') {
+                const utterance = new SpeechSynthesisUtterance(data.response);
+
+                // 선택된 언어 유형에 따라 TTS 언어 설정
+                if (selectedLanguage === 'en-US') {
+                    utterance.lang = 'en-US';  // 영어로 설정
+                } else if (selectedLanguage === 'ko-KR') {
+                    utterance.lang = 'ko-KR';  // 한국어로 설정
+                } else if (selectedLanguage === 'auto') {
+                    // 간단한 한국어 감지 (한글 포함 여부로 판단)
+                    const isKorean = /[ㄱ-ㅎ|ㅏ-ㅣ|가-힣]/.test(data.response);
+                    if (isKorean) {
+                        utterance.lang = 'ko-KR';  // 한국어로 설정
+                    } else {
+                        utterance.lang = 'en-US';  // 영어로 설정
+                    }
+                }
+
+                window.speechSynthesis.speak(utterance);
+            }
+        });
+    });
+</script>
+{% endblock %}
