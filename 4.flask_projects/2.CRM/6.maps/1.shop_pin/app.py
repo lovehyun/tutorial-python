@@ -18,9 +18,15 @@ def index():
 
     # 마커 추가
     for shop in coffee_shops:
+        popup_html = f"""
+        <div style="font-size: 16px; color: black;">
+            <strong>{shop['name']}</strong>
+        </div>
+        """
         folium.Marker(
             location=[shop['latitude'], shop['longitude']],
-            popup=shop['name']
+            # popup=shop['name'] # 기본 팝업 스타일
+            popup=folium.Popup(popup_html, max_width=300) # 디자인 적용
         ).add_to(mymap)
 
     # HTML로 저장
