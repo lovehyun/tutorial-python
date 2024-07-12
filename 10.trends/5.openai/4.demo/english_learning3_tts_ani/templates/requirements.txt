@@ -1,0 +1,6 @@
+Flask==3.0.2
+python-dotenv==1.0.1
+openai==1.13.3
+google-cloud-texttospeech==2.16.4
+google-cloud-speech==2.26.1
+requests==2.32.3
