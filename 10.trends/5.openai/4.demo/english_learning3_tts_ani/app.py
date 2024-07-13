@@ -14,8 +14,14 @@ app = Flask(__name__)
 
 load_dotenv('../../.env')
 
-# 로그 설정
+# 환경변수로부터 로그 레벨 읽기
 log_level = os.getenv('LOG_LEVEL', 'INFO').upper()
+
+# 유효한 로그 레벨인지 확인
+if not hasattr(logging, log_level):
+    log_level = 'INFO'
+
+# 로그 설정
 logging.basicConfig(level=getattr(logging, log_level))
 
 # OpenAI 셋업

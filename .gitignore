@@ -2,6 +2,9 @@
 __pycache__
 *.pyc
 
+# log files
+*.log
+
 # data files
 *.csv
 *.sqlite
