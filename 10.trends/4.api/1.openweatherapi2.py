@@ -7,13 +7,22 @@ load_dotenv()
 
 # API 키 설정
 API_KEY = os.getenv('OPENWEATHERMAP_API_KEY')
+if not API_KEY:
+    print("API 키가 설정되지 않았습니다. .env 파일을 확인하세요.")
+    exit(1)
 
-# API 요청을 보낼 URL과 파라미터
-url = 'http://api.openweathermap.org/data/2.5/weather'
+# 서울의 좌표
+LAT = 37.5665
+LON = 126.9780
+
+# One Call API 요청을 보낼 URL과 파라미터
+url = 'https://api.openweathermap.org/data/2.5/weather'
 params = {
-    'q': 'Seoul',  # 도시 이름
-    'appid': API_KEY,  # 사용자의 API 키
+    'lat': LAT,
+    'lon': LON,
+    'appid': API_KEY,
     'units': 'metric',  # 섭씨로 결과를 얻기 위해 'metric' 사용
+    'lang': 'kr'  # 한국어로 결과를 얻기 위해 'kr' 사용
 }
 
 # GET 요청 보내기
@@ -34,4 +43,5 @@ if response.status_code == 200:
     print(f"온도: {temperature} C")
     print(f"날씨: {description}")
 else:
-    print("요청에 실패하였습니다. 상태 코드:", response.status_code)
+    print(f"요청에 실패하였습니다. 상태 코드: {response.status_code}")
+    print(f"응답 내용: {response.text}")

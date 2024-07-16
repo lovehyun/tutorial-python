@@ -1,3 +1,6 @@
+# https://openweathermap.org/api
+# https://openweathermap.org/current
+
 import requests
 
 # API 요청을 보낼 URL과 파라미터
