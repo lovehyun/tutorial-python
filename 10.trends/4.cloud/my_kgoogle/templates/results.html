@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Search Results</title>
+</head>
+<body>
+    <h1>Search Results for "{{ query }}"</h1>
+    <a href="/">New Search</a>
+    <hr>
+    {% if search_type == 'web' %}
+        {% for item in results['documents'] %}
+            <div>
+                <h3>{{ item['title']|safe }}</h3>
+                <p>{{ item['contents']|safe }}</p>
+                <a href="{{ item['url'] }}">{{ item['url'] }}</a>
+            </div>
+            <hr>
+        {% endfor %}
+    {% elif search_type == 'image' %}
+        {% for item in results['documents'] %}
+            <div>
+                <img src="{{ item['thumbnail_url'] }}" alt="Thumbnail">
+                <p>{{ item['display_sitename'] }}</p>
+                <a href="{{ item['doc_url'] }}">{{ item['doc_url'] }}</a>
+                <p>Width: {{ item['width'] }}, Height: {{ item['height'] }}</p>
+                <p>Datetime: {{ item['datetime'] }}</p>
+            </div>
+            <hr>
+        {% endfor %}
+    {% elif search_type == 'vclip' %}
+        {% for item in results['documents'] %}
+            <div>
+                <h3>{{ item['title']|safe }}</h3>
+                <p>Author: {{ item['author'] }}</p>
+                <a href="{{ item['url'] }}">{{ item['url'] }}</a>
+                <p>Play Time: {{ item['play_time'] }} seconds</p>
+                <img src="{{ item['thumbnail'] }}" alt="Thumbnail">
+                <p>Datetime: {{ item['datetime'] }}</p>
+            </div>
+            <hr>
+        {% endfor %}
+    {% endif %}
+</body>
+</html>

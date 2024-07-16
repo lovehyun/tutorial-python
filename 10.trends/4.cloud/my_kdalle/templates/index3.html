@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Image Generator</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+      function generateImage() {
+        var prompt = $("#prompt").val();
+
+        if (prompt.length > 2048) {
+          alert("Prompt must be less than 2048 characters.");
+          return;
+        }
+
+        $("#loading").show();
+        $("#generated_image").hide();
+        $("#variation_button").hide();
+        $.ajax({
+          url: "/generate_image",
+          type: "POST",
+          data: { prompt: prompt },
+          success: function(data) {
+            $("#loading").hide();
+            if (data.image_url) {
+              $("#generated_image").attr("src", data.image_url).show();
+              $("#variation_button").show().data("image-url", data.image_url);
+            } else if (data.error) {
+              alert(data.error);
+            }
+          },
+          error: function(xhr, status, error) {
+            $("#loading").hide();
+            alert("An error occurred: " + error);
+          }
+        });
+      }
+
+      function generateVariation() {
+        var imageUrl = $("#variation_button").data("image-url");
+
+        $("#loading_variation").show();
+        $("#variation_image").hide();
+        $.ajax({
+          url: "/generate_variation",
+          type: "POST",
+          data: { image_url: imageUrl },
+          success: function(data) {
+            $("#loading_variation").hide();
+            if (data.variation_image_url) {
+              $("#variation_image").attr("src", data.variation_image_url).show();
+            } else if (data.error) {
+              alert(data.error);
+            }
+          },
+          error: function(xhr, status, error) {
+            $("#loading_variation").hide();
+            alert("An error occurred: " + error);
+          }
+        });
+      }
+    </script>
+  </head>
+  <body>
+    <div class="container mt-5">
+      <h1 class="mb-4">Image Generator</h1>
+      <form onsubmit="event.preventDefault(); generateImage();">
+        <div class="form-group">
+          <label for="prompt">Enter a prompt (max 2048 characters):</label>
+          <textarea class="form-control" id="prompt" name="prompt" rows="3" required></textarea>
+        </div>
+        <button type="submit" class="btn btn-primary">Generate Image</button>
+      </form>
+      <hr>
+      <h3>Prompt Examples</h3>
+      <p>Example 1: "A photo of a beautiful sunset over the mountains, vibrant colors"</p>
+      <p>Example 2: "A digital painting of a futuristic city with flying cars"</p>
+      <p>Example 3: "A sketch of a fantasy creature with wings and a long tail"</p>
+      <hr>
+      <div id="loading" style="display:none;">
+        <h3>Generating Image...</h3>
+        <div class="spinner-border" role="status">
+          <span class="sr-only">Loading...</span>
+        </div>
+      </div>
+      <img id="generated_image" src="" alt="Generated Image" class="img-fluid" style="display:none;">
+      <button id="variation_button" class="btn btn-secondary mt-3" style="display:none;" onclick="generateVariation()">Generate Variation</button>
+      <div id="loading_variation" style="display:none;">
+        <h3>Generating Variation...</h3>
+        <div class="spinner-border" role="status">
+          <span class="sr-only">Loading...</span>
+        </div>
+      </div>
+      <img id="variation_image" src="" alt="Variation Image" class="img-fluid" style="display:none;">
+    </div>
+  </body>
+</html>

@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Image Generator</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+  </head>
+  <body>
+    <div class="container mt-5">
+      <h1 class="mb-4">Image Generator</h1>
+      <form method="post">
+        <div class="form-group">
+          <label for="prompt">Enter a prompt (max 2048 characters):</label>
+          <textarea class="form-control" id="prompt" name="prompt" rows="3" required></textarea>
+        </div>
+        <button type="submit" class="btn btn-primary">Generate Image</button>
+      </form>
+      <hr>
+      <h3>Prompt Examples</h3>
+      <p>Example 1: "A photo of a beautiful sunset over the mountains, vibrant colors"</p>
+      <p>Example 2: "A digital painting of a futuristic city with flying cars"</p>
+      <p>Example 3: "A sketch of a fantasy creature with wings and a long tail"</p>
+      <hr>
+      {% if image_url %}
+        <h3>Generated Image:</h3>
+        <img src="{{ image_url }}" alt="Generated Image" class="img-fluid">
+      {% endif %}
+    </div>
+  </body>
+</html>
