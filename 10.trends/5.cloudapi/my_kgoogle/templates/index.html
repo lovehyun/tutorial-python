@@ -4,9 +4,25 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>My Search App</title>
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 80vh;
+            margin: 0;
+            text-align: center;
+            font-family: Arial, sans-serif;
+        }
+        form {
+            display: flex;
+            align-items: center;
+        }
+    </style>
 </head>
 <body>
-    <h1>My Search App</h1>
+    <h1>Kooooogle</h1>
     <form action="/search" method="get">
         <input type="text" name="query" placeholder="Search..." required>
         <button type="submit" name="type" value="web">웹검색</button>
