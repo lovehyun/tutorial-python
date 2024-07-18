@@ -1,6 +1,7 @@
 # pip install pymysql  # 외부 mysql 사용 시
 from flask import Flask, render_template, request, redirect, url_for, session, jsonify
 from database.db_sqlalchemy import db, User, Music, Like, Comment, Notification
+from sqlalchemy import desc
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'supersecretkey'
@@ -156,6 +157,7 @@ def notifications():
             db.select(Notification, Music.title)
             .join(Music, Notification.music_id == Music.music_id)
             .filter(Notification.user_id == session['user_id'])
+            .order_by(desc(Notification.created_at))
         ).all()
         
         # 딕셔너리 형태로 변환

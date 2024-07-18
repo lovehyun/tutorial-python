@@ -44,11 +44,13 @@ def init_db():
                             notification_id INTEGER PRIMARY KEY AUTOINCREMENT,
                             user_id INTEGER,
                             music_id INTEGER,
+                            comment_id INTEGER,
                             message TEXT,
                             is_read BOOLEAN DEFAULT FALSE,
                             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                             FOREIGN KEY (user_id) REFERENCES user(user_id) ON DELETE CASCADE,
-                            FOREIGN KEY (music_id) REFERENCES music(music_id) ON DELETE CASCADE)''')
+                            FOREIGN KEY (music_id) REFERENCES music(music_id) ON DELETE CASCADE,
+                            FOREIGN KEY (comment_id) REFERENCES comment(comment_id) ON DELETE CASCADE)''')
 
         # 해시태그 테이블 생성
         cursor.execute('''CREATE TABLE IF NOT EXISTS hashtag (

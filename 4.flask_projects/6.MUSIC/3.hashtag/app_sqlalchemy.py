@@ -1,6 +1,6 @@
 from flask import Flask, render_template, request, redirect, url_for, session, jsonify, g
 from database.db_sqlalchemy import db, User, Music, Like, Comment, Notification, Hashtag, MusicHashtag
-from sqlalchemy import select, func
+from sqlalchemy import desc, select, func
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'supersecretkey'
@@ -227,6 +227,7 @@ def notifications():
             db.select(Notification, Music.title)
             .join(Music, Notification.music_id == Music.music_id)
             .filter(Notification.user_id == session['user_id'])
+            .order_by(desc(Notification.created_at))
         ).all()
         
         # 딕셔너리 형태로 변환

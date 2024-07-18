@@ -45,22 +45,26 @@ CREATE TABLE IF NOT EXISTS notification (
     notification_id INTEGER PRIMARY KEY AUTOINCREMENT,
     user_id INTEGER,
     music_id INTEGER,
+    comment_id INTEGER,
     message TEXT,
     is_read BOOLEAN DEFAULT FALSE,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (user_id) REFERENCES user(user_id) ON DELETE CASCADE,
-    FOREIGN KEY (music_id) REFERENCES music(music_id) ON DELETE CASCADE
+    FOREIGN KEY (music_id) REFERENCES music(music_id) ON DELETE CASCADE,
+    FOREIGN KEY (comment_id) REFERENCES comment(comment_id) ON DELETE CASCADE
 );
 
--- comment 테이블에 새로운 항목이 삽입될 때 트리거
+-- comment 테이블에 새로운 항목이 삽입될 때 트리거 - 나를 제외하고 좋아요를 누른 사람들을 선택
 CREATE TRIGGER after_comment_insert
 AFTER INSERT ON comment
 FOR EACH ROW
 BEGIN
-    INSERT INTO notification (user_id, music_id, message)
-    SELECT user_id, NEW.music_id, 'New comment added: ' || NEW.content
-    FROM likes
-    WHERE music_id = NEW.music_id;
+    INSERT INTO notification (user_id, music_id, comment_id, message)
+    SELECT DISTINCT l.user_id, NEW.music_id, NEW.comment_id, 'New comment added by ' || u.username || ': ' || NEW.content
+    FROM likes l
+    JOIN user u ON l.user_id = u.user_id
+    WHERE l.music_id = NEW.music_id
+      AND l.user_id != NEW.user_id;
 END;
 
 -- hashtag 테이블 생성

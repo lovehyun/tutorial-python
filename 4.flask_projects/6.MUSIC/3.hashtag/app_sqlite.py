@@ -170,6 +170,7 @@ def notifications():
             FROM notification n
             JOIN music m ON n.music_id = m.music_id
             WHERE n.user_id=?
+            ORDER BY n.created_at DESC
         ''', [session['user_id']])
         return render_template('notifications.html', notifications=notifications)
     elif request.method == 'PUT':
