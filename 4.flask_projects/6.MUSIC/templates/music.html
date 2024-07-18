@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="music-detail">
+    <table class="music-info-table">
+        <tr>
+            <td rowspan="2">
+                <img src="{{ url_for('static', filename='images/' ~ music.album_image) if music.album_image else url_for('static', filename='images/dummy_image.png') }}" alt="Album Image" width="100" height="100">
+            </td>
+            <td>
+                <h2>{{ music.title }}</h2>
+                <p>{{ music.artist }}</p>
+            </td>
+            <td>
+                <form method="post" action="{{ url_for('like', music_id=music.music_id) }}">
+                    <button type="submit" class="like-button {% if music.liked %}liked{% else %}not-liked{% endif %}">
+                        {% if music.liked %}
+                            ♥
+                        {% else %}
+                            ♡
+                        {% endif %}
+                    </button>
+                </form>
+            </td>
+        </tr>
+    </table>
+</div>
+<div class="comments">
+    <h3>Comments</h3>
+    <ul class="comment-list">
+        {% for comment in comments %}
+            <li class="comment-item">
+                <div class="comment-header">
+                    <strong>{{ comment.username }}</strong>
+                    <small>{{ comment.created_at }}</small>
+                </div>
+                <p>{{ comment.content }}</p>
+                {% if comment.user_id == session['user_id'] %}
+                    <form method="post" action="{{ url_for('delete_comment', comment_id=comment.comment_id) }}" onsubmit="return confirm('Are you sure you want to delete this comment?');">
+                        <input type="hidden" name="_method" value="DELETE">
+                        <button type="submit">Delete</button>
+                    </form>
+                {% endif %}
+            </li>
+        {% endfor %}
+    </ul>
+    <form method="post" action="{{ url_for('music', music_id=music.music_id) }}" class="comment-form">
+        <textarea name="content" placeholder="Add a comment..." required></textarea>
+        <button type="submit">Post Comment</button>
+    </form>
+</div>
+{% endblock %}
