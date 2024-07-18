@@ -5,37 +5,45 @@ import os
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 db_path = os.path.join(BASE_DIR, 'music.db')
 
+# 데이터베이스 연결 함수
+def get_db_connection():
+    conn = sqlite3.connect(db_path)
+    conn.execute('PRAGMA foreign_keys = ON;')
+    conn.row_factory = sqlite3.Row
+    return conn
+
 # SQLite3 데이터베이스 초기화
 def init_db():
-    with sqlite3.connect(db_path) as conn:
+    with get_db_connection() as conn:
         cursor = conn.cursor()
+
         cursor.execute('''CREATE TABLE IF NOT EXISTS user (
                             user_id INTEGER PRIMARY KEY AUTOINCREMENT,
                             username TEXT NOT NULL UNIQUE,
                             password TEXT NOT NULL,
                             email TEXT NOT NULL UNIQUE,
-                            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP)''')
+                            created_at DATETIME DEFAULT CURRENT_TIMESTAMP)''')
 
         cursor.execute('''CREATE TABLE IF NOT EXISTS music (
                             music_id INTEGER PRIMARY KEY AUTOINCREMENT,
                             title TEXT NOT NULL,
                             artist TEXT NOT NULL,
                             album_image TEXT NOT NULL,
-                            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP)''')
+                            created_at DATETIME DEFAULT CURRENT_TIMESTAMP)''')
 
         cursor.execute('''CREATE TABLE IF NOT EXISTS comment (
                             comment_id INTEGER PRIMARY KEY AUTOINCREMENT,
                             music_id INTEGER,
                             user_id INTEGER,
                             content TEXT NOT NULL,
-                            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                            created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
                             FOREIGN KEY (music_id) REFERENCES music(music_id) ON DELETE CASCADE,
                             FOREIGN KEY (user_id) REFERENCES user(user_id) ON DELETE CASCADE)''')
 
         cursor.execute('''CREATE TABLE IF NOT EXISTS likes (
                             user_id INTEGER,
                             music_id INTEGER,
-                            liked_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                            liked_at DATETIME DEFAULT CURRENT_TIMESTAMP,
                             PRIMARY KEY (user_id, music_id),
                             FOREIGN KEY (user_id) REFERENCES user(user_id) ON DELETE CASCADE,
                             FOREIGN KEY (music_id) REFERENCES music(music_id) ON DELETE CASCADE)''')
@@ -47,7 +55,7 @@ def init_db():
                             comment_id INTEGER,
                             message TEXT,
                             is_read BOOLEAN DEFAULT FALSE,
-                            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                            created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
                             FOREIGN KEY (user_id) REFERENCES user(user_id) ON DELETE CASCADE,
                             FOREIGN KEY (music_id) REFERENCES music(music_id) ON DELETE CASCADE,
                             FOREIGN KEY (comment_id) REFERENCES comment(comment_id) ON DELETE CASCADE)''')
@@ -68,8 +76,7 @@ def init_db():
         conn.commit()
 
 def query_db(query, args=(), one=False):
-    with sqlite3.connect(db_path) as conn:
-        conn.row_factory = sqlite3.Row
+    with get_db_connection() as conn:
         cursor = conn.cursor()
         cursor.execute(query, args)
         r = cursor.fetchall()
@@ -77,7 +84,7 @@ def query_db(query, args=(), one=False):
         return (r[0] if r else None) if one else r
 
 def execute_db(query, args=()):
-    with sqlite3.connect(db_path) as conn:
+    with get_db_connection() as conn:
         cursor = conn.cursor()
         cursor.execute(query, args)
         conn.commit()

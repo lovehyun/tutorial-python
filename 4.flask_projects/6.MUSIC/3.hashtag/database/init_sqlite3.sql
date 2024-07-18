@@ -1,13 +1,15 @@
 -- SQLite3 데이터베이스 초기화
 -- sqlite3 music.db < init_sqlite3.sql
 
+PRAGMA foreign_keys = ON;
+
 -- user 테이블 생성
 CREATE TABLE IF NOT EXISTS user (
     user_id INTEGER PRIMARY KEY AUTOINCREMENT,
     username TEXT NOT NULL UNIQUE,
     password TEXT NOT NULL,
     email TEXT NOT NULL UNIQUE,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP
 );
 
 -- music 테이블 생성
@@ -16,7 +18,7 @@ CREATE TABLE IF NOT EXISTS music (
     title TEXT NOT NULL,
     artist TEXT NOT NULL,
     album_image TEXT NOT NULL,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP
 );
 
 -- comment 테이블 생성
@@ -25,7 +27,7 @@ CREATE TABLE IF NOT EXISTS comment (
     music_id INTEGER,
     user_id INTEGER,
     content TEXT NOT NULL,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (music_id) REFERENCES music(music_id) ON DELETE CASCADE,
     FOREIGN KEY (user_id) REFERENCES user(user_id) ON DELETE CASCADE
 );
@@ -34,7 +36,7 @@ CREATE TABLE IF NOT EXISTS comment (
 CREATE TABLE IF NOT EXISTS likes (
     user_id INTEGER,
     music_id INTEGER,
-    liked_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    liked_at DATETIME DEFAULT CURRENT_TIMESTAMP,
     PRIMARY KEY (user_id, music_id),
     FOREIGN KEY (user_id) REFERENCES user(user_id) ON DELETE CASCADE,
     FOREIGN KEY (music_id) REFERENCES music(music_id) ON DELETE CASCADE
@@ -48,7 +50,7 @@ CREATE TABLE IF NOT EXISTS notification (
     comment_id INTEGER,
     message TEXT,
     is_read BOOLEAN DEFAULT FALSE,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (user_id) REFERENCES user(user_id) ON DELETE CASCADE,
     FOREIGN KEY (music_id) REFERENCES music(music_id) ON DELETE CASCADE,
     FOREIGN KEY (comment_id) REFERENCES comment(comment_id) ON DELETE CASCADE
