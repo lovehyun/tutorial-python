@@ -62,7 +62,7 @@ AFTER INSERT ON comment
 FOR EACH ROW
 BEGIN
     INSERT INTO notification (user_id, music_id, comment_id, message)
-    SELECT DISTINCT l.user_id, NEW.music_id, NEW.comment_id, 'New comment added by ' || u.username || ': ' || NEW.content
+    SELECT DISTINCT l.user_id, NEW.music_id, NEW.comment_id, 'New comment added by ' || (SELECT username FROM user WHERE user_id = NEW.user_id) || ': ' || NEW.content
     FROM likes l
     JOIN user u ON l.user_id = u.user_id
     WHERE l.music_id = NEW.music_id
