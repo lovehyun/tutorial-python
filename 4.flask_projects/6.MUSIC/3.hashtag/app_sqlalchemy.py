@@ -139,9 +139,15 @@ def music(music_id):
                     hashtag_obj = Hashtag(tag=hashtag)
                     db.session.add(hashtag_obj)
                     db.session.commit()
-                new_music_hashtag = MusicHashtag(music_id=music_id, hashtag_id=hashtag_obj.hashtag_id)
-                db.session.add(new_music_hashtag)
-                db.session.commit()
+
+                # Check if the relationship already exists
+                existing_music_hashtag = db.session.execute(
+                    db.select(MusicHashtag).filter_by(music_id=music_id, hashtag_id=hashtag_obj.hashtag_id)
+                ).scalar()
+                if not existing_music_hashtag:
+                    new_music_hashtag = MusicHashtag(music_id=music_id, hashtag_id=hashtag_obj.hashtag_id)
+                    db.session.add(new_music_hashtag)
+                    db.session.commit()
     
         return redirect(url_for('music', music_id=music_id))  # 코멘트 및 해시태그 작성 후 페이지 리다이렉트
     
