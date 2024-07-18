@@ -3,32 +3,36 @@
 {% block content %}
 <div class="musics">
     <h2>Top Liked Musics</h2>
-    <table class="music-table">
-        <thead>
-            <tr>
-                <th>Rank</th>
-                <th>Title</th>
-                <th>Artist</th>
-                <th>Likes</th>
-                <th>Liked By</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for music in toplikes %}
+    {% if toplikes %}
+        <table class="music-table">
+            <thead>
                 <tr>
-                    <td>{{ music['rank'] }}</td>
-                    <td>
-                        <a href="{{ url_for('music', music_id=music['music_id']) }}" class="music-link">{{ music['title'] }}</a>
-                    </td>
-                    <td>
-                        <a href="{{ url_for('index', search=music['artist']) }}" class="artist-link">{{ music['artist'] }}</a>
-                    </td>
-                    <td>{{ music['like_count'] }}</td>
-                    <td>{{ music['liked_users'] }}</td>
+                    <th>Rank</th>
+                    <th>Title</th>
+                    <th>Artist</th>
+                    <th>Likes</th>
+                    <th>Liked By</th>
                 </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+            </thead>
+            <tbody>
+                {% for music in toplikes %}
+                    <tr>
+                        <td>{{ music['rank'] }}</td>
+                        <td>
+                            <a href="{{ url_for('music', music_id=music['music_id']) }}" class="music-link">{{ music['title'] }}</a>
+                        </td>
+                        <td>
+                            <a href="{{ url_for('index', search=music['artist']) }}" class="artist-link">{{ music['artist'] }}</a>
+                        </td>
+                        <td>{{ music['like_count'] }}</td>
+                        <td>{{ music['liked_users'] }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p>No liked musics available.</p>
+    {% endif %}
 </div>
 {% endblock %}
 

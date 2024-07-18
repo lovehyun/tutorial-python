@@ -2,31 +2,35 @@
 
 {% block content %}
 <div class="hashtags">
-    <h3>Hashtags</h3>
-    <table class="hashtag-table">
-        <thead>
-            <tr>
-                <th>Hashtag</th>
-                <th>Graph</th>
-                <th>Count</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for hashtag in hashtag_data %}
+    <h2>Hashtags</h2>
+    {% if hashtag_data %}
+        <table class="hashtag-table">
+            <thead>
                 <tr>
-                    <td>
-                        <a href="{{ url_for('index', search='#' ~ hashtag['tag']) }}">{{ hashtag['tag'] }}</a>
-                    </td>
-                    <td>
-                        {% for i in range(hashtag['count']) %}
-                            <i class="fa fa-star"></i>
-                        {% endfor %}
-                    </td>
-                    <td>{{ hashtag['count'] }}</td>
+                    <th>Hashtag</th>
+                    <th>Graph</th>
+                    <th>Count</th>
                 </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+            </thead>
+            <tbody>
+                {% for hashtag in hashtag_data %}
+                    <tr>
+                        <td>
+                            <a href="{{ url_for('index', search='#' ~ hashtag['tag']) }}">{{ hashtag['tag'] }}</a>
+                        </td>
+                        <td>
+                            {% for i in range(hashtag['count']) %}
+                                <i class="fa fa-star"></i>
+                            {% endfor %}
+                        </td>
+                        <td>{{ hashtag['count'] }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p>No hashtags available.</p>
+    {% endif %}
 </div>
 {% endblock %}
 

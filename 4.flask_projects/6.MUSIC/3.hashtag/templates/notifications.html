@@ -2,27 +2,31 @@
 
 {% block content %}
 <div class="notifications">
-    <h3>Notifications</h3>
-    <ul>
-        {% for notification in notifications %}
-            <li class="{{ 'unread' if not notification.is_read else 'read' }}">
-                <p>{{ notification.message }} for the song <strong>{{ notification.title }}</strong></p>
-                <small>{{ notification.created_at }}</small>
-                <form method="post" action="{{ url_for('notifications') }}" onsubmit="return toggleReadStatus(event, this)">
-                    <input type="hidden" name="_method" value="PUT">
-                    <input type="hidden" name="notification_id" value="{{ notification.notification_id }}">
-                    <input type="hidden" name="new_status" value="{{ 1 if not notification.is_read else 0 }}">
-                    <button type="submit">
-                        {% if not notification.is_read %}
-                            Mark as Read
-                        {% else %}
-                            Mark as Unread
-                        {% endif %}
-                    </button>
-                </form>
-            </li>
-        {% endfor %}
-    </ul>
+    <h2>Notifications</h2>
+    {% if notifications %}
+        <ul>
+            {% for notification in notifications %}
+                <li class="{{ 'unread' if not notification.is_read else 'read' }}">
+                    <p>{{ notification.message }} for the song <strong>{{ notification.title }}</strong></p>
+                    <small>{{ notification.created_at }}</small>
+                    <form method="post" action="{{ url_for('notifications') }}" onsubmit="return toggleReadStatus(event, this)">
+                        <input type="hidden" name="_method" value="PUT">
+                        <input type="hidden" name="notification_id" value="{{ notification.notification_id }}">
+                        <input type="hidden" name="new_status" value="{{ 1 if not notification.is_read else 0 }}">
+                        <button type="submit">
+                            {% if not notification.is_read %}
+                                Mark as Read
+                            {% else %}
+                                Mark as Unread
+                            {% endif %}
+                        </button>
+                    </form>
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>No notifications available.</p>
+    {% endif %}
 </div>
 <script>
 function toggleReadStatus(event, form) {

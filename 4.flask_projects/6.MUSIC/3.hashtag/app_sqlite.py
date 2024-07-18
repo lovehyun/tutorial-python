@@ -33,7 +33,7 @@ def logout():
     session.pop('username', None)
     return redirect(url_for('login'))
 
-@app.route('/', methods=['GET', 'POST'])
+@app.route('/', methods=['GET'])
 def index():
     if 'user_id' not in session:
         return redirect(url_for('login'))

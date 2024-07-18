@@ -3,7 +3,7 @@
 {% block content %}
 <div class="search-bar">
     <form method="get" action="{{ url_for('index') }}">
-        <input type="text" name="search" placeholder="Search by title, artist or hashtag" value="{{ search_query }}">
+        <input type="text" name="search" placeholder="Search by title, artist or #hashtag" value="{{ search_query }}">
         <button type="submit">Search</button>
     </form>
 </div>
