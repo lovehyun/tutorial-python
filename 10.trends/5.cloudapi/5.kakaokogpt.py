@@ -1,4 +1,6 @@
 # coding=utf8
+# https://developers.kakao.com/docs/latest/ko/kogpt/common
+# https://developers.kakao.com/docs/latest/ko/kogpt/rest-api
 # REST API 호출에 필요한 라이브러리
 import requests
 import json
