@@ -114,7 +114,11 @@ def music(music_id):
                 if not hashtag_id:
                     execute_db('INSERT INTO hashtag (tag) VALUES (?)', [hashtag])
                     hashtag_id = query_db('SELECT hashtag_id FROM hashtag WHERE tag=?', [hashtag], one=True)
-                execute_db('INSERT INTO music_hashtag (music_id, hashtag_id) VALUES (?, ?)', [music_id, hashtag_id['hashtag_id']])
+                
+                # Check if the hashtag is already associated with the music
+                existing_music_hashtag = query_db('SELECT * FROM music_hashtag WHERE music_id=? AND hashtag_id=?', [music_id, hashtag_id['hashtag_id']], one=True)
+                if not existing_music_hashtag:
+                    execute_db('INSERT INTO music_hashtag (music_id, hashtag_id) VALUES (?, ?)', [music_id, hashtag_id['hashtag_id']])
     
         return redirect(url_for('music', music_id=music_id))  # 코멘트 작성 후 페이지 리다이렉트
 
