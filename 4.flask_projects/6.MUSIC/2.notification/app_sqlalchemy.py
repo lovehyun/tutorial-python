@@ -65,7 +65,14 @@ def music(music_id):
     if 'user_id' not in session:
         return redirect(url_for('login'))
     
-    music = db.session.get(Music, music_id)
+    # 음악 정보와 좋아요 정보 가져오기
+    music = db.session.execute(
+        db.select(Music, Like)
+        .outerjoin(Like, (Music.music_id == Like.music_id) & (Like.user_id == session['user_id']))
+        .filter(Music.music_id == music_id)
+    ).one()
+
+    # 코멘트 가져오기
     comments = db.session.execute(
         db.select(Comment, User.username, User.user_id)
         .join(User, Comment.user_id == User.user_id)
@@ -73,6 +80,14 @@ def music(music_id):
     ).all()
 
     # 딕셔너리 형태로 변환
+    music_dict = {
+        'music_id': music.Music.music_id, 
+        'title': music.Music.title, 
+        'artist': music.Music.artist, 
+        'album_image': music.Music.album_image, 
+        'created_at': music.Music.created_at, 
+        'liked': 1 if music.Like else 0, 
+    }
     comments = [{'comment_id': comment.Comment.comment_id, 'username': comment.username, 'user_id': comment.user_id, 'created_at': comment.Comment.created_at, 'content': comment.Comment.content} for comment in comments]
 
     if request.method == 'POST':
@@ -80,6 +95,7 @@ def music(music_id):
         new_comment = Comment(music_id=music_id, user_id=session['user_id'], content=content)
         db.session.add(new_comment)
         db.session.commit()
+        
         likes = db.session.execute(
             db.select(Like)
             .filter_by(music_id=music_id)
@@ -98,7 +114,7 @@ def music(music_id):
         .filter_by(user_id=session['user_id'], is_read=False)
     ).scalar()
     
-    return render_template('music.html', music=music, comments=comments, notification_count=notification_count)
+    return render_template('music.html', music=music_dict, comments=comments, notification_count=notification_count)
 
 @app.route('/like/<int:music_id>', methods=['POST'])
 def like(music_id):

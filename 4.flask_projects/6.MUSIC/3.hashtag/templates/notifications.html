@@ -1,0 +1,82 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="notifications">
+    <h3>Notifications</h3>
+    <ul>
+        {% for notification in notifications %}
+            <li class="{{ 'unread' if not notification.is_read else 'read' }}">
+                <p>{{ notification.message }} for the song <strong>{{ notification.title }}</strong></p>
+                <small>{{ notification.created_at }}</small>
+                <form method="post" action="{{ url_for('notifications') }}" onsubmit="return toggleReadStatus(event, this)">
+                    <input type="hidden" name="_method" value="PUT">
+                    <input type="hidden" name="notification_id" value="{{ notification.notification_id }}">
+                    <input type="hidden" name="new_status" value="{{ 1 if not notification.is_read else 0 }}">
+                    <button type="submit">
+                        {% if not notification.is_read %}
+                            Mark as Read
+                        {% else %}
+                            Mark as Unread
+                        {% endif %}
+                    </button>
+                </form>
+            </li>
+        {% endfor %}
+    </ul>
+</div>
+<script>
+function toggleReadStatus(event, form) {
+    event.preventDefault();
+    const url = form.action;
+    fetch(url, {
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: new URLSearchParams(new FormData(form)),
+    }).then(response => {
+        if (response.ok) {
+            const newStatus = form.querySelector('input[name="new_status"]').value;
+            const listItem = form.closest('li');
+            listItem.classList.toggle('unread', newStatus === '0');
+            listItem.classList.toggle('read', newStatus === '1');
+            const button = form.querySelector('button');
+            button.textContent = newStatus === '1' ? 'Mark as Unread' : 'Mark as Read';
+            form.querySelector('input[name="new_status"]').value = newStatus === '1' ? '0' : '1';
+        }
+    });
+}
+</script>
+{% endblock %}
+
+{% block styles %}
+<style>
+.notifications {
+    width: 80%;
+    margin: 0 auto;
+}
+
+.notifications ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+.notifications li {
+    border: 1px solid #ccc;
+    margin: 10px 0;
+    padding: 10px;
+}
+
+.notifications li.unread {
+    background-color: #f9f9f9;
+}
+
+.notifications li.read {
+    background-color: #dddddd;
+}
+
+.notifications form {
+    display: inline;
+}
+</style>
+{% endblock %}

@@ -56,16 +56,19 @@ def music(music_id):
     if 'user_id' not in session:
         return redirect(url_for('login'))
     
-    music = query_db('SELECT * FROM music WHERE music_id=?', [music_id], one=True)
+    music = query_db('SELECT m.*, CASE WHEN l.user_id IS NOT NULL THEN 1 ELSE 0 END AS liked FROM music m LEFT JOIN likes l ON m.music_id = l.music_id AND l.user_id = ? WHERE m.music_id=?', [session['user_id'], music_id], one=True)
     comments = query_db('SELECT comment_id, content, created_at, user_id, (SELECT username FROM user WHERE user_id=comment.user_id) AS username FROM comment WHERE music_id=?', [music_id])
+    
     if request.method == 'POST':
         content = request.form['content']
         execute_db('INSERT INTO comment (music_id, user_id, content) VALUES (?, ?, ?)', [music_id, session['user_id'], content])
-        likes = query_db('SELECT user_id FROM likes WHERE music_id=?', [music_id])
+        
         # 알림을 백엔드에서 처리
+        # likes = query_db('SELECT user_id FROM likes WHERE music_id=?', [music_id])
         # for like in likes:
         #     if like['user_id'] != session['user_id']:
         #         execute_db('INSERT INTO notification (user_id, music_id, message) VALUES (?, ?, ?)', [like['user_id'], music_id, f"New comment on {music['title']}"])
+        
         return redirect(url_for('music', music_id=music_id))  # 코멘트 작성 후 페이지 리다이렉트
 
     notification_count = get_notification_count(session['user_id'])

@@ -1,0 +1,167 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+}
+
+header {
+    position: fixed;
+    top: 0;
+    width: 100%;
+    background: #333;
+    color: white;
+    padding: 5px 0;  /* 줄어든 패딩 */
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    z-index: 1000;
+    height: 50px; /* 높이 설정 */
+}
+
+header h1 {
+    margin-left: 20px;
+    font-size: 20px; /* 글자 크기 조절 */
+}
+
+header nav {
+    margin-right: 20px;
+}
+
+header nav a {
+    color: white;
+    margin: 0 10px;
+    text-decoration: none;
+    font-size: 16px; /* 글자 크기 조절 */
+}
+
+main {
+    margin-top: 70px;
+    padding: 20px;
+}
+
+.search-bar {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 20px;
+    margin-top: 10px; /* 검색 바를 아래로 내리기 위한 마진 */
+}
+
+.search-bar form {
+    width: 80%; /* 음악 목록과 같은 폭 */
+    display: flex;
+    margin: 0 auto; /* 센터 정렬 */
+}
+
+.search-bar input {
+    flex-grow: 1;
+    padding: 10px;
+    font-size: 16px;
+}
+
+.music-list {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.music-item {
+    border: 1px solid #ccc;
+    margin: 10px;
+    padding: 10px;
+    width: 80%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.music-item img {
+    flex-shrink: 0;
+    margin-right: 20px;
+}
+
+.music-info {
+    flex-grow: 1;
+}
+
+.music-info h3 a {
+    text-decoration: none;
+    color: inherit;
+    cursor: pointer;
+}
+
+.like-button {
+    background: none;
+    border: none;
+    font-size: 24px;
+    cursor: pointer; /* 마우스 포인터로 변경 */
+}
+
+.like-button .fa-heart {
+    color: gray; /* 기본 색상 */
+}
+
+.like-button.liked .fa-heart {
+    color: red; /* 좋아요 눌렀을 때 색상 */
+}
+
+.music-detail {
+    width: 80%;
+    margin: 0 auto 20px auto;
+}
+
+.music-info-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+}
+
+.music-info-table td {
+    padding: 10px;
+    vertical-align: top;
+}
+
+.comments {
+    width: 80%;
+    margin: 0 auto;
+}
+
+.comment-list {
+    list-style-type: none;
+    padding: 0;
+}
+
+.comment-item {
+    border: 1px solid #ccc;
+    margin: 10px 0;
+    padding: 10px;
+    border-radius: 10px;
+    background: #f9f9f9;
+}
+
+.comment-header {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 5px;
+}
+
+.comment-form {
+    display: flex;
+    flex-direction: column;
+}
+
+.comment-form textarea {
+    padding: 10px;
+    margin-bottom: 10px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+}
+
+.comment-form button {
+    align-self: flex-end;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    background: #333;
+    color: white;
+    cursor: pointer;
+}
