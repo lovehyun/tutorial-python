@@ -1,5 +1,6 @@
 from flask import Flask, render_template, request, redirect, url_for, session, jsonify, g
 from database.db_sqlalchemy import db, User, Music, Like, Comment, Notification, Hashtag, MusicHashtag
+from sqlalchemy import select, func
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'supersecretkey'
@@ -253,6 +254,38 @@ def hashtags():
     ).all()
 
     return render_template('hashtags.html', hashtag_data=hashtag_data)
+
+@app.route('/toplikes')
+def toplikes():
+    top_likes = db.session.execute(
+        select(
+            Music,
+            func.count(Like.user_id).label('like_count'),
+            func.group_concat(User.username, ', ').label('liked_users'),
+            func.rank().over(order_by=func.count(Like.user_id).desc()).label('rank')
+        )
+        .outerjoin(Like, Music.music_id == Like.music_id)
+        .outerjoin(User, Like.user_id == User.user_id)
+        .group_by(Music.music_id)
+        .having(func.count(Like.user_id) > 0)
+        .order_by(func.count(Like.user_id).desc())
+    ).all()
+
+    top_likes_data = []
+    for row in top_likes:
+        music_data = {
+            'music_id': row.Music.music_id,
+            'title': row.Music.title,
+            'artist': row.Music.artist,
+            'album_image': row.Music.album_image,
+            'created_at': row.Music.created_at,
+            'like_count': row.like_count,
+            'liked_users': row.liked_users,
+            'rank': row.rank,
+        }
+        top_likes_data.append(music_data)
+
+    return render_template('toplikes.html', toplikes=top_likes_data)
 
 if __name__ == '__main__':
     app.run(debug=True)
