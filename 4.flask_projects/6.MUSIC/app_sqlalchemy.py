@@ -1,11 +1,10 @@
-# pip install pymysql
+# pip install pymysql  # 외부 mysql 사용 시
 from flask import Flask, render_template, request, redirect, url_for, session, jsonify
 from database.db_sqlalchemy import db, User, Music, Like, Comment, Notification
-from datetime import datetime
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'supersecretkey'
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///database/music.db'
+app.config['SQLALCHEMY_DATABASE_URI'] = f'sqlite:///{app.root_path}/database/music.db'
 # app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://username:password@hostname/database_name'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
@@ -19,7 +18,7 @@ def login():
     if request.method == 'POST':
         username = request.form['username']
         password = request.form['password']
-        user = User.query.filter_by(username=username, password=password).first()
+        user = db.session.execute(db.select(User).filter_by(username=username, password=password)).scalar()
         if user:
             session['user_id'] = user.user_id
             session['username'] = user.username
@@ -40,73 +39,127 @@ def index():
     search_query = ''
     if request.method == 'POST':
         search_query = request.form['search']
-        musics = db.session.query(Music, Like).outerjoin(Like, (Music.music_id == Like.music_id) & (Like.user_id == session['user_id'])).filter(
-            (Music.title.like(f'%{search_query}%')) | (Music.artist.like(f'%{search_query}%'))
+        musics = db.session.execute(
+            db.select(Music, Like)
+            .outerjoin(Like, (Music.music_id == Like.music_id) & (Like.user_id == session['user_id']))
+            .filter((Music.title.like(f'%{search_query}%')) | (Music.artist.like(f'%{search_query}%')))
         ).all()
     else:
-        musics = db.session.query(Music, Like).outerjoin(Like, (Music.music_id == Like.music_id) & (Like.user_id == session['user_id'])).all()
+        musics = db.session.execute(
+            db.select(Music, Like)
+            .outerjoin(Like, (Music.music_id == Like.music_id) & (Like.user_id == session['user_id']))
+        ).all()
+
+    # 쿼리 결과를 딕셔너리로 변환
+    musics = [{'music_id': music.music_id, 'title': music.title, 'artist': music.artist, 'album_image': music.album_image, 'created_at': music.created_at, 'liked': bool(like)} for music, like in musics]
+
+    notification_count = db.session.execute(
+        db.select(db.func.count(Notification.notification_id))
+        .filter_by(user_id=session['user_id'], is_read=False)
+    ).scalar()
     
-    notification_count = Notification.query.filter_by(user_id=session['user_id'], is_read=False).count()
     return render_template('index.html', musics=musics, notification_count=notification_count, search_query=search_query)
 
 @app.route('/music/<int:music_id>', methods=['GET', 'POST'])
 def music(music_id):
     if 'user_id' not in session:
         return redirect(url_for('login'))
-    music = Music.query.get(music_id)
-    comments = db.session.query(Comment, User).join(User, Comment.user_id == User.user_id).filter(Comment.music_id == music_id).all()
+    
+    music = db.session.get(Music, music_id)
+    comments = db.session.execute(
+        db.select(Comment, User.username, User.user_id)
+        .join(User, Comment.user_id == User.user_id)
+        .filter(Comment.music_id == music_id)
+    ).all()
+
+    # 딕셔너리 형태로 변환
+    comments = [{'comment_id': comment.Comment.comment_id, 'username': comment.username, 'user_id': comment.user_id, 'created_at': comment.Comment.created_at, 'content': comment.Comment.content} for comment in comments]
+
     if request.method == 'POST':
         content = request.form['content']
         new_comment = Comment(music_id=music_id, user_id=session['user_id'], content=content)
         db.session.add(new_comment)
         db.session.commit()
-        likes = Like.query.filter_by(music_id=music_id).all()
-        for like in likes:
-            if like.user_id != session['user_id']:
-                new_notification = Notification(user_id=like.user_id, music_id=music_id, message=f"New comment on {music.title}")
-                db.session.add(new_notification)
-                db.session.commit()
-    notification_count = Notification.query.filter_by(user_id=session['user_id'], is_read=False).count()
+        likes = db.session.execute(
+            db.select(Like)
+            .filter_by(music_id=music_id)
+        ).scalars().all()
+
+        # 알림 백엔드에서 처리
+        # for like in likes:
+        #     if like.user_id != session['user_id']:
+        #         new_notification = Notification(user_id=like.user_id, music_id=music_id, message=f"New comment on {music.title}")
+        #         db.session.add(new_notification)
+        #         db.session.commit()
+        return redirect(url_for('music', music_id=music_id))  # 코멘트 작성 후 페이지 리다이렉트
+    
+    notification_count = db.session.execute(
+        db.select(db.func.count(Notification.notification_id))
+        .filter_by(user_id=session['user_id'], is_read=False)
+    ).scalar()
+    
     return render_template('music.html', music=music, comments=comments, notification_count=notification_count)
 
 @app.route('/like/<int:music_id>', methods=['POST'])
 def like(music_id):
     if 'user_id' not in session:
         return redirect(url_for('login'))
-    existing_like = Like.query.filter_by(user_id=session['user_id'], music_id=music_id).first()
+    
+    existing_like = db.session.execute(
+        db.select(Like).filter_by(user_id=session['user_id'], music_id=music_id)
+    ).scalar()
+    
     if existing_like:
         db.session.delete(existing_like)
     else:
         new_like = Like(user_id=session['user_id'], music_id=music_id)
         db.session.add(new_like)
     db.session.commit()
+    
     return redirect(url_for('index'))
 
-@app.route('/comment/<int:comment_id>', methods=['DELETE'])
+@app.route('/comment/<int:comment_id>', methods=['POST']) # form 을 사용함으로 GET/POST 만 지원
 def delete_comment(comment_id):
     if 'user_id' not in session:
         return redirect(url_for('login'))
-    comment = Comment.query.get(comment_id)
+    
+    comment = db.session.get(Comment, comment_id)
     if comment and comment.user_id == session['user_id']:
         db.session.delete(comment)
         db.session.commit()
-    return '', 204
+    
+    return redirect(url_for('music', music_id=comment.music_id)) # 삭제후 페이지 리로딩
 
 @app.route('/notifications', methods=['GET', 'PUT'])
 def notifications():
     if 'user_id' not in session:
         return redirect(url_for('login'))
+    
     if request.method == 'GET':
-        notifications = db.session.query(Notification, Music).join(Music, Notification.music_id == Music.music_id).filter(Notification.user_id == session['user_id']).all()
-        notification_count = Notification.query.filter_by(user_id=session['user_id'], is_read=False).count()
+        notifications = db.session.execute(
+            db.select(Notification, Music.title)
+            .join(Music, Notification.music_id == Music.music_id)
+            .filter(Notification.user_id == session['user_id'])
+        ).all()
+        
+        # 딕셔너리 형태로 변환
+        notifications = [{'notification_id': n.Notification.notification_id, 'message': n.Notification.message, 'title': n.title, 'created_at': n.Notification.created_at, 'is_read': n.Notification.is_read} for n in notifications]
+        
+        notification_count = db.session.execute(
+            db.select(db.func.count(Notification.notification_id))
+            .filter_by(user_id=session['user_id'], is_read=False)
+        ).scalar()
+        
         return render_template('notifications.html', notifications=notifications, notification_count=notification_count)
     elif request.method == 'PUT':
         notification_id = request.form['notification_id']
         new_status = request.form['new_status']
-        notification = Notification.query.filter_by(notification_id=notification_id, user_id=session['user_id']).first()
+        
+        notification = db.session.get(Notification, notification_id)
         if notification:
             notification.is_read = bool(int(new_status))
             db.session.commit()
+        
         return jsonify(success=True)
 
 if __name__ == '__main__':

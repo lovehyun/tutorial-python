@@ -55,15 +55,19 @@ def index():
 def music(music_id):
     if 'user_id' not in session:
         return redirect(url_for('login'))
+    
     music = query_db('SELECT * FROM music WHERE music_id=?', [music_id], one=True)
     comments = query_db('SELECT comment_id, content, created_at, user_id, (SELECT username FROM user WHERE user_id=comment.user_id) AS username FROM comment WHERE music_id=?', [music_id])
     if request.method == 'POST':
         content = request.form['content']
         execute_db('INSERT INTO comment (music_id, user_id, content) VALUES (?, ?, ?)', [music_id, session['user_id'], content])
         likes = query_db('SELECT user_id FROM likes WHERE music_id=?', [music_id])
-        for like in likes:
-            if like['user_id'] != session['user_id']:
-                execute_db('INSERT INTO notification (user_id, music_id, message) VALUES (?, ?, ?)', [like['user_id'], music_id, f"New comment on {music['title']}"])
+        # 알림을 백엔드에서 처리
+        # for like in likes:
+        #     if like['user_id'] != session['user_id']:
+        #         execute_db('INSERT INTO notification (user_id, music_id, message) VALUES (?, ?, ?)', [like['user_id'], music_id, f"New comment on {music['title']}"])
+        return redirect(url_for('music', music_id=music_id))  # 코멘트 작성 후 페이지 리다이렉트
+
     notification_count = get_notification_count(session['user_id'])
     return render_template('music.html', music=music, comments=comments, notification_count=notification_count)
 
@@ -78,14 +82,14 @@ def like(music_id):
         execute_db('INSERT INTO likes (user_id, music_id) VALUES (?, ?)', [session['user_id'], music_id])
     return redirect(url_for('index'))
 
-@app.route('/comment/<int:comment_id>', methods=['DELETE'])
+@app.route('/comment/<int:comment_id>', methods=['POST']) # form 을 사용함으로 GET/POST 만 지원
 def delete_comment(comment_id):
     if 'user_id' not in session:
         return redirect(url_for('login'))
     comment = query_db('SELECT * FROM comment WHERE comment_id=?', [comment_id], one=True)
     if comment and comment['user_id'] == session['user_id']:
         execute_db('DELETE FROM comment WHERE comment_id=?', [comment_id])
-    return '', 204
+    return redirect(url_for('music', music_id=comment['music_id'])) # 삭제후 페이지 리로딩
 
 @app.route('/notifications', methods=['GET', 'PUT'])
 def notifications():
