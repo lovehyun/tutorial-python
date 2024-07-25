@@ -1,0 +1,73 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="hashtags">
+    <h2>Hashtags</h2>
+    {% if hashtag_data %}
+        <table class="hashtag-table">
+            <thead>
+                <tr>
+                    <th>Hashtag</th>
+                    <th>Graph</th>
+                    <th>Count</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for hashtag in hashtag_data %}
+                    <tr>
+                        <td>
+                            <a href="{{ url_for('index', search='#' ~ hashtag['tag']) }}">{{ hashtag['tag'] }}</a>
+                        </td>
+                        <td>
+                            {% for i in range(hashtag['count']) %}
+                                <i class="fa fa-star"></i>
+                            {% endfor %}
+                        </td>
+                        <td>{{ hashtag['count'] }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p>No hashtags available.</p>
+    {% endif %}
+</div>
+{% endblock %}
+
+{% block styles %}
+<style>
+.hashtags {
+    width: 80%;
+    margin: 0 auto;
+}
+
+.hashtag-table {
+    width: 60%;
+    border-collapse: collapse;
+}
+
+.hashtag-table th, .hashtag-table td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: left;
+}
+
+.hashtag-table th {
+    background-color: #f2f2f2;
+}
+
+.hashtag-table td {
+    white-space: nowrap;
+}
+
+.hashtag-table a {
+    text-decoration: none;
+    color: inherit;
+}
+
+.hashtag-table a:hover {
+    text-decoration: underline;
+    color: blue;
+}
+</style>
+{% endblock %}

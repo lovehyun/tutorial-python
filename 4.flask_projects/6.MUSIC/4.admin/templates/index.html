@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="search-bar">
+    <form method="get" action="{{ url_for('index') }}">
+        <input type="text" name="search" placeholder="Search by title, artist or #hashtag" value="{{ search_query }}">
+        <button type="submit">Search</button>
+    </form>
+</div>
+<div class="music-list">
+    {% for music in musics %}
+        <div class="music-item">
+            <img src="{{ url_for('static', filename='images/' ~ music.album_image) if music.album_image else url_for('static', filename='images/dummy_image.png') }}" alt="Album Image" width="64" height="64">
+            <div class="music-info">
+                <h3><a href="{{ url_for('music', music_id=music.music_id) }}">{{ music.title }}</a></h3>
+                <p>{{ music.artist }}</p>
+                <p>
+                {% if music.hashtags %}
+                    {% for hashtag in music.hashtags.split(',') %}
+                        <span class="hashtag">#{{ hashtag }}</span>
+                    {% endfor %}
+                {% endif %}
+                </p>
+            </div>
+            <form method="post" action="{{ url_for('like', music_id=music.music_id) }}">
+                <input type="hidden" name="redirect_url" value="{{ request.url }}">
+                <button type="submit" class="like-button {% if music.liked %}liked{% else %}not-liked{% endif %}">
+                    <i class="fa fa-heart"></i>
+                </button>
+            </form>
+        </div>
+    {% endfor %}
+</div>
+{% endblock %}
