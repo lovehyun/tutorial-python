@@ -19,10 +19,6 @@ class User(db.Model):
     email = db.Column(db.String(120), unique=True, nullable=False)
     created_at = db.Column(db.DateTime, default=datetime.now)
 
-    # comments = db.relationship('Comment', backref='user', lazy=True)
-    # likes = db.relationship('Like', backref='user', lazy=True)
-    # notifications = db.relationship('Notification', backref='user', lazy=True)
-
     def __repr__(self):
         return f'<User(user_id={self.user_id}, username="{self.username}", email="{self.email}", created_at={self.created_at})>'
 
@@ -33,11 +29,6 @@ class Music(db.Model):
     album_image = db.Column(db.String(120))
     created_at = db.Column(db.DateTime, default=datetime.now)
 
-    # comments = db.relationship('Comment', backref='music', lazy=True)
-    # likes = db.relationship('Like', backref='music', lazy=True)
-    # notifications = db.relationship('Notification', backref='music', lazy=True)
-    # hashtags = db.relationship('MusicHashtag', backref='music', lazy=True)
-
     def __repr__(self):
         return f'<Music(music_id={self.music_id}, title="{self.title}", artist="{self.artist}", created_at={self.created_at})>'
 
@@ -46,9 +37,6 @@ class Like(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey('user.user_id'), primary_key=True)
     music_id = db.Column(db.Integer, db.ForeignKey('music.music_id'), primary_key=True)
     liked_at = db.Column(db.DateTime, default=datetime.now, nullable=False)
-
-    # user = db.relationship('User', backref=db.backref('likes', cascade='all, delete-orphan'))
-    # music = db.relationship('Music', backref=db.backref('likes', cascade='all, delete-orphan'))
 
     def __repr__(self):
         return f'<Like(user_id={self.user_id}, music_id={self.music_id}, liked_at={self.liked_at})>'
@@ -60,10 +48,6 @@ class Comment(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey('user.user_id', ondelete='CASCADE'), nullable=False)
     content = db.Column(db.Text, nullable=False)
     created_at = db.Column(db.DateTime, default=datetime.now, nullable=False)
-
-    # user = db.relationship('User', backref=db.backref('comments', cascade='all, delete-orphan'))
-    # music = db.relationship('Music', backref=db.backref('comments', cascade='all, delete-orphan'))
-    # notifications = db.relationship('Notification', backref='comment', lazy=True)
 
     def __repr__(self):
         return f'<Comment(comment_id={self.comment_id}, music_id={self.music_id}, user_id={self.user_id}, content="{self.content}", created_at={self.created_at})>'
