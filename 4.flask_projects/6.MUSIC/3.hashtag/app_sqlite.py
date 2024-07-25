@@ -105,8 +105,10 @@ def music(music_id):
             # likes = query_db('SELECT user_id FROM likes WHERE music_id=?', [music_id])
             # for like in likes:
             #     if like['user_id'] != session['user_id']:
-            #         execute_db('INSERT INTO notification (user_id, music_id, message) VALUES (?, ?, ?)', [like['user_id'], music_id, f"New comment on {music['title']}"])
- 
+            #         message = f"New comment added by {session['username']}: {content}"
+            #         execute_db('INSERT INTO notification (user_id, music_id, comment_id, message) VALUES (?, ?, (SELECT last_insert_rowid()), ?)', [like['user_id'], music_id, message])
+
+
         if 'hashtag' in request.form:
             hashtag = request.form['hashtag'].strip()
             if hashtag:

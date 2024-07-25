@@ -56,6 +56,9 @@ CREATE TABLE IF NOT EXISTS notification (
     FOREIGN KEY (comment_id) REFERENCES comment(comment_id) ON DELETE CASCADE
 );
 
+-- 기존 트리거 삭제
+DROP TRIGGER IF EXISTS after_comment_insert;
+
 -- comment 테이블에 새로운 항목이 삽입될 때 트리거 - 나를 제외하고 좋아요를 누른 사람들을 선택
 CREATE TRIGGER after_comment_insert
 AFTER INSERT ON comment

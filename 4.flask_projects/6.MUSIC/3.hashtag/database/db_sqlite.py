@@ -12,68 +12,20 @@ def get_db_connection():
     conn.row_factory = sqlite3.Row
     return conn
 
-# SQLite3 데이터베이스 초기화
-def init_db():
+# SQL 파일 실행 함수
+def execute_sql_file(filename):
+    with open(filename, 'r', encoding='utf-8') as f:
+        sql_script = f.read()
+    
     with get_db_connection() as conn:
         cursor = conn.cursor()
-
-        cursor.execute('''CREATE TABLE IF NOT EXISTS user (
-                            user_id INTEGER PRIMARY KEY AUTOINCREMENT,
-                            username TEXT NOT NULL UNIQUE,
-                            password TEXT NOT NULL,
-                            email TEXT NOT NULL UNIQUE,
-                            created_at DATETIME DEFAULT CURRENT_TIMESTAMP)''')
-
-        cursor.execute('''CREATE TABLE IF NOT EXISTS music (
-                            music_id INTEGER PRIMARY KEY AUTOINCREMENT,
-                            title TEXT NOT NULL,
-                            artist TEXT NOT NULL,
-                            album_image TEXT NOT NULL,
-                            created_at DATETIME DEFAULT CURRENT_TIMESTAMP)''')
-
-        cursor.execute('''CREATE TABLE IF NOT EXISTS comment (
-                            comment_id INTEGER PRIMARY KEY AUTOINCREMENT,
-                            music_id INTEGER,
-                            user_id INTEGER,
-                            content TEXT NOT NULL,
-                            created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-                            FOREIGN KEY (music_id) REFERENCES music(music_id) ON DELETE CASCADE,
-                            FOREIGN KEY (user_id) REFERENCES user(user_id) ON DELETE CASCADE)''')
-
-        cursor.execute('''CREATE TABLE IF NOT EXISTS likes (
-                            user_id INTEGER,
-                            music_id INTEGER,
-                            liked_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-                            PRIMARY KEY (user_id, music_id),
-                            FOREIGN KEY (user_id) REFERENCES user(user_id) ON DELETE CASCADE,
-                            FOREIGN KEY (music_id) REFERENCES music(music_id) ON DELETE CASCADE)''')
-
-        cursor.execute('''CREATE TABLE IF NOT EXISTS notification (
-                            notification_id INTEGER PRIMARY KEY AUTOINCREMENT,
-                            user_id INTEGER,
-                            music_id INTEGER,
-                            comment_id INTEGER,
-                            message TEXT,
-                            is_read BOOLEAN DEFAULT FALSE,
-                            created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-                            FOREIGN KEY (user_id) REFERENCES user(user_id) ON DELETE CASCADE,
-                            FOREIGN KEY (music_id) REFERENCES music(music_id) ON DELETE CASCADE,
-                            FOREIGN KEY (comment_id) REFERENCES comment(comment_id) ON DELETE CASCADE)''')
-
-        # 해시태그 테이블 생성
-        cursor.execute('''CREATE TABLE IF NOT EXISTS hashtag (
-                            hashtag_id INTEGER PRIMARY KEY AUTOINCREMENT,
-                            tag TEXT NOT NULL UNIQUE)''')
-
-        # 음악과 해시태그의 다대다 관계를 나타내는 연결 테이블 생성
-        cursor.execute('''CREATE TABLE IF NOT EXISTS music_hashtag (
-                            music_id INTEGER,
-                            hashtag_id INTEGER,
-                            FOREIGN KEY (music_id) REFERENCES music(music_id) ON DELETE CASCADE,
-                            FOREIGN KEY (hashtag_id) REFERENCES hashtag(hashtag_id) ON DELETE CASCADE,
-                            PRIMARY KEY (music_id, hashtag_id))''')
-
+        cursor.executescript(sql_script)
         conn.commit()
+        
+# SQLite3 데이터베이스 초기화
+def init_db():
+    sql_file_path = os.path.join(BASE_DIR, 'init_sqlite3.sql')
+    execute_sql_file(sql_file_path)
 
 def query_db(query, args=(), one=False):
     with get_db_connection() as conn:
