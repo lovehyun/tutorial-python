@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Canvas Terrain</title>
+    <style>
+        canvas {
+            border: 1px solid black;
+            display: block;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div id="container"></div>
+    <script>
+        function drawTerrain(terrain, canvasId) {
+            console.log('Drawing terrain:', terrain);
+            const terrainCanvas = document.getElementById(canvasId);
+            const ctx = terrainCanvas.getContext('2d');
+            const width = terrainCanvas.width;
+            const height = terrainCanvas.height;
+
+            ctx.clearRect(0, 0, width, height);
+            ctx.beginPath();
+            ctx.moveTo(0, height);
+
+            terrain.forEach(point => {
+                ctx.lineTo(point.x, point.y);
+            });
+
+            ctx.lineTo(width, height);
+            ctx.closePath();
+            ctx.fillStyle = '#654321';
+            ctx.fill();
+
+            console.log('Terrain drawn on canvas.');
+        }
+
+        const terrain_data = {
+            'room1': Array.from({length: 81}, (_, i) => ({x: i * 10, y: 300})), // 평지
+            'room2': Array.from({length: 81}, (_, i) => ({x: i * 10, y: i < 40 ? 300 : 200})), // 좌우는 낮고 가운데는 높은 지형
+            'room3': Array.from({length: 81}, (_, i) => ({x: i * 10, y: (20 < i && i < 40) || (60 < i && i < 80) ? 200 : 300})), // 2개의 곡선
+            'room4': Array.from({length: 81}, (_, i) => ({x: i * 10, y: (15 < i && i < 25) || (40 < i && i < 50) || (65 < i && i < 75) ? 200 : 300})), // 3개의 곡선
+            'room5': Array.from({length: 81}, (_, i) => ({x: i * 10, y: 250 + Math.pow(-1, Math.floor(i / 10)) * 50})), // 교차형 지형
+            'room6': Array.from({length: 81}, (_, i) => ({x: i * 10, y: 250 + Math.cos(i / 5) * 50})), // 코사인 곡선
+            'room7': Array.from({length: 81}, (_, i) => ({x: i * 10, y: 250 + Math.sin(i / 5) * 100})), // 사인 곡선
+            'room8': Array.from({length: 81}, (_, i) => ({x: i * 10, y: 250 + (i % 20 < 10 ? i % 20 : 20 - i % 20) * 10})) // 톱니형 곡선
+        };
+
+        const container = document.getElementById('container');
+
+        Object.keys(terrain_data).forEach(room => {
+            const title = document.createElement('h2');
+            title.textContent = room;
+            container.appendChild(title);
+
+            const canvas = document.createElement('canvas');
+            canvas.id = room;
+            canvas.width = 800;
+            canvas.height = 400;
+            container.appendChild(canvas);
+
+            drawTerrain(terrain_data[room], room);
+        });
+    </script>
+</body>
+</html>

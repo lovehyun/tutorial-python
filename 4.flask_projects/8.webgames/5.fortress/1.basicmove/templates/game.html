@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fortress Game</title>
+    <style>
+        #gameArea {
+            width: 800px;
+            height: 400px;
+            border: 1px solid black;
+            position: relative;
+            margin: 20px auto;
+            background-color: #f0f0f0;
+        }
+        .tank {
+            width: 40px;
+            height: 40px;
+            position: absolute;
+            color: white;
+            text-align: center;
+            line-height: 40px;
+        }
+        canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+        }
+    </style>
+</head>
+<body>
+    <h1 id="roomTitle">Room: {{ room }}</h1>
+    <div id="gameArea">
+        <canvas id="terrain" width="800" height="400"></canvas>
+    </div>
+    <script>
+        window.gameConfig = {
+            room: "{{ room }}",
+            username: "{{ username }}"
+        };
+    </script>
+    <script src="https://cdn.socket.io/4.0.0/socket.io.min.js"></script>
+    <script src="/static/js/game.js"></script>
+</body>
+</html>
