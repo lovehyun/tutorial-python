@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SQLite 학습 플랫폼</title>
+    <style>
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+        table, th, td {
+            border: 1px solid black;
+        }
+        th, td {
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+    </style>
+</head>
+<body>
+    <h1>SQLite 학습 플랫폼</h1>
+    <form id="query-form">
+        <textarea id="query" name="query" rows="4" cols="50" placeholder="SQL 쿼리를 입력하세요"></textarea>
+        <button type="submit">실행</button>
+    </form>
+    <div id="result"></div>
+    <div id="db-info">
+        <h2>데이터베이스 정보</h2>
+        <p>생성 시간: <span id="created-at"></span></p>
+        <p>마지막 요청 시간: <span id="last-request"></span></p>
+        <div id="tables"></div>
+    </div>
+
+    <script>
+        document.getElementById('query-form').addEventListener('submit', function(event) {
+            event.preventDefault();
+            var query = document.getElementById('query').value;
+            fetch('/query', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: 'query=' + encodeURIComponent(query)
+            })
+            .then(response => response.json())
+            .then(data => {
+                var resultDiv = document.getElementById('result');
+                if (data.status === 'success') {
+                    resultDiv.innerHTML = '<pre>' + JSON.stringify(data.result, null, 2) + '</pre>';
+                    fetchDBInfo(); // 쿼리 실행 후 데이터베이스 정보를 갱신합니다.
+                } else {
+                    resultDiv.innerHTML = '<pre>' + data.message + '</pre>';
+                }
+            });
+        });
+
+        function fetchDBInfo() {
+            fetch('/db_info')
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 'success') {
+                    document.getElementById('created-at').innerText = new Date(data.created_at * 1000).toLocaleString();
+                    document.getElementById('last-request').innerText = new Date(data.last_request * 1000).toLocaleString();
+                    renderTables(data.tables, data.schema);
+                }
+            });
+        }
+
+        function renderTables(tables, schema) {
+            var tablesDiv = document.getElementById('tables');
+            tablesDiv.innerHTML = ''; // 기존 내용을 지웁니다.
+
+            tables.forEach(table => {
+                var tableName = table[0];
+                var tableHTML = `
+                    <h3>테이블: ${tableName}</h3>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>인덱스</th>
+                                <th>컬럼 이름</th>
+                                <th>데이터 타입</th>
+                                <th>NOT NULL</th>
+                                <th>기본값</th>
+                                <th>PRIMARY KEY</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                `;
+                schema[tableName].forEach(column => {
+                    tableHTML += `
+                        <tr>
+                            <td>${column[0]}</td>
+                            <td>${column[1]}</td>
+                            <td>${column[2]}</td>
+                            <td>${column[3]}</td>
+                            <td>${column[4]}</td>
+                            <td>${column[5]}</td>
+                        </tr>
+                    `;
+                });
+                tableHTML += `
+                        </tbody>
+                    </table>
+                `;
+                tablesDiv.innerHTML += tableHTML;
+            });
+        }
+
+        // 페이지 로드 시 데이터베이스 정보를 가져옵니다.
+        fetchDBInfo();
+    </script>
+</body>
+</html>

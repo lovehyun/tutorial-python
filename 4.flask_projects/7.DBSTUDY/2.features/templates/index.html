@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SQLite 학습 플랫폼</title>
+    <link rel="stylesheet" href="static/style.css">
+</head>
+<body>
+    <h1>SQLite 학습 플랫폼</h1>
+    <div class="container">
+        <div class="box query-input">
+            <h2>쿼리 입력</h2>
+            <form id="query-form">
+                <textarea id="query" name="query" placeholder="SQL 쿼리를 입력하세요"></textarea>
+                <button type="submit">실행</button>
+            </form>
+        </div>
+        <div class="box query-result">
+            <h2>쿼리 결과</h2>
+            <textarea id="result" readonly></textarea>
+        </div>
+    </div>
+    <div id="db-info">
+        <h2>데이터베이스 정보</h2>
+        <p>생성 시간: <span id="created-at"></span></p>
+        <p>마지막 요청 시간: <span id="last-request"></span></p>
+        <div id="tables"></div>
+    </div>
+    <script src="static/script.js"></script>
+</body>
+</html>
