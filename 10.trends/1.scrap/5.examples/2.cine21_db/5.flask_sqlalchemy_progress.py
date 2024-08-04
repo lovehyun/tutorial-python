@@ -1,4 +1,6 @@
 # pip install flask flask-sqlalchemy flask-socketio selenium webdriver-manager
+# 크롬 드라이버 다운로드 (수동)
+# https://googlechromelabs.github.io/chrome-for-testing/
 
 from flask import Flask, redirect, url_for, render_template, request, flash
 from flask_sqlalchemy import SQLAlchemy
@@ -11,6 +13,7 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 import time
 import threading
+import sys
 
 # Flask 애플리케이션 설정
 app = Flask(__name__)
@@ -82,7 +85,17 @@ def scrape_and_save_movies():
 
     with app.app_context():  # 애플리케이션 컨텍스트 설정
         options = webdriver.ChromeOptions()
-        driver = webdriver.Chrome(service=ChromeService(ChromeDriverManager().install()), options=options)
+        # driver = webdriver.Chrome(service=ChromeService(ChromeDriverManager().install()), options=options)
+        
+        try:
+            # webdriver 사용해서 로딩
+            # driver = webdriver.Chrome(service=ChromeService(ChromeDriverManager().install()), options=options)
+            
+            # 로컬에 설치된 수동 드라이버 사용해서 로딩
+            driver = webdriver.Chrome(service=ChromeService(), options=options)
+        except Exception as e:
+            print(f"Error initializing WebDriver: {e}", file=sys.stderr)
+            return
 
         ranking_url = base_url + '/rank/boxoffice/domestic'
         driver.get(ranking_url)

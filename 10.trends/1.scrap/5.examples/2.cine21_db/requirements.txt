@@ -1,0 +1,5 @@
+Flask==3.0.3
+Flask-SocketIO==5.3.6
+Flask-SQLAlchemy==3.1.1
+selenium==4.23.1
+webdriver-manager==4.0.2
