@@ -28,8 +28,8 @@ def init_db():
         cur.execute("SELECT COUNT(*) as count FROM users")
         count = cur.fetchone()["count"]
         if count == 0:
-            cur.execute("INSERT INTO users (username, password, email) VALUES (?, ?, ?)", ("user1", "password1", "user1@example.com"))
-            cur.execute("INSERT INTO users (username, password, email) VALUES (?, ?, ?)", ("user2", "password2", "user2@example.com"))
+            cur.execute("INSERT INTO users (username, password, email) VALUES ('user1', 'password1', 'user1@example.com')")
+            cur.execute("INSERT INTO users (username, password, email) VALUES ('user2', 'password2', 'user2@example.com')")
             conn.commit()
 
         conn.close()
@@ -47,7 +47,8 @@ def login():
 
         conn = get_db_connection()
         cur = conn.cursor()
-        cur.execute("SELECT * FROM users WHERE username = ? AND password = ?", (username, password))
+        # Select user without prepared statement - ' OR 1=1 -- 또는 ' OR 1=1 #
+        cur.execute(f"SELECT * FROM users WHERE username = '{username}' AND password = '{password}'")
         user_data = cur.fetchone()
         conn.close()
 
@@ -78,7 +79,8 @@ def user():
             
             conn = get_db_connection()
             cur = conn.cursor()
-            cur.execute("UPDATE users SET email = ? WHERE username = ?", (email, user))
+            # Update user email without prepared statement
+            cur.execute(f"UPDATE users SET email = '{email}' WHERE username = '{user}'")
             conn.commit()
             conn.close()
             
@@ -87,10 +89,10 @@ def user():
             if "email" in session:
                 email = session["email"]
                 
-                # 데이터베이스에서 이메일 가져오기
+                # Fetch email from database without prepared statement
                 conn = get_db_connection()
                 cur = conn.cursor()
-                cur.execute("SELECT email FROM users WHERE username = ?", (user,))
+                cur.execute(f"SELECT email FROM users WHERE username = '{user}'")
                 user_email = cur.fetchone()
                 conn.close()
                 
