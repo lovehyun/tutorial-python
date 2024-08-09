@@ -41,7 +41,7 @@
             <li class="comment-item">
                 <div class="comment-header">
                     <strong>{{ comment.username }}</strong>
-                    <small>{{ comment.created_at }}</small>
+                    <small class="comment-time" data-utc="{{ comment.created_at }}">{{ comment.created_at }}</small>
                 </div>
                 <p>{{ comment.content }}</p>
                 {% if comment.user_id == session['user_id'] %}
@@ -72,5 +72,22 @@
             }
         });
     }
+
+    document.addEventListener("DOMContentLoaded", function() {
+        const commentTimes = document.querySelectorAll('.comment-time');
+
+        commentTimes.forEach(function(timeElement) {
+            let utcTime = timeElement.getAttribute('data-utc');
+        
+            // 공백을 'T'로 변환하고 'Z'를 추가
+            utcTime = utcTime.replace(' ', 'T') + 'Z';
+
+            // UTC 시간을 로컬 시간대로 변환
+            const date = new Date(utcTime);
+            const localTime = date.toLocaleString();
+
+            timeElement.textContent = localTime;
+        });
+    });
 </script>
 {% endblock %}
