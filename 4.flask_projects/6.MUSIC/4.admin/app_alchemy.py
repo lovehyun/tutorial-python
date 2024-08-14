@@ -87,6 +87,8 @@ def profile(user_id):
 @app.route('/', methods=['GET', 'POST'])
 def index():
     search_query = request.args.get('search', '')
+    user_id = session.get('user_id')
+    
     musics = []
 
     if search_query:
@@ -94,7 +96,7 @@ def index():
             hashtag_query = search_query[1:]
             musics = db.session.execute(
                 db.select(Music, Like, db.func.group_concat(Hashtag.tag, ',').label('hashtags'))
-                .outerjoin(Like, (Music.music_id == Like.music_id) & (Like.user_id == session['user_id']))
+                .outerjoin(Like, (Music.music_id == Like.music_id) & (Like.user_id == user_id))
                 .outerjoin(MusicHashtag, Music.music_id == MusicHashtag.music_id)
                 .outerjoin(Hashtag, MusicHashtag.hashtag_id == Hashtag.hashtag_id)
                 .where(Music.music_id.in_(
@@ -107,7 +109,7 @@ def index():
         else:  # 일반 곡, 가수 검색
             musics = db.session.execute(
                 db.select(Music, Like, db.func.group_concat(Hashtag.tag, ',').label('hashtags'))
-                .outerjoin(Like, (Music.music_id == Like.music_id) & (Like.user_id == session['user_id']))
+                .outerjoin(Like, (Music.music_id == Like.music_id) & (Like.user_id == user_id))
                 .outerjoin(MusicHashtag, Music.music_id == MusicHashtag.music_id)
                 .outerjoin(Hashtag, MusicHashtag.hashtag_id == Hashtag.hashtag_id)
                 .where(Music.title.like(f'%{search_query}%') | Music.artist.like(f'%{search_query}%'))
@@ -116,7 +118,7 @@ def index():
     else:  # 기본 전체쿼리
         musics = db.session.execute(
             db.select(Music, Like, db.func.group_concat(Hashtag.tag, ',').label('hashtags'))
-            .outerjoin(Like, (Music.music_id == Like.music_id) & (Like.user_id == session['user_id']))
+            .outerjoin(Like, (Music.music_id == Like.music_id) & (Like.user_id == user_id))
             .outerjoin(MusicHashtag, Music.music_id == MusicHashtag.music_id)
             .outerjoin(Hashtag, MusicHashtag.hashtag_id == Hashtag.hashtag_id)
             .group_by(Music.music_id)
