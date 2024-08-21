@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>노래 검색 결과</title>
+    <style>
+        body {
+            font-family: 'Nanum Gothic', sans-serif;
+        }
+
+        h1, h2 {
+            margin-top: 20px;
+        }
+
+        form {
+            margin-bottom: 20px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #f2f2f2;
+        }
+
+        a {
+            text-decoration: underline;
+            color: blue;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <h1>가사로 노래찾기</h1>
+    <form onsubmit="event.preventDefault(); searchLyrics();">
+        <label for="queryInput">가사 입력:</label>
+        <input type="text" id="queryInput" required>
+        <button type="submit">검색</button>
+    </form>
+    <h2>가사 검색 결과</h2>
+    <table id="resultsTable">
+        <thead>
+            <tr>
+                <th>제목</th>
+                <th>아티스트</th>
+                <th>가사</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- Results will be inserted here dynamically -->
+        </tbody>
+    </table>
+    <script>
+        // Function to update the table with search results
+        function updateTable(results, query) {
+            const tableBody = document.getElementById('resultsTable').getElementsByTagName('tbody')[0];
+            tableBody.innerHTML = ''; // Clear existing rows
+
+            results.forEach(result => {
+                const row = tableBody.insertRow();
+                const titleCell = row.insertCell(0);
+                const artistCell = row.insertCell(1);
+                const lyricsCell = row.insertCell(2);
+
+                // Create a hyperlink with the stored link
+                const link = document.createElement('a')
+                link.textContent = result.title;
+                link.href = result.link;
+                titleCell.appendChild(link);
+
+                // titleCell.textContent = result.title;
+                artistCell.textContent = result.artist;
+
+                // lyricsCell.innerHTML = result.lyrics;
+
+                // Highlight matching parts in the lyrics
+                const highlightedLyrics = highlightMatchingLyrics(result.lyrics, query);
+                lyricsCell.innerHTML = highlightedLyrics;
+            });
+        }
+
+        // Function to highlight matching parts in the lyrics
+        function highlightMatchingLyrics(lyrics, query) {
+            if (!query) return lyrics; // Added to handle empty query
+            const regex = new RegExp(query, 'gi');
+            return lyrics.replace(regex, match => `<mark>${match}</mark>`);
+        }
+    </script>
+    <script>
+        // Function to handle form submission
+        async function searchLyrics() {
+            const query = document.getElementById('queryInput').value;
+
+            try {
+                const response = await fetch(`http://localhost:5000/api/search-lyrics?query=${encodeURIComponent(query)}`);
+                const data = await response.json();
+                updateTable(data, query);
+            } catch (error) {
+                console.error('Error fetching search results:', error.message);
+            }
+        }
+    </script>
+</body>
+</html>
