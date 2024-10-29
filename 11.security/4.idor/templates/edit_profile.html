@@ -1,0 +1,18 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Profile</title>
+</head>
+<body>
+    <h1>Edit Your Profile</h1>
+    <form method="post">
+        <label>Email:</label><br>
+        <input type="email" name="email" value="{{ user[3] }}"><br>
+        <label>Bio:</label><br>
+        <textarea name="bio">{{ user[4] }}</textarea><br>
+        <input type="submit" value="Save">
+    </form>
+</body>
+</html>

@@ -24,6 +24,7 @@ migrations/
 .env
 secret.txt
 gapi-*.json
+*.pem
 
 # streamlit secrets
 secrets.toml

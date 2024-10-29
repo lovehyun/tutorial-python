@@ -1,0 +1,18 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>XSS Demo</title>
+    <script src="/static/js/main.js" defer></script>
+</head>
+<body>
+    <h2>Enter your name:</h2>
+    <input type="text" id="user_input" placeholder="Enter your name">
+    <button onclick="submitMessage()">Submit</button>
+    <button onclick="clearMessages()">Clear</button>
+
+    <h3>Messages:</h3>
+    <ul id="message_list"></ul>
+</body>
+</html>

@@ -1,0 +1,17 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Profile</title>
+</head>
+<body>
+    <h1>User Profile</h1>
+    <p><strong>Username:</strong> {{ user[1] }}</p>
+    <p><strong>Email:</strong> {{ user[3] }}</p>
+    <p><strong>Bio:</strong> {{ user[4] }}</p>
+    
+    <!-- 현재 사용자 ID에 맞게 수정 페이지로 이동 -->
+    <a href="{{ url_for('edit_profile', user_id=user[0]) }}">Edit Profile</a>
+</body>
+</html>

