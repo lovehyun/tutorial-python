@@ -51,5 +51,5 @@ def welcome():
     return "<h1>Welcome to the secure area!</h1>"
 
 if __name__ == "__main__":
-    init_db()
+    # init_db()
     app.run(debug=True)
