@@ -3,7 +3,7 @@
 # 예시: /user_profile?user_id=1처럼 URL에 파라미터로 사용자 ID를 전달하면, ID 값을 변경하여 다른 사용자의 정보를 조회할 수 있습니다.
 # 해결 방법: 모든 민감한 데이터 접근에 대한 권한 검증을 추가합니다.
 
-from flask import Flask, request, render_template, redirect, url_for, session
+from flask import Flask, request, render_template, redirect, url_for
 import sqlite3
 
 app = Flask(__name__)
@@ -34,8 +34,6 @@ def login():
         conn.close()
 
         if user:
-            # 로그인 성공 시 세션에 사용자 ID 저장
-            session['user_id'] = user[0]
             return redirect(url_for("user_profile", user_id=user[0]))  # 로그인 후 리디렉션
         else:
             return "Invalid credentials", 401

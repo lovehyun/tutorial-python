@@ -25,7 +25,7 @@ def index():
     return 'Session data has been set!'
 
 
-@app.route('/get_session')
+@app.route('/get-session')
 def get_session_data():
     username = session.get('username', 'Guest')
 

@@ -24,6 +24,18 @@ document.getElementById("loginForm").addEventListener("submit", function(event) 
             document.getElementById("error").textContent = "Invalid credentials. Please try again.";
         }
     })
+    // .then(response => {
+    //     response.text().then(text => {
+    //         if (response.ok) {
+    //             // 로그인 성공 시 페이지 이동
+    //             window.location.href = "/welcome";
+    //             window.location.href = `/welcome?username=${encodeURIComponent(text)}`;
+    //         } else {
+    //             // 로그인 실패 시 오류 메시지 표시
+    //             document.getElementById("error").textContent = "Invalid credentials. Please try again.";
+    //         }
+    //     })
+    // })
     .catch(error => {
         console.error("Error:", error);
     });

@@ -16,6 +16,8 @@
 # Common Name (e.g. server FQDN or YOUR name) []: localhost
 # Email Address []: admin@example.com
 
+# curl -k https://127.0.0.1:443/
+# curl --insecure https://127.0.0.1:8443/
 
 from flask import Flask
 

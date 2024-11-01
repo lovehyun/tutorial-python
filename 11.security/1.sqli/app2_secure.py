@@ -35,16 +35,22 @@ def login():
     # SELECT * FROM users WHERE username = 'admin' -- AND password = '...' 가 되어
     # 비밀번호 없이 로그인할 수 있습니다.
 
-    # TODO: 파라미터 바인딩을 통해 SQL Injection 방지
-    query = "SELECT * FROM users WHERE username = ? AND password = ?"
-
     conn = sqlite3.connect('example.db')
     cursor = conn.cursor()
+
+    # TODO: 파라미터 바인딩을 통해 SQL Injection 방지
+    # 1. 위치기반 placeholder
+    query = "SELECT * FROM users WHERE username = ? AND password = ?"
     
     # cursor.execute(query)  # SQL Injection 취약성이 있는 코드 실행
 
-    # TODO: 안전한 쿼리 실행
+    # 안전한 쿼리 실행 - 위치기반 placeholder
     cursor.execute(query, (username, password))
+
+    # 또는
+    # 2. Named placeholder 사용
+    # query = "SELECT * FROM users WHERE username = :username AND password = :password"
+    # cursor.execute(query, {"username": username, "password": password})
 
     user = cursor.fetchone()
     print(user)

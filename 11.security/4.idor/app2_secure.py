@@ -49,7 +49,7 @@ def user_profile():
 
     user = get_user_by_id(user_id)
     if user:
-        return render_template("profile_secure.html", user=user)
+        return render_template("profile2_secure.html", user=user)
     else:
         return "User not found", 404
 

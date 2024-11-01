@@ -40,7 +40,7 @@ def index():
     return 'Session data has been set!'
 
 # 세션 데이터 가져오기 라우트
-@app.route('/get_session')
+@app.route('/get-session')
 def get_session_data_route():
     username = session.get('username', 'Guest')
     count = session.get('count', 0)
