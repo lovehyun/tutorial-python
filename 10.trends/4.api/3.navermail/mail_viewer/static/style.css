@@ -1,0 +1,78 @@
+/* 테이블 스타일 */
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+th, td {
+    border: 1px solid #ddd;
+    padding: 8px;
+}
+th {
+    background-color: #f2f2f2;
+    text-align: left;
+}
+
+/* 클릭 가능한 셀 스타일 */
+tbody tr {
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+tbody tr:hover {
+    background-color: #f9f9f9;
+}
+
+
+/* 제목 하이퍼링크 효과 */
+tbody tr td:first-child {
+    color: inherit;
+    text-decoration: none;
+}
+
+tbody tr td:first-child:hover {
+    color: #007bff; /* 파란색 */
+    text-decoration: underline;
+}
+
+/* 모달 스타일 */
+.modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 1000;
+    justify-content: center;
+    align-items: center;
+}
+.modal-content {
+    background-color: white;
+    padding: 20px;
+    border-radius: 8px;
+    max-width: 600px;
+    width: 90%;
+    max-height: 90%; /* 최대 높이 제한 */
+    overflow-y: auto; /* 내용이 초과할 경우 스크롤 추가 */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    position: relative; /* 닫기 버튼 위치 조정을 위해 relative 사용 */
+}
+.modal-header {
+    font-size: 18px;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+.modal-body {
+    font-size: 16px;
+    line-height: 1.6;
+}
+.close-btn {
+    background: none;
+    border: none;
+    font-size: 18px;
+    font-weight: bold;
+    cursor: pointer;
+    position: absolute;
+    top: 10px;
+    right: 10px;
+}
