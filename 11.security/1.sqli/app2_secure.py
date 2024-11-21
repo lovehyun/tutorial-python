@@ -57,9 +57,9 @@ def login():
     conn.close()
     
     if user:
-        return jsonify({"success": True, "message": "Login successful"})
+        return jsonify({"success": True, "message": "Login successful"}), 200
     else:
-        return jsonify({"success": False, "message": "Invalid credentials. Please try again."})
+        return jsonify({"success": False, "message": "Invalid credentials. Please try again."}), 401
 
 @app.route("/welcome")
 def welcome():

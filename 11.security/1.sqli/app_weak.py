@@ -13,7 +13,7 @@ def init_db():
     conn = sqlite3.connect('example.db')
     cursor = conn.cursor()
     cursor.execute("CREATE TABLE IF NOT EXISTS users (username TEXT, password TEXT)")
-    cursor.execute("INSERT INTO users (username, password) VALUES ('admin', 'admin123')")
+    # cursor.execute("INSERT INTO users (username, password) VALUES ('admin', 'admin123')")
     conn.commit()
     conn.close()
 
@@ -51,9 +51,9 @@ def login():
     conn.close()
     
     if user:
-        return jsonify({"success": True, "message": "Login successful"})
+        return jsonify({"success": True, "message": "Login successful"}), 200
     else:
-        return jsonify({"success": False, "message": "Invalid credentials. Please try again."})
+        return jsonify({"success": False, "message": "Invalid credentials. Please try again."}), 401
 
 @app.route("/welcome")
 def welcome():
