@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="profile-page">
+    <h1>{{ user.username }}'s Profile</h1>
+    
+    <h2>Comments</h2>
+    <ul class="comment-list">
+        {% for comment in comments %}
+            <li class="comment-item">
+                {{ comment.content }} on <a href="{{ url_for('music.music', music_id=comment.music_id) }}">{{ comment.music_title }}</a> at {{ comment.created_at }}
+            </li>
+        {% endfor %}
+    </ul>
+
+    <h2>Liked Music</h2>
+    <ul class="liked-music-list">
+        {% for music in liked_music %}
+            <li class="liked-music-item">
+                <a href="{{ url_for('music.music', music_id=music.music_id) }}">{{ music.title }}</a> by {{ music.artist }}
+            </li>
+        {% endfor %}
+    </ul>
+</div>
+{% endblock %}

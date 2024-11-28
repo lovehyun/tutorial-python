@@ -1,0 +1,93 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="music-detail">
+    <table class="music-info-table">
+        <tr>
+            <td rowspan="2">
+                <img src="{{ url_for('static', filename='images/' ~ music.album_image) if music.album_image else url_for('static', filename='images/dummy_image.png') }}" alt="Album Image" width="100" height="100">
+            </td>
+            <td>
+                <h2>{{ music.title }}</h2>
+                <p>{{ music.artist }}</p>
+                <p> 
+                    {% for hashtag in hashtags %}
+                        <span class="hashtag">#{{ hashtag['tag'] }}<sup><a href="#" onclick="deleteHashtag({{ music.music_id }}, {{ hashtag['hashtag_id'] }})" class="delete-hashtag" style="text-decoration: none;">✖</a></sup></span>
+                    {% endfor %}
+                </p>
+                <div class="hashtags">
+                    <h3>Add Hashtag</h3>
+                    <form method="post" action="{{ url_for('music.music', music_id=music.music_id) }}" class="hashtag-form">
+                        <input type="text" name="hashtag" placeholder="Enter hashtag">
+                        <button type="submit">Add Hashtag</button>
+                    </form>
+                </div>
+            </td>
+            <td>
+                <form method="post" action="{{ url_for('like.like', music_id=music.music_id) }}">
+                    <input type="hidden" name="redirect_url" value="{{ request.url }}">
+                    <button type="submit" class="like-button {% if music.liked %}liked{% else %}not-liked{% endif %}">
+                        <i class="fa fa-heart"></i>
+                    </button>
+                </form>
+            </td>
+        </tr>
+    </table>
+</div>
+<div class="comments">
+    <h3>Comments</h3>
+    <ul class="comment-list">
+        {% for comment in comments %}
+            <li class="comment-item">
+                <div class="comment-header">
+                    <strong>{{ comment.username }}</strong>
+                    <small class="comment-time" data-utc="{{ comment.created_at }}">{{ comment.created_at }}</small>
+                </div>
+                <p>{{ comment.content }}</p>
+                {% if comment.user_id == session['user_id'] %}
+                    <form method="post" action="{{ url_for('comment.delete_comment', comment_id=comment.comment_id) }}" onsubmit="return confirm('Are you sure you want to delete this comment?');">
+                        <button type="submit">Delete</button>
+                    </form>
+                {% endif %}
+            </li>
+        {% endfor %}
+    </ul>
+    <form method="post" action="{{ url_for('music.music', music_id=music.music_id) }}" class="comment-form">
+        <textarea name="content" placeholder="Add a comment..." required></textarea>
+        <button type="submit">Post Comment</button>
+    </form>
+</div>
+<script>
+    function deleteHashtag(musicId, hashtagId) {
+        fetch(`/hashtag/${musicId}/${hashtagId}`, {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        }).then(response => {
+            if (response.ok) {
+                location.reload();
+            } else {
+                alert('Failed to delete hashtag');
+            }
+        });
+    }
+
+    document.addEventListener("DOMContentLoaded", function() {
+        const commentTimes = document.querySelectorAll('.comment-time');
+
+        commentTimes.forEach(function(timeElement) {
+            let utcTime = timeElement.getAttribute('data-utc');
+        
+            // 공백을 'T'로 변환하고 'Z'를 추가
+            utcTime = utcTime.replace(' ', 'T') + 'Z';
+
+            // UTC 시간을 로컬 시간대로 변환
+            const date = new Date(utcTime);
+            const localTime = date.toLocaleString();
+
+            timeElement.textContent = localTime;
+        });
+    });
+</script>
+{% endblock %}

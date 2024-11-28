@@ -1,0 +1,76 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="musics">
+    <h2>Top Liked Musics</h2>
+    {% if toplikes %}
+        <table class="music-table">
+            <thead>
+                <tr>
+                    <th>Rank</th>
+                    <th>Title</th>
+                    <th>Artist</th>
+                    <th>Likes</th>
+                    <th>Liked By</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for music in toplikes %}
+                    <tr>
+                        <td>{{ music['rank'] }}</td>
+                        <td>
+                            <a href="{{ url_for('music.music', music_id=music['music_id']) }}" class="music-link">{{ music['title'] }}</a>
+                        </td>
+                        <td>
+                            <a href="{{ url_for('main.index', search=music['artist']) }}" class="artist-link">{{ music['artist'] }}</a>
+                        </td>
+                        <td>{{ music['like_count'] }}</td>
+                        <td>{{ music['liked_users'] }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p>No liked musics available.</p>
+    {% endif %}
+</div>
+{% endblock %}
+
+{% block styles %}
+<style>
+.musics {
+    width: 80%;
+    margin: 0 auto;
+}
+
+.music-table {
+    width: 80%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+.music-table th, .music-table td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: left;
+}
+
+.music-table th {
+    background-color: #f2f2f2;
+}
+
+.music-table a {
+    text-decoration: none;
+    color: inherit;
+}
+
+.music-table a:hover {
+    text-decoration: underline;
+    color: blue;
+}
+
+.music-link:hover, .artist-link:hover {
+    text-decoration: underline;
+}
+</style>
+{% endblock %}

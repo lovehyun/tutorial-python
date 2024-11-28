@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Music App</title>
+    <!-- Static 파일 URL -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    {% block styles %}{% endblock %}
+</head>
+<body data-user-id="{{ session['user_id'] if 'user_id' in session else '' }}">
+    <header class="{% if session.get('is_admin') %}admin{% endif %}">
+        <h1>Music App</h1>
+        <nav>
+            <!-- 엔드포인트 이름에 Blueprint 이름 포함 -->
+            <a href="{{ url_for('main.index') }}">Home</a>
+            <a href="{{ url_for('toplikes.toplikes') }}">TopLikes</a>
+            <a href="{{ url_for('hashtag.hashtags') }}">Hashtags</a>
+            {% if session['user_id'] %}
+                {% if session.get('is_admin') %}
+                    <a href="{{ url_for('admin.manage_users') }}">Manage Users</a>
+                    <a href="{{ url_for('admin.manage_comments') }}">Manage Comments</a>
+                {% endif %}
+                <a href="{{ url_for('notification.notifications') }}" id="notification-icon">
+                    Notifications
+                    {% if g.notification_count > 0 %}
+                        <span class="notification-count">{{ g.notification_count }}</span>
+                    {% endif %}
+                </a>
+                <a href="{{ url_for('user.profile', user_id=session['user_id']) }}">Profile</a>
+                <a href="{{ url_for('auth.logout') }}">Logout</a>
+            {% else %}
+                <a href="{{ url_for('auth.login') }}">Login</a>
+            {% endif %}
+        </nav>
+    </header>
+    <main>
+        {% block content %}{% endblock %}
+    </main>
+    <!-- Static 파일 URL -->
+    <script src="{{ url_for('static', filename='js/scripts.js') }}"></script>
+</body>
+</html>

@@ -25,6 +25,7 @@ RUN sqlite3 database/music.db < database/init_sqlite3.sql && \
 # Flask 환경변수 설정
 ENV FLASK_APP=app_alchemy.py
 ENV FLASK_ENV=development
+ENV FLASK_APPLICATION_PREFIX=/music
 
 # 데이터베이스 초기화 스크립트 실행 (필요한 경우)
 # RUN flask db init && flask db migrate && flask db upgrade
