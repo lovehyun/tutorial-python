@@ -4,7 +4,7 @@ from database.db_sqlalchemy import db
 from config import Config
 
 def create_app():
-    app = Flask(__name__)
+    app = Flask(__name__, static_url_path=Config.APPLICATION_ROOT + '/static')
     app.config.from_object(Config)
 
     # DB 초기화
@@ -12,7 +12,7 @@ def create_app():
 
     # Blueprint 등록
     register_blueprints(app)
-    print(app.url_map)
+    # print(app.url_map)
 
     # DB 생성
     with app.app_context():
@@ -20,6 +20,8 @@ def create_app():
 
     return app
 
+# 여기에서 app 객체를 생성하여 gunicorn에서 사용할 수 있도록 함
+app = create_app()
+
 if __name__ == '__main__':
-    app = create_app()
     app.run(debug=True)
