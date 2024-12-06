@@ -12,7 +12,15 @@
                 <p>{{ music.artist }}</p>
                 <p> 
                     {% for hashtag in hashtags %}
-                        <span class="hashtag">#{{ hashtag['tag'] }}<sup><a href="#" onclick="deleteHashtag({{ music.music_id }}, {{ hashtag['hashtag_id'] }})" class="delete-hashtag" style="text-decoration: none;">✖</a></sup></span>
+                        <span class="hashtag">#{{ hashtag['tag'] }}
+                            <sup>
+                                <a href="#" 
+                                   data-url="{{ url_for('hashtag.delete_hashtag', music_id=music.music_id, hashtag_id=hashtag['hashtag_id']) }}" 
+                                   onclick="deleteHashtag(this.getAttribute('data-url'))" 
+                                   class="delete-hashtag" 
+                                   style="text-decoration: none;">✖</a>
+                            </sup>
+                        </span>
                     {% endfor %}
                 </p>
                 <div class="hashtags">
@@ -58,8 +66,8 @@
     </form>
 </div>
 <script>
-    function deleteHashtag(musicId, hashtagId) {
-        fetch(`/hashtag/${musicId}/${hashtagId}`, {
+    function deleteHashtag(url) {
+        fetch(url, {
             method: 'DELETE',
             headers: {
                 'Content-Type': 'application/json'
