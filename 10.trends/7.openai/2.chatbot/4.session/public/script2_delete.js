@@ -204,10 +204,17 @@ document.addEventListener('DOMContentLoaded', async function () {
     function appendSession(session) {
         const sessionDiv = document.createElement('div');
         sessionDiv.className = 'session-item';
-        sessionDiv.innerHTML = `<a href="#" class="session-link" data-session-id="${session.id}">
-            <div class="session-id">Session ${session.id}</div>
-            <div class="session-start-time">${new Date(session.start_time).toLocaleString()}</div>
-        </a>`;
+        sessionDiv.dataset.sessionId = session.id; // dataset 활용
+        sessionDiv.innerHTML = `
+            <a href="#" class="session-link" data-session-id="${session.id}">
+                <div class="session-id">Session ${session.id}</div>
+                <div class="session-start-time">${new Date(session.start_time).toLocaleString()}</div>
+            </a>
+            <button class="delete-btn" data-session-id="${session.id}">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+            </button>        
+        `;
+        // free svg images: https://lucide.dev
         sessionListContainer.appendChild(sessionDiv);
     }
 
@@ -226,4 +233,40 @@ document.addEventListener('DOMContentLoaded', async function () {
         });
     }
 
+    // 세션 삭제 이벤트 처리
+    async function deleteSession(sessionId) {
+        try {
+            const response = await fetch(`/api/session/${sessionId}`, {
+                method: 'DELETE'
+            });
+            if (response.ok) {
+                loadAllSessions();
+            }
+        } catch (error) {
+            console.error('Error deleting session:', error);
+        }
+    }
+    
+    function addSessionClickListeners() {
+        const sessionLinks = document.querySelectorAll('.session-link');
+        const deleteButtons = document.querySelectorAll('.delete-btn');
+        
+        sessionLinks.forEach((link) => {
+            link.addEventListener('click', async (event) => {
+                event.preventDefault();
+                const sessionId = link.dataset.sessionId;
+                await showSession(sessionId);
+            });
+        });
+    
+        deleteButtons.forEach((button) => {
+            button.addEventListener('click', async (event) => {
+                event.stopPropagation();
+                if (confirm('정말 이 세션을 삭제하시겠습니까?')) {
+                    const sessionId = button.dataset.sessionId;
+                    await deleteSession(sessionId);
+                }
+            });
+        });
+    }
 });

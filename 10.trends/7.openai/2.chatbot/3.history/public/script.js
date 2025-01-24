@@ -42,6 +42,7 @@ document.addEventListener('DOMContentLoaded', async function () {
 
         showLoadingIndicator();
         appendMessage('user', userInput);
+        scrollToBottom();
 
         try {
             const chatGPTResponse = await getChatGPTResponse(userInput);
@@ -89,11 +90,26 @@ document.addEventListener('DOMContentLoaded', async function () {
     }
 
     function scrollToBottom() {
-        chatContainer.scrollTop = chatContainer.scrollHeight;
+        // chatContainer.scrollTop = chatContainer.scrollHeight;
+        chatContainer.scrollTo({
+            top: chatContainer.scrollHeight,
+            behavior: 'smooth'
+        });
     }
+
+    const scrollBottomBtn = document.getElementById('scroll-bottom');
+    scrollBottomBtn.addEventListener('click', scrollToBottom);
 
     // 개행 문자(\n)를 <br> 태그로 변환하는 함수
     function formatResponseForHTML(response) {
         return response.replace(/\n/g, '<br>');
     }
+
+    const clearHistoryBtn = document.getElementById('clear-history');
+    clearHistoryBtn.addEventListener('click', async () => {
+        if (confirm('모든 대화내용을 지우시겠습니까?')) {
+            await fetch('/api/clear-history', { method: 'POST' });
+            chatContainer.innerHTML = '';
+        }
+    });
 });

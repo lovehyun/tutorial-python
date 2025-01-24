@@ -1,8 +1,14 @@
 # pip install pymupdf langchain openai
 
 import fitz  # PyMuPDF
+import os
+from dotenv import load_dotenv
+
 from langchain import OpenAI, ConversationChain
 from langchain.chat_models import ChatOpenAI
+
+load_dotenv(dotenv_path="../")
+
 
 # PDF 파일 읽기 함수
 def read_pdf(file_path):
@@ -14,12 +20,12 @@ def read_pdf(file_path):
     return text
 
 # PDF 파일 읽기
-file_path = "path_to_your_pdf_file.pdf"
+file_path = "pdf_file.pdf"
 pdf_text = read_pdf(file_path)
 print(f"PDF 내용: {pdf_text[:500]}...")  # 전체 내용을 출력하면 너무 길어질 수 있으므로 일부만 출력
 
 # OpenAI GPT 모델 설정
-openai_api_key = "your_openai_api_key"
+openai_api_key = os.environ.get("OPENAI_API_KEY")
 llm = ChatOpenAI(api_key=openai_api_key, model_name="gpt-3.5-turbo")
 
 # 대화 체인 설정

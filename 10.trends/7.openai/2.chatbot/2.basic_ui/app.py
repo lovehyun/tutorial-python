@@ -1,9 +1,10 @@
-from flask import Flask, request, send_from_directory, jsonify
-import requests
-from dotenv import load_dotenv
 import os
 import time
 import logging
+
+from flask import Flask, request, send_from_directory, jsonify
+import requests
+from dotenv import load_dotenv
 
 load_dotenv()
 
@@ -45,6 +46,7 @@ def get_chatgpt_response(user_input):
                     # {'role': 'system', 'content': 'You are a travel guide providing assistance and information for travelers.'},
                     {'role': 'user', 'content': user_input},
                 ],
+                # 'temperature': 0.7
             },
             headers={
                 'Content-Type': 'application/json',

@@ -1,16 +1,13 @@
+# pip install openai==1.0
 # https://platform.openai.com/docs/api-reference/introduction
 
 import openai
-from time import sleep
 from dotenv import load_dotenv
 import os
 
 load_dotenv(dotenv_path='../.env')
 
 openai_api_key = os.getenv('OPENAI_API_KEY')
-
-# Set the OpenAI API key
-openai.api_key = openai_api_key
 
 def get_chat_gpt_response(user_input):
     try:

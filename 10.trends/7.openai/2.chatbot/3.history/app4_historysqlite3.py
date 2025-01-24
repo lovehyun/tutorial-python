@@ -31,10 +31,37 @@ conn.row_factory = sqlite3.Row
 cursor = conn.cursor()
 
 # 대화 히스토리 테이블 생성
-cursor.execute("CREATE TABLE IF NOT EXISTS conversation (id INTEGER PRIMARY KEY AUTOINCREMENT, role TEXT, content TEXT)")
-conn.commit()
+def init_db():
+    cursor.execute("""
+        CREATE TABLE IF NOT EXISTS conversation (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            role TEXT NOT NULL,
+            content TEXT NOT NULL,
+            timestamp DATETIME DEFAULT CURRENT_TIMESTAMP
+        )
+    """)
+    conn.commit()
 
+init_db()
 
+def cleanup_old_conversations():
+    # 30일 이상 된 대화 삭제
+    cursor.execute("DELETE FROM conversation WHERE timestamp < datetime('now', '-30 day')")
+    conn.commit()
+
+@app.route('/api/clear-history', methods=['POST'])
+def clear_history():
+    cursor.execute("DELETE FROM conversation")
+    conn.commit()
+    return jsonify({'status': 'success'})
+
+@app.route('/api/search')
+def search_history():
+    query = request.args.get('q', '')
+    cursor.execute("SELECT * FROM conversation WHERE content LIKE ? ORDER BY id DESC", (f'%{query}%',))
+    rows = cursor.fetchall()
+    return json.dumps({'results': [dict(row) for row in rows]}, ensure_ascii=False)
+                      
 # 최근 10개의 대화 내용 가져오기
 def get_recent_conversation():
     cursor.execute("SELECT * FROM conversation ORDER BY id DESC LIMIT 10")

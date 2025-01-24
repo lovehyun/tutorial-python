@@ -1,6 +1,6 @@
-# pip install python-dotenv openai
+# pip install python-dotenv openai==0.28
+
 import openai
-from time import sleep
 from dotenv import load_dotenv
 import os
 
