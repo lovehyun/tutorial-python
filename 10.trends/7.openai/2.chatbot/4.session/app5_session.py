@@ -1,12 +1,13 @@
-from flask import Flask, request, send_from_directory, jsonify, g
-from flask_cors import CORS
-from openai import OpenAI
-from dotenv import load_dotenv
 import os
 import time
 import logging
 import sqlite3
 import json
+
+from flask import Flask, request, send_from_directory, jsonify, g
+from flask_cors import CORS
+from openai import OpenAI
+from dotenv import load_dotenv
 
 load_dotenv()
 
