@@ -1,13 +1,12 @@
 # pip install flask python-dotenv openai
+import os
+import logging
 from flask import Flask, request, jsonify, send_from_directory
 from openai import OpenAI
-import os
 from dotenv import load_dotenv
-import logging
 
 logging.basicConfig(level=logging.INFO)
 
-# Load environment variables
 load_dotenv()
 
 # static_url_path=''는 정적 파일의 URL 경로 접두사를 설정합니다.
