@@ -1,5 +1,5 @@
 # python compile
-__pycache__
+__pycache__/
 *.pyc
 
 # log files
@@ -11,6 +11,9 @@ __pycache__
 *.sqlite3
 *.db
 **/audio/*
+*.pdf
+
+# temp dir
 TEMP/
 
 # flask instance files

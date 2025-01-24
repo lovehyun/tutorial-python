@@ -6,6 +6,12 @@ from flask import Flask, session
 app = Flask(__name__)
 app.secret_key = 'your_secret_key'  # 세션 암호화를 위한 키 설정
 
+# eyJ1c2VybmFtZSI6InRlc3RfdXNlciJ9.YX_x2Q.lVpJb0hKsWlGgS4F_XCkQg2MjcQ
+# eyJ1c2VybmFtZSI6InRlc3RfdXNlciJ9 → Base64로 인코딩된 JSON 데이터 (username: test_user)
+# YX_x2Q → 만료 시간 (있을 경우)
+# lVpJb0hKsWlGgS4F_XCkQg2MjcQ → 서명 (데이터 변조 방지)
+# JSON.parse(atob(base64data))
+
 # 세션 값 설정하기
 @app.route("/set-session/<username>")
 def set_session(username):

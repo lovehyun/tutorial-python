@@ -1,3 +1,6 @@
+# curl -X GET http://127.0.0.1:5000/set-cookie -c cookies.txt
+# curl -X GET http://127.0.0.1:5000/get-cookie -b cookies.txt
+
 from flask import Flask, request, make_response
 
 app = Flask(__name__)
