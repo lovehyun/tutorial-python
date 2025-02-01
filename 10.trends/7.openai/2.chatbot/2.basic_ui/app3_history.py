@@ -44,6 +44,9 @@ def chat():
     # ChatGPT에 대화 내용 전송
     chatgpt_response = get_chatgpt_response(conversation_history)
 
+    # recent_history = conversation_history[-10:]  # 마지막 10개의 대화만 유지
+    # chatgpt_response = get_chatgpt_response(conversation_history)
+    
     end = time.time() * 1000  # 응답 완료 시간 기록
     print(f' <= [ChatGPT 응답]: {chatgpt_response}')
     print(f'    (요청 및 응답 시간: {end - start} ms)')
