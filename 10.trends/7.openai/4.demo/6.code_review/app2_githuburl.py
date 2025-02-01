@@ -27,7 +27,7 @@ def convert_github_url_to_raw(url):
 @app.route("/")
 def index():
     # templates 폴더 내의 index.html 렌더링
-    return send_from_directory(app.static_folder, 'index.html')
+    return send_from_directory(app.static_folder, 'index2.html')
 
 @app.route("/api/check", methods=["POST"])
 def check_code():

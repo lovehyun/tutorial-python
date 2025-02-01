@@ -20,7 +20,7 @@ def convert_github_url_to_raw(url):
 
 @app.route("/")
 def index():
-    return send_from_directory(app.static_folder, 'index3.html')
+    return send_from_directory(app.static_folder, 'index4.html')
 
 @app.route("/api/check", methods=["POST"])
 def check_code():

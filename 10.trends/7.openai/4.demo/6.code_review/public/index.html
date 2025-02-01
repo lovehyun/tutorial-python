@@ -2,49 +2,16 @@
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
-    <title>GitHub 코드 취약점 분석기</title>
-    <style>
-        body { font-family: Arial, sans-serif; margin: 40px; }
-        input[type=text] { width: 100%; padding: 8px; }
-        button { padding: 10px 20px; }
-        pre { background: #f4f4f4; padding: 10px; border: 1px solid #ccc; }
-        .error { color: red; }
-        /* 코드 라인 번호를 위한 스타일 */
-        #codeContainer {
-            background: #f4f4f4;
-            border: 1px solid #ccc;
-            padding: 10px;
-            font-family: monospace;
-            white-space: pre;
-            overflow-x: auto;
-        }
-        .code-line {
-            display: block;
-        }
-        .line-number {
-            display: inline-block;
-            width: 40px;
-            text-align: right;
-            margin-right: 10px;
-            color: gray;
-        }
-    </style>
+    <title>코드 취약점 분석기</title>
 </head>
 <body>
-    <h1>GitHub 코드 취약점 분석기</h1>
-    <form id="checkForm">
-        <label for="github_url">GitHub 파일 URL:</label><br>
-        <input type="text" id="github_url" name="github_url" placeholder="https://github.com/user/repo/blob/branch/path/to/file.py" required>
-        <br><br>
-        <button type="submit">Check</button>
+    <h1>코드 취약점 분석기</h1>
+    <form id="codeForm">
+        <textarea id="code" name="code" rows="15" cols="80" placeholder="소스코드를 입력하세요..."></textarea><br>
+        <button type="submit">분석</button>
     </form>
-    <div id="error" class="error"></div>
-    <div id="result">
-        <h2>소스 코드</h2>
-        <div id="codeContainer"></div>
-        <h2>분석 결과</h2>
-        <pre id="analysis"></pre>
-    </div>
+    <h2>분석 결과</h2>
+    <pre id="result"></pre>
     <script src="script.js"></script>
 </body>
 </html>

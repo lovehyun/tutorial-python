@@ -11,7 +11,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
         // 버튼 비활성화
         submitButton.disabled = true;
-
+        
         // 이전 결과 초기화
         errorElem.innerText = "";
         codeContainer.innerText = "";
@@ -21,18 +21,30 @@ document.addEventListener("DOMContentLoaded", function() {
         progressElem.style.display = "block";
         progressElem.innerText = "처리 중입니다...";
 
+        // GitHub URL
         const githubUrl = document.getElementById("github_url").value;
 
+        // 선택된 취약점 유형 수집 (checkbox name="vulnerability")
+        const vulnCheckboxes = document.querySelectorAll("input[name='vulnerability']:checked");
+        let vulnTypes = [];
+        vulnCheckboxes.forEach(checkbox => {
+            vulnTypes.push(checkbox.value);
+        });
+
+        // API 호출 시 취약점 유형 배열도 전송
         fetch("/api/check", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
             },
-            body: JSON.stringify({ github_url: githubUrl })
+            body: JSON.stringify({ 
+                github_url: githubUrl,
+                vulnerability_types: vulnTypes
+            })
         })
         .then(response => response.json())
         .then(data => {
-            // 먼저 소스코드를 표시합니다.
+            // 소스코드를 먼저 표시
             const codeLines = data.code.split("\n");
             codeLines.forEach((line, index) => {
                 const lineDiv = document.createElement("div");
@@ -49,13 +61,13 @@ document.addEventListener("DOMContentLoaded", function() {
                 codeContainer.appendChild(lineDiv);
             });
 
-            // 분석 결과 영역에 우선 기본 텍스트를 표시 (예: "분석 중입니다..." 혹은 바로 data.analysis)
+            // 분석 결과 영역 업데이트
             analysisElem.innerText = data.analysis;
 
-            // 분석 결과에서 '라인 번호:' 뒤에 나오는 숫자나 범위를 정규표현식으로 추출합니다.
-            // 예: "라인 번호: 31" 또는 "라인 번호: 31-36" 또는 "**라인 번호**: 31"
+            // 분석 결과에서 '라인 번호:' 뒤의 숫자 또는 범위를 찾아 하이라이팅
             // const regex = /라인 번호:\s*(\d+)(?:\s*-\s*(\d+))?/g;
             const regex = /라인 번호.*?(\d+(?:\s*-\s*\d+)?)/g;
+            
             let match;
             while ((match = regex.exec(data.analysis)) !== null) {
                 const start = parseInt(match[1]);

@@ -9,6 +9,7 @@
         button { padding: 10px 20px; }
         pre { background: #f4f4f4; padding: 10px; border: 1px solid #ccc; }
         .error { color: red; }
+        /* 코드 라인 번호를 위한 스타일 */
         #codeContainer {
             background: #f4f4f4;
             border: 1px solid #ccc;
@@ -27,15 +28,6 @@
             margin-right: 10px;
             color: gray;
         }
-        /* 하이라이팅 스타일 (연한 빨간색 배경) */
-        .highlight {
-            background-color: #ffcccc;
-        }
-        /* 진행 상태 표시 스타일 */
-        .progress {
-            font-weight: bold;
-            margin-top: 10px;
-        }
     </style>
 </head>
 <body>
@@ -46,8 +38,6 @@
         <br><br>
         <button type="submit">Check</button>
     </form>
-    <!-- 진행 상태 표시 영역 (초기엔 숨김) -->
-    <div id="progress" class="progress" style="display: none;">처리 중입니다...</div>
     <div id="error" class="error"></div>
     <div id="result">
         <h2>소스 코드</h2>

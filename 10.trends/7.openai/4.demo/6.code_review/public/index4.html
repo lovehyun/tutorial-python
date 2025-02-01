@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8" />
+    <title>GitHub 코드 취약점 분석기</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 40px;
+        }
+        input[type='text'] {
+            width: 100%;
+            padding: 8px;
+        }
+        button {
+            padding: 10px 20px;
+        }
+        pre {
+            background: #f4f4f4;
+            padding: 10px;
+            border: 1px solid #ccc;
+        }
+        .error {
+            color: red;
+        }
+        #codeContainer {
+            background: #f4f4f4;
+            border: 1px solid #ccc;
+            padding: 10px;
+            font-family: monospace;
+            white-space: pre;
+            overflow-x: auto;
+        }
+        .code-line {
+            display: block;
+        }
+        .line-number {
+            display: inline-block;
+            width: 40px;
+            text-align: right;
+            margin-right: 10px;
+            color: gray;
+        }
+        .highlight {
+            background-color: #ffcccc;
+        }
+        .progress {
+            font-weight: bold;
+            margin-top: 10px;
+        }
+        .vuln-types {
+            margin: 10px 0;
+        }
+        .vuln-types label {
+            margin-right: 15px;
+        }
+    </style>
+</head>
+<body>
+    <h1>GitHub 코드 취약점 분석기</h1>
+    <form id="checkForm">
+        <label for="github_url">GitHub 파일 URL:</label><br />
+        <input
+            type="text"
+            id="github_url"
+            name="github_url"
+            placeholder="https://github.com/user/repo/blob/branch/path/to/file.py"
+            required
+        />
+        <br /><br />
+        <!-- 취약점 유형 선택 (원하는 항목을 추가/수정 가능) -->
+        <div class="vuln-types">
+            <strong>분석할 취약점 유형 선택 (복수 선택 가능):</strong><br />
+            <label
+                ><input type="checkbox" name="vulnerability" value="민감정보(하드코딩된 암호)" />
+                민감정보(하드코딩된 암호)</label
+            >
+            <label><input type="checkbox" name="vulnerability" value="SQL Injection" /> SQL Injection</label>
+            <label><input type="checkbox" name="vulnerability" value="XSS" /> XSS</label>
+            <!-- 필요에 따라 다른 항목 추가 -->
+        </div>
+        <button type="submit">Check</button>
+    </form>
+    <div id="progress" class="progress" style="display: none">처리 중입니다...</div>
+    <div id="error" class="error"></div>
+    <div id="result">
+        <h2>소스 코드</h2>
+        <div id="codeContainer"></div>
+        <h2>분석 결과</h2>
+        <pre id="analysis"></pre>
+    </div>
+    <script src="script4.js"></script>
+</body>
+</html>
