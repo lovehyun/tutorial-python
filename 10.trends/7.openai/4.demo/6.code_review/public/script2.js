@@ -8,6 +8,7 @@ document.addEventListener("DOMContentLoaded", function() {
         const errorElem = document.getElementById("error");
         const codeContainer = document.getElementById("codeContainer");
         const analysisElem = document.getElementById("analysis");
+        
         errorElem.innerText = "";
         codeContainer.innerText = "";
         analysisElem.innerText = "";

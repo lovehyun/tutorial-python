@@ -19,6 +19,7 @@ document.addEventListener("DOMContentLoaded", function(){
                 resultPre.innerText = data.error;
             } else {
                 resultPre.innerText = data.analysis;
+                // resultPre.innerHTML = data.analysis;
             }
         })
         .catch(error => {

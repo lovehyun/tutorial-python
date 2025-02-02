@@ -41,6 +41,7 @@ def check_code():
         return jsonify({"error": "github_url 필드가 필요합니다."}), 400
 
     raw_url = convert_github_url_to_raw(github_url)
+    
     try:
         resp = requests.get(raw_url)
         resp.raise_for_status()
