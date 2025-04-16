@@ -1,7 +1,5 @@
 from flask import Flask, request, jsonify
 from flask_cors import CORS
-import time
-import random
 from openai import OpenAI
 import os
 from dotenv import load_dotenv
