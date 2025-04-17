@@ -2,12 +2,16 @@ from flask import Flask, render_template, send_from_directory, request, jsonify
 import sqlite3
 import os
 import random
+from werkzeug.middleware.proxy_fix import ProxyFix
+# nginx에서 추가 설정 필요 include 한 이후에 설정필요 (proxy_set_header X-Forwarded-Prefix /movie;)
 
-app = Flask(__name__)
+app = Flask(__name__, static_url_path='/movie/static')
+app.wsgi_app = ProxyFix(app.wsgi_app, x_for=1, x_proto=1, x_host=1, x_prefix=1)
+
 
 THUMBNAIL_FOLDER = os.path.join(os.getcwd(), 'thumbnails')
 
-@app.route('/thumbnail/<filename>')
+@app.route('/thumbnail/<filename>', endpoint='serve_thumbnail')
 def serve_thumbnail(filename):
     return send_from_directory(THUMBNAIL_FOLDER, filename)
 
@@ -67,6 +71,15 @@ def chat():
         return jsonify({'answer': '🔍 관련 영화: ' + ', '.join(matched_titles), 'highlights': matched_titles})
     else:
         return jsonify({'answer': '일치하는 영화가 없습니다.'})
+
+@app.route('/debug_headers')
+def debug_headers():
+    return {
+        "SCRIPT_NAME": request.environ.get('SCRIPT_NAME'),
+        "PATH_INFO": request.environ.get('PATH_INFO'),
+        "RAW_URI": request.environ.get('RAW_URI'),
+        "HEADERS": dict(request.headers)
+    }
 
 if __name__ == '__main__':
     app.run(debug=True)

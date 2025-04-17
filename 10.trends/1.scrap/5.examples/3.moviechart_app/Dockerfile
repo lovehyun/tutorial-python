@@ -1,4 +1,4 @@
-FROM python:3.10-slim
+FROM python:3.9-slim-bullseye
 
 # 환경 변수 설정
 ENV PYTHONDONTWRITEBYTECODE=1

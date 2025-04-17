@@ -36,7 +36,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
     async function sendMessageToServer(question) {
         try {
-            const response = await fetch('/api/chat', {
+            const response = await fetch('api/chat', { // 상대경로 요청
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ question })

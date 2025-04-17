@@ -33,7 +33,7 @@
                 <td>
                     {% if movie.thumbnail_path %}
                         <a href="{{ movie.original_url }}" target="_blank">
-                            <img src="/thumbnail/{{ movie.thumbnail_filename }}" alt="poster">
+                            <img src="{{ url_for('serve_thumbnail', filename=movie.thumbnail_filename) }}" alt="poster">
                         </a>
                     {% else %}
                         (없음)
