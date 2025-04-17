@@ -1,3 +1,9 @@
+# bash: curl -X POST http://localhost:5000/process -H "Content-Type: application/json; charset=utf-8" -d '{"message": "오늘 날씨 어때?", "taskId": "demo"}'
+# cmd:  curl -X POST http://localhost:5000/process -H "Content-Type: application/json" -d "{\"message\":\"Hello?\"}"
+#       curl -X POST http://localhost:5000/process -H "Content-Type: application/json; charset=utf-8" --data-binary "@payload.json"
+# payload.json: { "message": "오늘 날씨 어때?", "taskId": "demo" }
+
+# pip install flask flask-cors openai python-dotenv requests
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 from openai import OpenAI

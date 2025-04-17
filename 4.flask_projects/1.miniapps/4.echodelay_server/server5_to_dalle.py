@@ -1,3 +1,6 @@
+# bash: curl -X POST http://localhost:5000/process -H "Content-Type: application/json; charset=utf-8" -d '{"message": "이미지: 두팔을 벌리고 하늘을 나는 고양이", "taskId": "test123"}'
+
+# pip install flask flask-cors openai python-dotenv
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 from openai import OpenAI
