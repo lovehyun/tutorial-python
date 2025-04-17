@@ -39,6 +39,7 @@ def process():
 
             image_url = response.data[0].url
             image_data = requests.get(image_url).content
+            print(f'[F3] DALL·E 원본 이미지 URL: {image_url}')
 
             filename = f"{uuid.uuid4().hex}.png"
             save_path = os.path.join(FLASK_PUBLIC_DIR, filename)
