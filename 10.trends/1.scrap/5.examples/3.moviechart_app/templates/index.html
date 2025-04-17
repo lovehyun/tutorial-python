@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>🎬 실시간 박스오피스</title>
+    <style>
+        body { font-family: sans-serif; margin: 20px; }
+        table { width: 100%; border-collapse: collapse; table-layout: fixed; }
+        th, td { padding: 8px; border: 1px solid #ddd; vertical-align: top; word-wrap: break-word; }
+        th:nth-child(1), td:nth-child(1) { width: 5%; text-align: center; }
+        th:nth-child(2), td:nth-child(2) { width: 20%; text-align: center; }
+        th:nth-child(3), td:nth-child(3) { width: 75%; }
+        img { max-height: 160px; display: block; margin: 0 auto; }
+        .synopsis { font-size: 0.9em; color: #333; text-align: left; }
+        a { text-decoration: none; color: #333; }
+        a:hover { text-decoration: underline; }
+    </style>
+</head>
+<body>
+    <h2>🎥 실시간 박스오피스 영화 리스트</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>순위</th>
+                <th>썸네일</th>
+                <th>제목 및 시놉시스</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for movie in movies %}
+            <tr>
+                <td>{{ loop.index }}</td>
+                <td>
+                    {% if movie.thumbnail_path %}
+                        <a href="{{ movie.original_url }}" target="_blank">
+                            <img src="/thumbnail/{{ movie.thumbnail_filename }}" alt="poster">
+                        </a>
+                    {% else %}
+                        (없음)
+                    {% endif %}
+                </td>
+                <td>
+                    <strong>
+                        <a href="{{ movie.detail_link }}" target="_blank">{{ movie.title }}</a>
+                    </strong><br>
+                    <div class="synopsis">{{ movie.synopsis }}</div>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</body>
+</html>

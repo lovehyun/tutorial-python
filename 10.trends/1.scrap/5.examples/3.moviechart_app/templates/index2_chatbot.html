@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>🎬 실시간 박스오피스</title>
+    <style>
+        body { font-family: sans-serif; margin: 20px; }
+        table { width: 100%; border-collapse: collapse; table-layout: fixed; }
+        th, td { padding: 8px; border: 1px solid #ddd; vertical-align: top; word-wrap: break-word; }
+        th:nth-child(1), td:nth-child(1) { width: 5%; text-align: center; }
+        th:nth-child(2), td:nth-child(2) { width: 20%; text-align: center; }
+        th:nth-child(3), td:nth-child(3) { width: 75%; }
+        img { max-height: 160px; display: block; margin: 0 auto; }
+        .synopsis { font-size: 0.9em; color: #333; text-align: left; }
+        a { text-decoration: none; color: #333; }
+        a:hover { text-decoration: underline; }
+    </style>
+</head>
+<body>
+    <h2>🎥 실시간 박스오피스 영화 리스트</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>순위</th>
+                <th>썸네일</th>
+                <th>제목 및 시놉시스</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for movie in movies %}
+            <tr>
+                <td>{{ loop.index }}</td>
+                <td>
+                    {% if movie.thumbnail_path %}
+                        <a href="{{ movie.original_url }}" target="_blank">
+                            <img src="/thumbnail/{{ movie.thumbnail_filename }}" alt="poster">
+                        </a>
+                    {% else %}
+                        (없음)
+                    {% endif %}
+                </td>
+                <td>
+                    <strong>
+                        <a href="{{ movie.detail_link }}" target="_blank">{{ movie.title }}</a>
+                    </strong><br>
+                    <div class="synopsis">{{ movie.synopsis }}</div>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <!-- 챗봇 아이콘 및 창 -->
+    <div class="chatbot-icon" id="chatbotIcon">
+        <i class="bi bi-chat-dots-fill"></i>
+    </div>
+    <div class="chatbot-window" id="chatbotWindow">
+        <div class="chatbot-header">
+            <span>Chatbot</span>
+            <button id="closeChatbot">X</button>
+        </div>
+        <div class="chatbot-body">
+            <div class="chatbot-messages" id="chatbotMessages"></div>
+            <div class="chatbot-input-container">
+                <input type="text" id="chatbotInput" placeholder="메시지를 입력하세요...">
+                <button id="sendMessage">Send</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 스타일 및 스크립트 불러오기 -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='chatbot.css') }}">
+    <script src="{{ url_for('static', filename='chatbot.js') }}"></script>
+</body>
+</html>
