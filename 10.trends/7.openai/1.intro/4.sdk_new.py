@@ -20,7 +20,12 @@ def get_chat_gpt_response(user_input):
             messages=[
                 {'role': 'system', 'content': 'You are a helpful assistant.'},
                 {'role': 'user', 'content': user_input},
-            ]
+            ],
+            # temperature=0.7,        # 창의성 조절 (0.0 ~ 2.0)
+            # top_p=0.9,              # 확률 기반 샘플링 (0.0 ~ 1.0)
+            # max_tokens=150,         # 응답 최대 길이
+            # frequency_penalty=0.5,  # 반복 단어 방지 (-2.0 ~ 2.0)
+            # presence_penalty=0.3    # 새로운 주제 등장 가능성 증가 (-2.0 ~ 2.0)
         )
         print('-'*20)
         print('Response JSON:', response)  # Print the entire response for debugging

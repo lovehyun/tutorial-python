@@ -13,11 +13,16 @@ def get_chat_gpt_response(user_input):
         response = requests.post(
             'https://api.openai.com/v1/chat/completions',
             json={
-                'model': 'gpt-3.5-turbo',
+                'model': 'gpt-3.5-turbo', # 'gpt-4'
                 'messages': [
                     {'role': 'system', 'content': 'You are a helpful assistant.'},
                     {'role': 'user', 'content': user_input},
                 ],
+                # "temperature": 0.7,       # 높을수록 창의적, 낮을수록 결정적 응답 (기본값: 1.0, 범위: 0.0~2.0)
+                # "top_p": 0.9,             # 확률 기반 샘플링, 낮을수록 보수적 (0.9는 상위 90% 만 사용) (기본값: 1.0, 범위: 0.0~1.0)
+                # "max_tokens": 150,        # 응답의 최대 길이
+                # "frequency_penalty": 0.5, # 높을수록 같은 단어 반복 방지 (기본값: 0.0, 범위: -2.0~2.0)
+                # "presence_penalty": 0.3   # 높을수록 새로운 주제 등장 가능성 증가 (기본값: 0.0, 범위: -2.0~2.0)
             },
             headers={
                 'Content-Type': 'application/json',
