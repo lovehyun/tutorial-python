@@ -10,8 +10,8 @@ DATABASE = 'users.sqlite3'
 
 def get_db_connection():
     conn = sqlite3.connect(DATABASE)
-    conn.row_factory = sqlite3.Row  # 행을 sqlite3.Row 객체로 반환하도록 설정 (Dict 형태로 접근 가능 = row['id'], 
-                                    #                                       설정하지 않으면 튜플 index를 사용하여 row[0] 로 접근)
+    conn.row_factory = sqlite3.Row  # 행을 sqlite3.Row 객체로 반환하도록 설정 
+                                    # (Dict 형태로 접근 가능 = row['id'], 설정하지 않으면 튜플 index를 사용하여 row[0] 로 접근)
     return conn
 
 def init_db():
