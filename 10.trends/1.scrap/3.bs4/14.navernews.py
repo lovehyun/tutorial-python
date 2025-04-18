@@ -8,6 +8,7 @@ def get_naver_sportsnews():
 
     # print(soup)
     news = soup.select('.today_list > li')
+    # news = soup.select('.today_item')
     print(len(news))
 
     for n in news:

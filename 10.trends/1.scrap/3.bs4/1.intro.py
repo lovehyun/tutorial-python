@@ -1,4 +1,5 @@
-# pip install bs4
+# pip install bs4  (dummy alias)
+# pip install beautifulsoup4
 
 from bs4 import BeautifulSoup
 
