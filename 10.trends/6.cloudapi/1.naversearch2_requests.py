@@ -10,8 +10,13 @@ client_secret = open("secret.txt", "r").read().strip()  # 개발자센터에서 
 text = "Python 개발"
 
 # URL 인코딩
+# https://openapi.naver.com/v1/search/blog?query=맛집&start=11&display=10
 encText = requests.utils.quote(text)
 url = f"https://openapi.naver.com/v1/search/blog?query={encText}"
+
+# start = 11     # 11번째 결과부터 가져옴
+# display = 5    # 5개만 표시
+# url = f"https://openapi.naver.com/v1/search/blog?query={enc_query}&start={start}&display={display}"
 
 # 요청 헤더 설정
 headers = {

@@ -29,10 +29,10 @@ def get_naver_sportsnews():
         # print(f"URL: {news_content_url}")
 
         # 해당 뉴스 기사 페이지 내용을 가져오는 함수 호출
-        # get_news_content(news_content_url)
+        get_news_content(news_content_url)
 
 
-# 개별 뉴스 기사 페이지의 내용을 가져오는 함수
+# 개별 뉴스 기사 페이지의 내용을 가져오는 함수 (여기도 이제는 안됨 2025년 기준)
 def get_news_content(url):
     data = requests.get(url)
     soup = BeautifulSoup(data.text, 'html.parser')
@@ -50,7 +50,7 @@ def get_news_content(url):
     print('-' * 80)  # 구분선 출력
 
 
-# 동적으로 삽입되는 뉴스기사라 requests 로 가져올 수 없음.
+# 동적으로 삽입되는 뉴스기사라 requests 로 가져올 수 없음. (화면 하단 '추천뉴스')
 def get_naver_sportsnews_recommend():
     data = requests.get('https://sports.news.naver.com/index')
     soup = BeautifulSoup(data.text, 'html.parser')
