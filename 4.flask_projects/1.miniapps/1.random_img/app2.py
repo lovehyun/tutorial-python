@@ -5,6 +5,9 @@ import random
 app = Flask(__name__)
 CORS(app)
 
+# 특정 origin만 CORS 허용
+# CORS(app, resources={r"/random-dog": {"origins": "http://localhost:3000"}})
+
 # 이미지 파일이 저장된 디렉토리 경로
 # IMAGE_FOLDER = './static/images'
 

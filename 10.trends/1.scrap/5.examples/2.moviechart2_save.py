@@ -27,7 +27,19 @@ for idx, card in enumerate(movie_cards, start=1):
     link_tag = card.select_one('a')
 
     title = title_tag.text.strip() if title_tag else '제목없음'
-    image_url = img_tag['src'] if img_tag and img_tag.has_attr('src') else ''
+    
+    # image_url = img_tag['src'] if img_tag and img_tag.has_attr('src') else ''
+    # 이미지 URL 가공
+    if img_tag and img_tag.has_attr('src'):
+        src = img_tag['src']
+        if 'source=' in src:
+            # source 파라미터 뒷부분 추출
+            image_url = src.split('source=')[-1]
+        else:
+            image_url = src
+    else:
+        image_url = ''
+    
     detail_link = 'https://www.moviechart.co.kr' + link_tag['href'] if link_tag else ''
 
     print(f"{idx:2}. 제목: {title}")

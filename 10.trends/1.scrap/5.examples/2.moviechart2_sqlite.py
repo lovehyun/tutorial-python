@@ -7,7 +7,7 @@ from urllib.parse import urlparse, parse_qs, urljoin
 
 # 기본 URL
 BASE_URL = "https://www.moviechart.co.kr"
-TARGET_URL = BASE_URL + "/rank/realtime/index/image"
+TARGET_URL = urljoin(BASE_URL, "/rank/realtime/index/image")
 HEADERS = {
     "User-Agent": "Mozilla/5.0"
 }

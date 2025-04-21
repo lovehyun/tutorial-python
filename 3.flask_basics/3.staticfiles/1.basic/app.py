@@ -4,6 +4,8 @@
 from flask import Flask, render_template
 
 app = Flask(__name__)
+# app = Flask(__name__, static_folder='my_static')  # static → my_static 으로 변경
+# app = Flask(__name__, static_folder=None)  # 정적 파일 자동 서빙 꺼짐
 
 @app.route('/')
 def home():
