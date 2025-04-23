@@ -16,4 +16,4 @@ EXPOSE 5000
 ENV APPLICATION_ROOT="/catchmind"
 
 # 애플리케이션 실행
-CMD ["python", "app.py"]
+CMD ["python", "server.py"]
