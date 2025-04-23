@@ -1,5 +1,14 @@
+// 현재 페이지의 기본 경로를 가져오는 함수
+function getBasePath() {
+    // 현재 URL에서 경로 부분만 추출 (예: /board1/)
+    const path = window.location.pathname;
+    // 마지막 슬래시 이후의 파일명을 제외한 경로 반환
+    return path.substring(0, path.lastIndexOf('/') + 1);
+}
+
 document.addEventListener('DOMContentLoaded', function () {
-    fetch('/list')
+    const basePath = getBasePath();
+    fetch(basePath + 'list')
         .then(res => res.json())
         .then(data => {
             data.forEach(post => {
@@ -27,8 +36,9 @@ function makeCard(id, title, message) {
 function uploadPost() {
     const title = document.getElementById('input-title').value;
     const message = document.getElementById('input-text').value;
+    const basePath = getBasePath();
 
-    fetch('/create', {
+    fetch(basePath + 'create', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ title, message })
@@ -42,7 +52,8 @@ function uploadPost() {
 }
 
 function deletePost(id) {
-    fetch('/delete', {
+    const basePath = getBasePath();
+    fetch(basePath + 'delete', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ id })
@@ -71,8 +82,9 @@ function modifyPost(id) {
 function updatePost(id) {
     const title = document.getElementById(`mod-title-${id}`).value;
     const message = document.getElementById(`mod-text-${id}`).value;
+    const basePath = getBasePath();
 
-    fetch('/modify', {
+    fetch(basePath + 'modify', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ id, title, message })
