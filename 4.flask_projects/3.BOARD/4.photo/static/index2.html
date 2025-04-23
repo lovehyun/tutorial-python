@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>메모장 2.0</title>
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css"
+        integrity="sha384-B0vP5xmATw1+K9KRQjQERJvTumQW0nPEzvF6L/Z6nronJ3oUOFUFpCjEUQouq2+l" crossorigin="anonymous">
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:400,300" rel="stylesheet" type="text/css">
+    <style type="text/css">
+        * {
+            font-family: 'Open Sans', sans-serif;
+        }
+        .wrap {
+            margin: auto;
+            width: 900px;
+        }
+        .input-container {
+            padding: 20px;
+            background-color: rgb(220, 220, 220);
+        }
+        .form-group {
+            margin: 10px;
+            border: 10px;
+            width: 90%;
+        }
+        .card-id {
+            display: none;
+        }
+        .card img {
+            max-width: 100%;
+            height: auto;
+        }
+    </style>
+</head>
+<body>
+    <div class="wrap">
+        <div class="input-container">
+            <div class="form-group">
+                <h1>메모장 2.0</h1>
+            </div>
+            <div class="form-group">
+                <input class="form-control" id="input-title" name="title" placeholder="제목을 입력하세요">
+            </div>
+            <div class="form-group">
+                <textarea class="form-control" id="input-text" name="message" rows="2" placeholder="내용을 입력하세요"></textarea>
+            </div>
+            <div class="form-group">
+                <input type="file" id="input-file" class="form-control">
+            </div>
+            <div class="form-group">
+                <button type="submit" onclick="uploadPost()" class="btn btn-primary">저장하기</button>
+            </div>
+        </div>
+
+       <div id="card-list" class="card-columns">
+       </div>
+    </div>
+    <script src="static/script2.js"></script>
+</body>
+</html>

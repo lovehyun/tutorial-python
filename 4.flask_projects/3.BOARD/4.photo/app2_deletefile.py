@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, jsonify, redirect, url_for, send_from_directory
+from flask import Flask, request, jsonify, send_from_directory
 import os
 from werkzeug.utils import secure_filename
 from database import Database
@@ -13,7 +13,7 @@ def allowed_file(filename):
 
 @app.route('/')
 def index():
-    return render_template('index2.html')
+    return send_from_directory('static', 'index2.html')
 
 @app.route('/uploads/<filename>')
 def uploaded_file(filename):
