@@ -23,7 +23,7 @@
 </head>
 <body>
     <h1>Kooooogle</h1>
-    <form action="/search" method="get">
+    <form action="{{ url_for('search') }}" method="get">
         <input type="text" name="query" placeholder="Search..." required>
         <button type="submit" name="type" value="web">웹검색</button>
         <button type="submit" name="type" value="image">이미지검색</button>
