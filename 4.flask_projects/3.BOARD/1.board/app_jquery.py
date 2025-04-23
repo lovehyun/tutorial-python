@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, jsonify
+from flask import Flask, send_from_directory, request, jsonify
 from database import Database
 
 app = Flask(__name__)
@@ -6,7 +6,7 @@ db = Database()
 
 @app.route('/')
 def index():
-    return render_template('index_jquery.html')
+    return send_from_directory('static', 'index_jquery.html')
 
 @app.route('/create', methods=['POST'])
 def create():
