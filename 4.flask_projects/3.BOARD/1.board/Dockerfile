@@ -13,7 +13,7 @@ RUN pip install --no-cache-dir -r requirements.txt
 COPY . .
 
 # 데이터베이스 초기화
-RUN sqlite3 board.db < init_database.sql
+RUN sqlite3 board.sqlite < init_database.sql
 
 # 포트 5000 노출
 EXPOSE 5000
