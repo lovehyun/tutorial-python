@@ -1,10 +1,14 @@
-const socket = io();
 const canvas = document.getElementById('gameCanvas');
 const ctx = canvas.getContext('2d');
 const statusDisplay = document.getElementById('status');
 const clearButton = document.getElementById('clearCanvas');
 const wordDisplay = document.getElementById('wordDisplay');
 const guessInput = document.getElementById('guessInput');
+
+// const socket = io(); // 동적 경로 지원
+const socket = io({
+    path: window.location.pathname.replace(/\/$/, '') + '/socket.io'
+});
 
 let drawing = false;
 let isDrawer = false;

@@ -2,10 +2,12 @@ from flask import Flask, request, send_from_directory
 from flask_socketio import SocketIO, emit
 import datetime
 import random
+import os
 
 # Flask 애플리케이션 생성
 app = Flask(__name__, static_folder='static')
-socketio = SocketIO(app, cors_allowed_origins="*")
+prefix = os.getenv("APPLICATION_ROOT", "")
+socketio = SocketIO(app, cors_allowed_origins="*", path=f"{prefix}/socket.io")
 
 # 정적 파일 서빙 설정: 캐시를 사용하지 않도록 설정
 app.config['SEND_FILE_MAX_AGE_DEFAULT'] = 0
