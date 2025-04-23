@@ -3,9 +3,9 @@ import sqlite3
 import os
 import random
 from werkzeug.middleware.proxy_fix import ProxyFix
-# nginx에서 추가 설정 필요 include 한 이후에 설정필요 (proxy_set_header X-Forwarded-Prefix /movie;)
 
 app = Flask(__name__, static_url_path='/movie/static')
+# proxy_set_header X-Forwarded-Prefix /movie;
 app.wsgi_app = ProxyFix(app.wsgi_app, x_for=1, x_proto=1, x_host=1, x_prefix=1)
 
 

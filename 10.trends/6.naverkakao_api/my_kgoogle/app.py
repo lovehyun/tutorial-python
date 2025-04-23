@@ -2,11 +2,14 @@ from flask import Flask, request, render_template
 import requests
 import os
 from dotenv import load_dotenv, find_dotenv
+from werkzeug.middleware.proxy_fix import ProxyFix
 
 # .env 파일에서 환경 변수 로드
 load_dotenv(find_dotenv('../.env'))
 
 app = Flask(__name__)
+# proxy_set_header X-Forwarded-Prefix /kgoogle;
+app.wsgi_app = ProxyFix(app.wsgi_app, x_prefix=1)
 
 # 카카오 API REST 키
 KAKAO_RESTAPI_KEY = os.getenv("KAKAO_RESTAPI_KEY")
