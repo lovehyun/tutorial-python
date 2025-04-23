@@ -102,7 +102,7 @@
             const query = document.getElementById('queryInput').value;
 
             try {
-                const response = await fetch(`http://localhost:5000/api/search-lyrics?query=${encodeURIComponent(query)}`);
+                const response = await fetch(`api/search-lyrics?query=${encodeURIComponent(query)}`);
                 const data = await response.json();
                 updateTable(data, query);
             } catch (error) {

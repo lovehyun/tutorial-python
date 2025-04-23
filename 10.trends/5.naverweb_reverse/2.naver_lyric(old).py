@@ -13,9 +13,17 @@ def search_music_with_lyrics(query):
         'q': '가사검색 ' + query,
     }
 
-    try:
-        response = requests.get(base_url, params=params)
+    headers = {
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'
+    }
 
+    try:
+        response = requests.get(base_url, params=params, headers=headers)
+
+        # 응답 출력 확인 (디버깅용)
+        print("응답 코드:", response.status_code)
+        print("응답 본문 일부:", response.text[:100])
+        
         # 응답 데이터 처리
         print(response.json())
     except requests.exceptions.RequestException as error:
