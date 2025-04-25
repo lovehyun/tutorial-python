@@ -6,23 +6,35 @@
     <h1>Welcome to the Social Network</h1>
     {% for tweet in tweets %}
         <div class="tweet">
-            <p>{{ tweet.content }}</p>
-            <p>{{ tweet.user.username }}</p>
+            <!-- 트윗 본문과 삭제 버튼 -->
+            <div class="tweet-body-row">
+                <p class="tweet-content">{{ tweet.content }}</p>
+                {% if current_user.is_authenticated and current_user.id == tweet.user_id %}
+                    <form action="{{ url_for('delete_tweet', tweet_id=tweet.id) }}" method="POST" class="delete-form" onsubmit="return confirm('정말 삭제하시겠습니까?')">
+                        <button type="submit">X</button>
+                    </form>
+                {% endif %}
+            </div>
+
+            <!-- 작성자 정보 -->
+            <p class="tweet-author">- {{ tweet.user.username }} -</p>
+
+            <!-- 좋아요 영역 -->
             <div class="tweet-actions">
                 {% if current_user.is_authenticated %}
                     {% if current_user.has_liked(tweet) %}
-                        <form action="/unlike/{{ tweet.id }}" method="POST">
+                        <form action="{{ url_for('unlike_tweet', tweet_id=tweet.id) }}" method="POST">
                             <button type="submit">Unlike</button>
                         </form>
                     {% else %}
-                        <form action="/like/{{ tweet.id }}" method="POST">
+                        <form action="{{ url_for('like_tweet', tweet_id=tweet.id) }}" method="POST">
                             <button type="submit">Like</button>
                         </form>
                     {% endif %}
                 {% else %}
                     <p><a href="{{ url_for('login') }}">Log in to like</a></p>
                 {% endif %}
-                <span class="likes-count">Likes: {{ tweet.likes_count }}</span> <!-- 좋아요 수 표시 -->
+                <span class="likes-count">Likes: {{ tweet.likes_count }}</span>
             </div>
         </div>
     {% endfor %}

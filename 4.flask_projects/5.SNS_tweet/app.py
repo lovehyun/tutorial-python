@@ -176,6 +176,22 @@ def unlike_tweet(tweet_id):
     flash('좋아요를 취소했습니다.', 'info')
     return redirect(url_for('index'))  # 원래 페이지로 리디렉션
 
+@app.route('/delete/<int:tweet_id>', methods=['POST'])
+@login_required
+def delete_tweet(tweet_id):
+    tweet = Tweet.query.get_or_404(tweet_id)
+
+    if tweet.user_id != current_user.id:
+        flash('삭제 권한이 없습니다.', 'danger')
+        return redirect(url_for('index'))
+
+    # 관련 좋아요 먼저 삭제 (foreign key 의존성 문제 방지)
+    Like.query.filter_by(tweet_id=tweet.id).delete()
+    db.session.delete(tweet)
+    db.session.commit()
+    flash('트윗이 삭제되었습니다.', 'success')
+    return redirect(url_for('index'))
+
 # db 초기화용 커맨드 등록
 @app.cli.command('init-db')
 def init_db():

@@ -1,16 +1,13 @@
-<!-- tweet.html -->
 {% extends "layout.html" %}
 
 {% block content %}
-<div class="container">
+<div class="tweet-form-box">
     <h2>트윗하기</h2>
-    <form method="POST" action="">
+    <form method="POST">
         {{ form.hidden_tag() }}
-        <div class="form-group">
-            {{ form.content.label(class="form-label") }}
-            {{ form.content(class="form-control", rows=2) }}
-        </div>
-        <button type="submit" class="btn btn-primary">트윗하기</button>
+        <label for="content">{{ form.content.label.text }}</label><br>
+        {{ form.content(class="simple-textarea", rows=2) }}<br><br>
+        <button type="submit" class="simple-button">트윗하기</button>
     </form>
 </div>
 {% endblock %}
