@@ -15,4 +15,5 @@ ENV FLASK_ENV=development
 
 EXPOSE 5000
 
-CMD ["flask", "run"]
+# 데이터베이스 초기화 후 서버 실행
+CMD flask init-db && flask run

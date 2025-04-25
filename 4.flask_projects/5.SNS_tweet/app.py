@@ -174,6 +174,12 @@ def unlike_tweet(tweet_id):
     flash('좋아요를 취소했습니다.', 'info')
     return redirect(url_for('index'))  # 원래 페이지로 리디렉션
 
+# db 초기화용 커맨드 등록
+@app.cli.command('init-db')
+def init_db():
+    db.create_all()
+    print("데이터베이스가 초기화되었습니다.")
+
 if __name__ == '__main__':
     # 데이터베이스 초기화
     with app.app_context():
