@@ -1,4 +1,5 @@
 flask==2.0.1
+werkzeug==2.0.1
 flask-socketio==5.1.1
 python-engineio==4.3.0
 python-socketio==5.4.0
