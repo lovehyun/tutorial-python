@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8" />
+    <title>Register - Social Network</title>
+    <link rel="stylesheet" href="/css/style.css" />
+</head>
+<body>
+    <nav>
+        <ul>
+            <li><a href="/index.html">Home</a></li>
+            <li id="nav-login"><a href="/login.html">Login</a></li>
+            <li id="nav-logout" style="display: none"><a href="#" onclick="logout()">Logout</a></li>
+            <li id="nav-profile" style="display: none"><a href="/profile.html">Profile</a></li>
+            <li id="nav-tweet" style="display: none"><a href="/tweet.html">Tweet</a></li>
+        </ul>
+    </nav>
+
+    <div id="flash-message"></div>
+
+    <div id="register-form">
+        <h2>Register</h2>
+        <input id="username" placeholder="사용자명" /><br />
+        <input id="email" type="email" placeholder="이메일" /><br />
+        <input id="password" type="password" placeholder="비밀번호" /><br />
+        <button onclick="register()">회원가입</button>
+        <p>이미 계정이 있나요? <a href="/login.html">로그인</a></p>
+    </div>
+
+    <script src="/js/common.js"></script>
+    <script src="/js/register.js"></script>
+</body>
+</html>

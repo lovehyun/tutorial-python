@@ -1,0 +1,13 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<div class="tweet-form-box">
+    <h2>트윗하기</h2>
+    <form method="POST">
+        {{ form.hidden_tag() }}
+        <label for="content">{{ form.content.label.text }}</label><br>
+        {{ form.content(class="simple-textarea", rows=2) }}<br><br>
+        <button type="submit" class="simple-button">트윗하기</button>
+    </form>
+</div>
+{% endblock %}

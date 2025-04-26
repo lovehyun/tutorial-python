@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8" />
+    <title>Home - Social Network</title>
+    <link rel="stylesheet" href="/css/style.css" />
+</head>
+<body>
+    <nav>
+        <ul>
+            <li><a href="/index.html">Home</a></li>
+            <li id="nav-login"><a href="/login.html">Login</a></li>
+            <li id="nav-logout" style="display: none"><a href="#" onclick="logout()">Logout</a></li>
+            <li id="nav-profile" style="display: none"><a href="/profile.html">Profile</a></li>
+            <!-- <li id="nav-profile" style="display: none"><a href="/profile2.html">Profile2</a></li> -->
+            <li id="nav-tweet" style="display: none"><a href="/tweet.html">Tweet</a></li>
+        </ul>
+    </nav>
+
+    <div id="flash-message"></div>
+
+    <div id="tweets"></div>
+
+    <script src="/js/common.js"></script>
+    <script src="/js/index.js"></script>
+</body>
+</html>

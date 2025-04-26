@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8" />
+    <title>Profile - Social Network</title>
+    <link rel="stylesheet" href="/css/style.css" />
+</head>
+<body>
+    <nav>
+        <ul>
+            <li><a href="/index.html">Home</a></li>
+            <li id="nav-login"><a href="/login.html">Login</a></li>
+            <li id="nav-logout" style="display: none"><a href="#" onclick="logout()">Logout</a></li>
+            <li id="nav-profile" style="display: none"><a href="/profile.html">Profile</a></li>
+            <li id="nav-tweet" style="display: none"><a href="/tweet.html">Tweet</a></li>
+        </ul>
+    </nav>
+
+    <ul class="flash-messages" id="flash-message"></ul>
+
+    <div id="profile-box">
+        <h2>프로필</h2>
+        <form id="profile-form" onsubmit="event.preventDefault(); updateProfile();">
+            <label>사용자명</label><br />
+            <input type="text" id="profile-username" class="simple-textarea" /><br /><br />
+            <label>이메일</label><br />
+            <input type="email" id="profile-email" class="simple-textarea" /><br /><br />
+            <button type="submit" class="simple-button">프로필 수정</button>
+        </form>
+    </div>
+
+    <!-- 프로필 수정 폼 아래 추가 -->
+    <div id="password-box" style="margin-top: 30px">
+        <h2>비밀번호 변경</h2>
+        <form id="password-form" onsubmit="event.preventDefault(); updatePassword();">
+            <label>기존 비밀번호</label><br />
+            <input type="password" id="current-password" class="simple-textarea" /><br /><br />
+            <label>새 비밀번호</label><br />
+            <input type="password" id="new-password" class="simple-textarea" /><br /><br />
+            <button type="submit" class="simple-button">비밀번호 변경</button>
+        </form>
+    </div>
+
+    <script src="/js/common.js"></script>
+    <script src="/js/profile2.js"></script>
+</body>
+</html>

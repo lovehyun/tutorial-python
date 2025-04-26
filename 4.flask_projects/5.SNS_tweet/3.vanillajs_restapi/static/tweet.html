@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8" />
+    <title>Tweet - Social Network</title>
+    <link rel="stylesheet" href="/css/style.css" />
+</head>
+<body>
+    <nav>
+        <ul>
+            <li><a href="/index.html">Home</a></li>
+            <li id="nav-login"><a href="/login.html">Login</a></li>
+            <li id="nav-logout" style="display: none"><a href="#" onclick="logout()">Logout</a></li>
+            <li id="nav-profile" style="display: none"><a href="/profile.html">Profile</a></li>
+            <li id="nav-tweet" style="display: none"><a href="/tweet.html">Tweet</a></li>
+        </ul>
+    </nav>
+
+    <ul class="flash-messages" id="flash-message"></ul>
+
+    <div class="tweet-form-box">
+        <h2>트윗하기</h2>
+        <form onsubmit="event.preventDefault(); submitTweet();">
+            <textarea id="content" class="simple-textarea" rows="2" placeholder="내용을 입력하세요"></textarea
+            ><br /><br />
+            <button type="submit" class="simple-button">트윗하기</button>
+        </form>
+    </div>
+
+    <script src="/js/common.js"></script>
+    <script src="/js/tweet.js"></script>
+</body>
+</html>

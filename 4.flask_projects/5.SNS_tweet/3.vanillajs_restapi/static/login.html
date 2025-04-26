@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8" />
+    <title>Login - Social Network</title>
+    <link rel="stylesheet" href="/css/style.css" />
+</head>
+<body>
+    <nav>
+        <ul>
+            <li><a href="/index.html">Home</a></li>
+            <li id="nav-login"><a href="/login.html">Login</a></li>
+            <li id="nav-logout" style="display: none"><a href="#" onclick="logout()">Logout</a></li>
+            <li id="nav-profile" style="display: none"><a href="/profile.html">Profile</a></li>
+            <li id="nav-tweet" style="display: none"><a href="/tweet.html">Tweet</a></li>
+        </ul>
+    </nav>
+
+    <div id="flash-message"></div>
+
+    <div id="login-form">
+        <h2>Login</h2>
+        <input id="email" type="email" placeholder="이메일" /><br />
+        <input id="password" type="password" placeholder="비밀번호" /><br />
+        <button onclick="login()">로그인</button>
+        <p>아직 계정이 없나요? <a href="/register.html">회원가입</a></p>
+    </div>
+
+    <script src="/js/common.js"></script>
+    <script src="/js/login.js"></script>
+</body>
+</html>

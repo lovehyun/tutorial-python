@@ -1,0 +1,121 @@
+/* 전체 페이지 기본 글꼴 설정 */
+body {
+    font-family: Arial, sans-serif;
+}
+
+/* 상단 네비게이션 바 스타일 */
+nav ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+nav ul li {
+    display: inline;
+    margin-right: 10px;
+}
+
+/* 플래시 메시지 영역 (성공/오류 알림) */
+.flash-messages {
+    list-style-type: none;
+    padding: 0;
+}
+
+.flash-messages li.success {
+    background-color: #d4edda;
+    color: #155724;
+    padding: 10px;
+    margin-bottom: 5px;
+    border-radius: 5px;
+}
+
+.flash-messages li.danger {
+    background-color: #f8d7da;
+    color: #721c24;
+    padding: 10px;
+    margin-bottom: 5px;
+    border-radius: 5px;
+}
+
+/* 본문 스타일 --> */
+/* 개별 트윗 카드 스타일 */
+.tweet {
+    border: 1px solid #ccc;
+    padding: 10px;
+    margin-bottom: 10px;
+}
+
+/* 트윗 본문과 삭제 버튼을 좌우 정렬 */
+.tweet-body-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+}
+
+/* 트윗 본문 (왼쪽 정렬된 내용) */
+.tweet-content {
+    margin: 0;
+    flex: 1;
+}
+
+/* 작성자 표시 - 아래, 작고 흐리게 */
+.tweet-author {
+    font-size: 0.9em;
+    color: #666;
+    font-style: italic;
+    margin: 4px 0;
+}
+
+/* 좋아요/취소 버튼과 좋아요 수 */
+.tweet-actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+/* 좋아요 수 스타일 */
+.likes-count {
+    color: #555;
+}
+
+/* 삭제 버튼 포함한 폼 */
+.delete-form {
+    display: inline;
+}
+
+/* 삭제 버튼 자체 스타일 */
+.delete-form button {
+    background: none;
+    border: none;
+    color: red;
+    font-weight: bold;
+    cursor: pointer;
+}
+/* 본문 스타일 <-- */
+
+/* 트윗 폼 전체 박스 */
+.tweet-form-box {
+    max-width: 800px;
+    margin: 20px auto;
+}
+
+/* 텍스트 영역: 넓고 간결하게 */
+.simple-textarea {
+    width: 100%;
+    font-size: 1rem;
+    padding: 8px;
+    border: 1px solid #ccc;
+}
+
+/* 제출 버튼: 기본 스타일 */
+.simple-button {
+    padding: 6px 14px;
+    font-size: 1rem;
+    border: none;
+    background-color: #007BFF;
+    color: white;
+    border-radius: 5px;
+    cursor: pointer;
+}
+.simple-button:hover {
+    background-color: #0056b3;
+}
