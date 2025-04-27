@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>접속자 국가</title>
+    <style>
+        table {
+            border-collapse: collapse;
+            width: 70%;
+            margin: 20px auto;
+        }
+        th, td {
+            border: 1px solid #ccc;
+            padding: 8px 12px;
+            text-align: center;
+        }
+        #chart-container {
+            width: 80%;
+            margin: 50px auto;
+        }
+    </style>
+</head>
+<body>
+    <h1 style="text-align: center;">접속자 국가 목록</h1>
+    <table id="ip-table">
+        <thead>
+            <tr>
+                <th>IP</th>
+                <th>Country</th>
+            </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+
+    <div id="chart-container">
+        <canvas id="countryChart"></canvas>
+    </div>
+
+    <!-- Chart.js CDN 추가 -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- 분리된 JavaScript 추가 -->
+    <script src="/static/js/map.js"></script>
+</body>
+</html>
