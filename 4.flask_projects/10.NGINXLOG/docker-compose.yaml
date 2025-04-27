@@ -1,0 +1,13 @@
+version: '3.8'
+
+services:
+  flaskapp:
+    build: .
+    container_name: flask_geoip_app
+    ports:
+      - "5000:5000"
+    volumes:
+      - /var/log/nginx:/var/log/nginx:ro  # nginx access 로그를 읽기전용(ro)으로 마운트
+      - /usr/share/GeoIP/GeoIP.dat:/usr/share/GeoIP/GeoIP.dat:ro  # geoip.dat 파일도 읽기전용(ro)으로 마운트
+    environment:
+      - PYTHONUNBUFFERED=1
