@@ -66,9 +66,10 @@ def get_chatgpt_response(conversation_history):
         # 'system' 역할을 사용하여 사용자와 챗봇 간의 대화를 초기화합니다.
         input_messages = [
             # {'role': 'system', 'content': 'You are a helpful assistant.'},
+            {'role': 'system', 'content': 'You are a helpful assistant. Please remember the ongoing conversation history in memory.'},
             # {'role': 'system', 'content': 'You are a first-class hotel chef providing culinary recommendations.'},
             # {'role': 'system', 'content': 'You are a travel guide providing assistance and information for travelers.'},
-            {'role': 'system', 'content': '당신은 도움이 되는 AI 어시스턴트입니다.'},
+            # {'role': 'system', 'content': '당신은 도움이 되는 AI 어시스턴트입니다.'},
             # {'role': 'system', 'content': '당신은 최고급 호텔의 요리사로서 요리와 관련된 추천을 제공합니다.'},
             # {'role': 'system', 'content': '당신은 여행자들에게 도움과 정보를 제공하는 여행 가이드입니다.'},
             *conversation_history,

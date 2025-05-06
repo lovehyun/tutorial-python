@@ -1,11 +1,10 @@
-// public/script.js
-
 document.addEventListener('DOMContentLoaded', function () {
     const chatContainer = document.getElementById('chat-container');
     const userInputForm = document.getElementById('user-input-form');
     const userInputField = document.getElementById('user-input');
-    const loadingIndicator = document.getElementById('loading-indicator');
     const submitButton = document.getElementById('submit-button');
+
+    let loadingMessageDiv = null;
 
     submitButton.addEventListener('click', function () {
         submitUserInput();
@@ -20,14 +19,13 @@ document.addEventListener('DOMContentLoaded', function () {
         const userInput = userInputField.value;
         if (userInput.trim() === '') return;
 
-        showLoadingIndicator();
         appendMessage('user', userInput);
+        showLoadingIndicator();
 
         try {
             const chatGPTResponse = await getChatGPTResponse(userInput);
             hideLoadingIndicator();
 
-            // 서버 응답의 개행 문자를 HTML에서 인식하는 <br> 태그로 변환
             const formattedResponse = formatResponseForHTML(chatGPTResponse);
             appendMessage('chatbot', formattedResponse);
         } catch (error) {
@@ -45,14 +43,26 @@ document.addEventListener('DOMContentLoaded', function () {
         messageDiv.className = `chat-message ${role}`;
         messageDiv.innerHTML = '<div class="message-content">' + content + '</div>';
         chatContainer.appendChild(messageDiv);
+        scrollToBottom();
     }
 
     function showLoadingIndicator() {
-        loadingIndicator.style.display = 'flex';
+        loadingMessageDiv = document.createElement('div');
+        loadingMessageDiv.className = 'chat-message chatbot';
+        loadingMessageDiv.innerHTML = `
+            <div class="message-content">
+                <span class="loading-dots"></span> 생각 중...
+            </div>
+        `;
+        chatContainer.appendChild(loadingMessageDiv);
+        scrollToBottom();
     }
 
     function hideLoadingIndicator() {
-        loadingIndicator.style.display = 'none';
+        if (loadingMessageDiv) {
+            loadingMessageDiv.remove();
+            loadingMessageDiv = null;
+        }
     }
 
     async function getChatGPTResponse(userInput) {
@@ -72,7 +82,6 @@ document.addEventListener('DOMContentLoaded', function () {
         chatContainer.scrollTop = chatContainer.scrollHeight;
     }
 
-    // 개행 문자(\n)를 <br> 태그로 변환하는 함수
     function formatResponseForHTML(response) {
         return response.replace(/\n/g, '<br>');
     }

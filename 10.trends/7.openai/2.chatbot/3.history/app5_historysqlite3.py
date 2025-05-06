@@ -126,7 +126,9 @@ def get_chat_gpt_response(conversation_history):
     try:
         input_messages = [
             # 'system' 역할을 사용하여 사용자와 챗봇 간의 대화를 초기화합니다.
-            {'role': 'system', 'content': 'You are a helpful assistant.'},
+            # {'role': 'system', 'content': 'You are a helpful assistant.'},
+            {'role': 'system', 'content': 'You are a helpful assistant. Please remember the ongoing conversation history in memory.'},
+
             *conversation_history
         ]
 
