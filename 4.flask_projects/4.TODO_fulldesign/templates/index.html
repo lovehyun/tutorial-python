@@ -1,0 +1,169 @@
+{% extends "base.html" %}
+
+{% block title %}홈 - Flask 예제 애플리케이션{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-8">
+        <h1 class="mb-4">할 일 관리</h1>
+        
+        <!-- 새 할 일 추가 폼 -->
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5>새 할 일 추가</h5>
+            </div>
+            <div class="card-body">
+                <form id="addTodoForm">
+                    <div class="input-group">
+                        <input type="text" class="form-control" id="newTask" placeholder="할 일을 입력하세요..." required>
+                        <button class="btn btn-primary" type="submit">추가</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- 할 일 목록 -->
+        <div class="card">
+            <div class="card-header">
+                <h5>할 일 목록</h5>
+            </div>
+            <div class="card-body" id="todoList">
+                {% for todo in todos %}
+                <div class="todo-item {% if todo.completed %}todo-completed{% endif %}" data-id="{{ todo.id }}">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div class="form-check">
+                            <input class="form-check-input todo-checkbox" type="checkbox" 
+                                   {% if todo.completed %}checked{% endif %} 
+                                   data-id="{{ todo.id }}">
+                            <label class="form-check-label">
+                                {{ todo.task }}
+                            </label>
+                        </div>
+                        <button class="btn btn-sm btn-danger delete-btn" data-id="{{ todo.id }}">삭제</button>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-header">
+                <h5>현재 시간</h5>
+            </div>
+            <div class="card-body">
+                <p id="currentTime">로딩 중...</p>
+                <button class="btn btn-sm btn-outline-primary" onclick="updateTime()">시간 업데이트</button>
+            </div>
+        </div>
+
+        <div class="card mt-3">
+            <div class="card-header">
+                <h5>API 테스트</h5>
+            </div>
+            <div class="card-body">
+                <p>이 애플리케이션은 다음 API 엔드포인트를 제공합니다:</p>
+                <ul class="list-unstyled">
+                    <li><code>GET /api/todos</code> - 모든 할 일 조회</li>
+                    <li><code>POST /api/todos</code> - 새 할 일 추가</li>
+                    <li><code>PUT /api/todos/&lt;id&gt;</code> - 할 일 수정</li>
+                    <li><code>DELETE /api/todos/&lt;id&gt;</code> - 할 일 삭제</li>
+                    <li><code>GET /api/time</code> - 현재 시간 조회</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+// 현재 시간 업데이트
+function updateTime() {
+    fetch('/api/time')
+        .then(response => response.json())
+        .then(data => {
+            document.getElementById('currentTime').textContent = data.current_time;
+        })
+        .catch(error => console.error('Error:', error));
+}
+
+// 페이지 로드 시 시간 업데이트
+updateTime();
+
+// 새 할 일 추가
+document.getElementById('addTodoForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    const taskInput = document.getElementById('newTask');
+    const task = taskInput.value.trim();
+    
+    if (!task) return;
+    
+    fetch('/api/todos', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({task: task})
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.error) {
+            alert('오류: ' + data.error);
+        } else {
+            location.reload(); // 페이지 새로고침
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('할 일 추가 중 오류가 발생했습니다.');
+    });
+});
+
+// 체크박스 상태 변경
+document.addEventListener('change', function(e) {
+    if (e.target.classList.contains('todo-checkbox')) {
+        const todoId = e.target.dataset.id;
+        const completed = e.target.checked;
+        
+        fetch(`/api/todos/${todoId}`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({completed: completed})
+        })
+        .then(response => response.json())
+        .then(data => {
+            location.reload(); // 페이지 새로고침
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            e.target.checked = !completed; // 원래 상태로 되돌림
+        });
+    }
+});
+
+// 할 일 삭제
+document.addEventListener('click', function(e) {
+    if (e.target.classList.contains('delete-btn')) {
+        const todoId = e.target.dataset.id;
+        
+        if (confirm('정말로 이 할 일을 삭제하시겠습니까?')) {
+            fetch(`/api/todos/${todoId}`, {
+                method: 'DELETE'
+            })
+            .then(response => response.json())
+            .then(data => {
+                location.reload(); // 페이지 새로고침
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('할 일 삭제 중 오류가 발생했습니다.');
+            });
+        }
+    }
+});
+</script>
+{% endblock %}
