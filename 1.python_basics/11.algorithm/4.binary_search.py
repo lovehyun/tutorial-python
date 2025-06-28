@@ -1,4 +1,15 @@
+# 선형탐색 (Linear Search)
+def linear_search(arr, target):
+    for index in range(len(arr)):
+        if arr[index] == target:
+            return index
+    return -1
+
 # 이진탐색 (Binary Search)
+# 정렬된 배열에서 특정 값을 찾는 효율적인 탐색 방법으로, 매번 탐색 범위를 절반씩 줄여나가면서 목표값을 찾습니다.
+# 전제 조건: 배열이 정렬되어 있어야 함
+# 시간 복잡도: O(log n) - 매우 효율적
+# 공간 복잡도: O(1) - 추가 메모리 사용 최소
 def binary_search(arr, target):
     left = 0
     right = len(arr) - 1
@@ -12,13 +23,6 @@ def binary_search(arr, target):
         else:
             right = mid - 1
 
-    return -1
-
-# 선형탐색 (Linear Search)
-def linear_search(arr, target):
-    for index in range(len(arr)):
-        if arr[index] == target:
-            return index
     return -1
 
 # 이진 탐색 사용 예제
