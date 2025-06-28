@@ -4,12 +4,14 @@ users = [
     {"name": "Charlie", "age": 35, "location": "Daegu", "car": "Audi"},
 ]
 
+# 한명만 검색
 def find_user(name):
     for user in users:
         if user["name"] == name:
         # if user["name"].lower() == name.lower():
             return user
 
+# 여러명 모두 검색
 def find_users(name):
     result = []
     for user in users:
@@ -33,6 +35,10 @@ def find_user2(name=None, age=None):
                 return user
     return None
 
+def find_user2_simplified(name=None, age=None):
+    for user in users:
+        if (name is None or user["name"] == name) and (age is None or user["age"] == age):
+            return user
 
 # ---------------------
 # 미션2. 다양한 변화하는 검색 조건을 입력 인자에 어떻게 받을 것인가?

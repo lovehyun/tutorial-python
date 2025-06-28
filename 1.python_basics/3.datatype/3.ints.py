@@ -56,10 +56,10 @@ x = 5
 y = 3
 
 # 비트 AND
-print(x & y)  # 1
+print(x & y)  # 1 = 101 & 011
 
 # 비트 OR
-print(x | y)  # 7
+print(x | y)  # 7 = 101 | 011 = 111
 
 # 비트 XOR
 print(x ^ y)  # 6

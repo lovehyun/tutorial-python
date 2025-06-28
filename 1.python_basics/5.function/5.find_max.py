@@ -8,9 +8,16 @@ def find_max(numbers):
     return max_num
 
 
-numbers = [3, 7, 2, 9, 1, 4]
+numbers = [3, 7, 2, 9, 1, 4, 5, 8, 6]
 
 max_number = find_max(numbers)
+# max_number = max(numbers) # 내장 함수
+
+# 역순 정렬
+# numbers.sort(reverse=True)
+# 첫 번째 값이 가장 큰 값
+# largest = numbers[0]
+
 
 print("최대값:", max_number)
 

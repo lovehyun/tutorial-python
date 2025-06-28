@@ -1,11 +1,11 @@
 # 이미지 처리:
-from PIL import Image
+from PIL import Image, ImageFilter
 
 # 이미지 열기
-image = Image.open("image.jpg")
+image = Image.open("data/cats.jpg")
 
 # 이미지 크기 조정
-resized_image = image.resize((800, 600))
+resized_image = image.resize((400, 300))
 
 # 이미지 필터 적용
 filtered_image = image.filter(ImageFilter.BLUR)

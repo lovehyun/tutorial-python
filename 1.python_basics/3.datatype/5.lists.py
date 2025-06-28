@@ -69,8 +69,12 @@ count_of_2 = my_list.count(2)
 print(count_of_2)  # 2
 
 # 리스트 정렬
-my_list.sort()
+my_list.sort() # 원본 데이터를 변경함
 print(my_list)  # [1, 1, 2, 2, 3, 3, 4, 5]
+
+# 비교
+sorted_list = sorted(my_list) # 인자를 받아서 결과를 반환함
+
 
 # 리스트 내림차순 정렬
 my_list.sort(reverse=True)

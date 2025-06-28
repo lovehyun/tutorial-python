@@ -14,6 +14,13 @@ def binary_search(arr, target):
 
     return -1
 
+# 선형탐색 (Linear Search)
+def linear_search(arr, target):
+    for index in range(len(arr)):
+        if arr[index] == target:
+            return index
+    return -1
+
 # 이진 탐색 사용 예제
 arr = [1, 3, 5, 7, 9, 11, 13, 15, 17, 19]
 target = 7

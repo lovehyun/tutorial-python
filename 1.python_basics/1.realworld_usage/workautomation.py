@@ -12,11 +12,13 @@ for file_name in file_list:
     destination = os.path.join(destination_folder, file_name)
     shutil.copy(source, destination)
 
+
 # 스크린샷 찍기
 import pyautogui
 
 screenshot = pyautogui.screenshot()
 screenshot.save("screenshot.png")
+
 
 # 웹 페이지 자동화
 from selenium import webdriver
