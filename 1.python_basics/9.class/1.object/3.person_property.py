@@ -2,6 +2,11 @@
 # getter	get_name()	        person.name
 # setter	set_name("Tom")	    person.name = "Tom"
 
+# 문법	            역할
+# @property	        getter를 선언하는 것
+# @속성명.setter	setter를 선언하는 것
+# @속성명.deleter	deleter를 선언하는 것
+
 class Person:
     def __init__(self, name, age):
         self._name = name    # protected (외부 접근은 가능하지만, 내부적으로 사용 권장)

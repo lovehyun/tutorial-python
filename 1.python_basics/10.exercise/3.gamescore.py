@@ -32,7 +32,7 @@ def input_mode():
         check_highscore()
         print('최고점수: ', high_score)
 
-    if mode == 'history':
+    if mode == 'history': # 히스토리 점수 기록
         print('============')
         print('점수, 이름')
         print('============')

@@ -7,3 +7,6 @@ class Employee(Person):
 
     def greet(self):  # 메서드 오버라이딩
         print(f"Hello, my name is {self.name}, I work at {self.company}.")
+
+    def work(self):
+        print(f"Employee {self.name} is working at {self.company}")

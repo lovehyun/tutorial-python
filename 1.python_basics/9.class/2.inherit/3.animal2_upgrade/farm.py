@@ -4,6 +4,8 @@ from animal import Animal
 class Farm:
     def __init__(self) -> None:
         self.animals: List[Animal] = []
+        # has-a는 "어떤 객체가 다른 객체를 속성으로 가진다"는 의미입니다.
+        # 즉, "가지고 있다" → 포함하고 있다는 구조예요.
 
     def add_animal(self, animal: Animal) -> None:
         self.animals.append(animal)

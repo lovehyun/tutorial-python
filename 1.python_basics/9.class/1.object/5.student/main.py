@@ -12,6 +12,7 @@ print()
 # Employee 테스트
 employee = Employee("Jane", 28, "CompanyA")
 employee.greet()
+employee.work()
 
 print()
 

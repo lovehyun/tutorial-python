@@ -23,7 +23,9 @@ class Car:
     # __str__이 없으면 print(객체) 시 __repr__이 대신 호출됩니다.
     # 둘 다 정의하면 __str__이 우선 호출됩니다.
 
-    # def __repr__(self) -> str:
+    def __repr__(self) -> str:
+        return f"Car('{self.make}', '{self.model}')"
+        
     def __str__(self) -> str:
         return f"Car: {self.make} {self.model}"
 

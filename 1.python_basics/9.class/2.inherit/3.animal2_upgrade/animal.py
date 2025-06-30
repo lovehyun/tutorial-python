@@ -1,3 +1,11 @@
+# 객체지향 4대 특징을 모두 만족
+#
+# OOP 특징	    코드에서 적용된 부분
+# 추상화	    Animal 추상 클래스, @abstractmethod
+# 상속	        Dog와 Cat이 Animal을 상속
+# 다형성	    animal.speak()가 동물마다 다르게 동작
+# 캡슐화	    _name을 @property로 관리 (직접 접근 방지)
+
 from abc import ABC, abstractmethod
 
 class Animal(ABC):

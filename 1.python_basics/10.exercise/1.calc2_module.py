@@ -1,3 +1,5 @@
+# 2단계 – 함수형 구조 (모듈화)
+
 def get_mode_input():
     while True:
         mode = input("연산모드를 입력하시오: ")
