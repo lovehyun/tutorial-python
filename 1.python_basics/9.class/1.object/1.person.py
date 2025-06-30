@@ -1,3 +1,6 @@
+# 기본 생성자
+# 메서드
+
 class Person:
     def __init__(self, name, age):
         self.name = name
