@@ -1,3 +1,5 @@
+# https://docs.python.org/3/library/exceptions.html
+
 # 1. 나눗셈 에러
 try:
     result = 10 / 0  # ZeroDivisionError 발생

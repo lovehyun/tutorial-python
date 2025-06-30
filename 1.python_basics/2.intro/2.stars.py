@@ -5,6 +5,10 @@ for i in range(1, 6):
     # i개의 별 출력
     print('*' * i)
 
+# 1부터 5까지 반복
+# for i in range(5, 0, -1):
+#     # i개의 별 출력
+#     print('*' * i)
 
 # 2.
 print('- 2 -')

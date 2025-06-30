@@ -6,13 +6,13 @@ file_path = "data.csv"
 # 1. 리스트 데이터 저장
 data = [
     ["Name", "Age", "City"],
-    ["John", "25", "Seoul"],
-    ["Jane", "30", "Busan"],
-    ["Bob", "35", "Jeju"]
+    ["John", 25, "Seoul"],
+    ["Jane", 30, "Busan"],
+    ["Bob", 35, "Jeju"]
 ]
 with open(file_path, "w", newline="") as file:
     csv_writer = csv.writer(file)
-    # csv_writer.writerow(['Alice', 40])
+    # csv_writer.writerow(['Alice', 40, "Seoul"])
     csv_writer.writerows(data)
 
 print("CSV 파일 쓰기 완료")
@@ -20,10 +20,13 @@ print("CSV 파일 쓰기 완료")
 
 # 2. 딕셔너리 데이터 저장
 data = [
-    {"Name": "John", "Age": "25", "City": "Seoul"},
-    {"Name": "Jane", "Age": "30", "City": "Busan"},
-    {"Name": "Bob", "Age": "35", "City": "Jeju"}
+    {"Name": "John", "Age": 25, "City": "Seoul"},
+    {"Name": "Jane", "Age": 30, "City": "Busan"},
+    {"Name": "Bob", "Age": 35, "City": "Jeju"}
 ]
+
+for person in data:
+    print(f"이름: {person['Name']}, 나이: {person['Age']}, 도시: {person['City']}")
 
 # CSV 파일 쓰기
 with open(file_path, "w", newline="") as file:

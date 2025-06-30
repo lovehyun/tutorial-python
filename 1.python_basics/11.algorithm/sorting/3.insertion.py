@@ -30,27 +30,38 @@ def insertion_sort_with_steps(arr):
     삽입 정렬 과정을 단계별로 보여주는 버전
     """
     n = len(arr)
+    total_compare_count = 0  # 총 비교 횟수
     print(f"초기 배열: {arr}")
     print(f"정렬된 부분: [{arr[0]}], 미정렬 부분: {arr[1:]}")
     
     for i in range(1, n):
         key = arr[i]
         j = i - 1
-        
+        step_compare_count = 0  # 이번 단계의 비교 횟수
+
         print(f"\nStep {i}: 삽입할 원소 = {key}")
         print(f"정렬된 부분: {arr[:i]}")
         
         # key보다 큰 원소들을 오른쪽으로 이동
-        while j >= 0 and arr[j] > key:
-            arr[j + 1] = arr[j]
-            j -= 1
+        while j >= 0:
+            step_compare_count += 1
+            total_compare_count += 1 # 비교할때마다 카운트 증가
+            
+            if arr[j] > key:
+                arr[j + 1] = arr[j]
+                j -= 1
+            else:
+                # 삽입할 자리를 찾으면 비교 멈춤 (삽입 정렬의 최적화 포인트)
+                break
         
         # key를 적절한 위치에 삽입
         arr[j + 1] = key
         
         print(f"결과: {arr}")
         print(f"정렬된 부분: {arr[:i+1]}, 미정렬 부분: {arr[i+1:]}")
-    
+        print(f"이번 단계 비교 횟수: {step_compare_count}회")
+
+    print(f"\n총 비교 횟수: {total_compare_count}회")
     return arr
 
 def insertion_sort_recursive(arr, n=None):
