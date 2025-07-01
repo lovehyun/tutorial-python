@@ -65,3 +65,7 @@ if __name__ == "__main__":
 #
 # print(person1.__dict__)   # {'name': 'Alice', 'age': 30}
 # print(person1.__class__)  # <class '__main__.Person'>
+# print(person1.__class__.__dict__)  # 클래스 내부 함수들 출력
+# for name, value in person1.__class__.__dict__.items():
+#     if callable(value):
+#         print(f"{name}: {value}")

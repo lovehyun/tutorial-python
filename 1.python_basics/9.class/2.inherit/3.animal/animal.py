@@ -2,10 +2,17 @@ from abc import ABC, abstractmethod
 
 class Animal(ABC):
     def __init__(self, name: str):
-        self.name = name
-        self.hunger = 50  # 0 ~ 100
-        self.energy = 50  # 0 ~ 100
+        self._name: str = name
+        self._energy: int = 50  # 0 ~ 100
 
+    @property
+    def name(self) -> str:
+        return self._name
+
+    @property
+    def energy(self) -> int:
+        return self._energy
+    
     @abstractmethod
     def speak(self) -> None:
         pass
@@ -15,7 +22,6 @@ class Animal(ABC):
         pass
 
     def feed(self, food: str) -> None:
-        self.hunger -= 10
-        if self.hunger < 0:
-            self.hunger = 0
-        print(f"{self.name} ate {food}. Hunger: {self.hunger}")
+        if self._energy < 100:
+            self._energy += 50
+        print(f"{self._name} ate {food}. Energy: {self._energy}")

@@ -2,7 +2,8 @@ from animal import Animal
 
 class Cat(Animal):
     sound = "Meow"
-    
+    move_energy = 10  # 고양이는 이동 시 10 소모
+
     # def __init__(self, name: str):
     #   super().__init__(name, "Meow")
         
@@ -13,6 +14,6 @@ class Cat(Animal):
     def move(self) -> None:
         if self.energy > 0:
             self.energy -= 10
-            print(f"{self.name} is walking gracefully. Energy: {self.energy}")
+            print(f"{self._name} is walking gracefully. Energy: {self.energy}")
         else:
-            print(f"{self.name} is too tired to move.")
+            print(f"{self._name} is too tired to move.")

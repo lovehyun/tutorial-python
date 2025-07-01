@@ -2,6 +2,7 @@ from animal import Animal
 
 class Dog(Animal):
     sound = "Woof"  # 클래스 변수
+    move_energy = 15  # 개는 이동 시 15 소모
 
     # def __init__(self, name: str):
     #   super().__init__(name, "Woof")
@@ -13,10 +14,10 @@ class Dog(Animal):
     # 개가 이동하는 동작: 에너지를 15씩 소모하며 달리는 행동
     def move(self) -> None:
         if self.energy > 0:
-            self.energy -= 15
-            print(f"{self.name} is running. Energy: {self.energy}")
+            self._energy -= 15
+            print(f"{self._name} is running. Energy: {self._energy}")
         else:
-            print(f"{self.name} is too tired to move.")
+            print(f"{self._name} is too tired to move.")
 
 
 # 상속시 문제란?

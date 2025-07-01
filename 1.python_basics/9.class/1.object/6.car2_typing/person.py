@@ -12,7 +12,7 @@ class Person:
         return self._name
 
     @name.setter
-    def name(self, value):
+    def name(self, value: str):
         self._name = value
 
     @property
@@ -20,7 +20,7 @@ class Person:
         return self._age
 
     @age.setter
-    def age(self, value) -> None:
+    def age(self, value: int) -> None:
         if value >= 0:
             self._age = value
         else:

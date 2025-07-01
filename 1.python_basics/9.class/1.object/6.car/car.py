@@ -1,21 +1,21 @@
 class Car:
     def __init__(self, make, model):
-        self.make = make
-        self.model = model
-        self.odometer_reading = 0
+        self._make = make
+        self._model = model
+        self._odometer = 0
     
     def get_descriptive_name(self):
-        long_name = f"{self.make} {self.model}"
+        long_name = f"{self._make} {self._model}"
         return long_name.title()
     
     def read_odometer(self):
-        print(f"This car has {self.odometer_reading} miles on it.")
+        print(f"This car has {self._odometer} miles on it.")
     
     def update_odometer(self, mileage):
-        if mileage >= self.odometer_reading:
-            self.odometer_reading = mileage
+        if mileage >= self._odometer:
+            self._odometer = mileage
         else:
             print("You can't roll back an odometer!")
     
-    def increment_odometer(self, miles):
-        self.odometer_reading += miles
+    def increment_odometer(self, distance):
+        self._odometer += distance
