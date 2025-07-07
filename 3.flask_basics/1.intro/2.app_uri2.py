@@ -16,7 +16,14 @@ def userage(age):
 
 @app.route("/user/<float:weight>")
 def userweight(weight):
-    return f"Weight: {weight} (Float)"
+    if weight > 100:
+        message = "fat"
+    elif weight < 40:
+        message = "skinny"
+    else:
+        message = ""
+        
+    return f"Weight: {weight} {message} (Float)"
 
 @app.route("/user/<name>/<int:age>")
 def usernameage(name, age):

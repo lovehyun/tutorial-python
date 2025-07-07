@@ -35,5 +35,20 @@ def get_user_by_name(name):
     else:
         return jsonify({'error': 'User not found'}), 404
 
+@app.route('/user/<int:age>')
+def get_user_by_age(age):
+    # 이름이 일치하는 사용자 필터링
+    user = None
+    for u in users:
+        # 나이로도 검색하기
+        if u['age'] == age:
+            user = u
+            break
+    
+    if user:
+        return jsonify(user)
+    else:
+        return jsonify({'error': 'User not found'}), 404
+
 if __name__ == '__main__':
     app.run(debug=True)
