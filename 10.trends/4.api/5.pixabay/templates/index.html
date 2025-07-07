@@ -1,0 +1,65 @@
+<!-- templates/index.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Pixabay 이미지 검색 (Flask 백엔드)</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; }
+        input { padding: 8px; width: 200px; }
+        button { padding: 8px 12px; margin-left: 8px; }
+        .gallery img { width: 200px; height: auto; margin: 10px; border-radius: 8px; }
+    </style>
+</head>
+<body>
+
+    <h1>Pixabay 이미지 검색</h1>
+    <input type="text" id="searchInput" placeholder="검색어를 입력하세요">
+    <button onclick="searchImages()">검색</button>
+
+    <div id="gallery" class="gallery"></div>
+
+    <script>
+        async function searchImages() {
+            const query = document.getElementById('searchInput').value.trim();
+            if (!query) {
+                alert('검색어를 입력하세요.');
+                return;
+            }
+
+            const url = `/search?query=${encodeURIComponent(query)}`;
+
+            try {
+                const response = await fetch(url);
+                if (!response.ok) {
+                    throw new Error('요청 실패: ' + response.status);
+                }
+
+                const data = await response.json();
+                displayImages(data.hits);
+            } catch (error) {
+                console.error('오류 발생:', error);
+                alert('이미지를 가져오는 중 오류가 발생했습니다.');
+            }
+        }
+
+        function displayImages(images) {
+            const gallery = document.getElementById('gallery');
+            gallery.innerHTML = '';
+
+            if (images.length === 0) {
+                gallery.innerHTML = '<p>검색 결과가 없습니다.</p>';
+                return;
+            }
+
+            images.forEach(image => {
+                const img = document.createElement('img');
+                img.src = image.webformatURL;
+                img.alt = image.tags;
+                gallery.appendChild(img);
+            });
+        }
+    </script>
+
+</body>
+</html>
