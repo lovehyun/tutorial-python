@@ -14,8 +14,7 @@ next_id = 1
 
 @app.route('/')
 def home():
-    return render_template('index_ssr.html')
-    # return render_template('index_restapi.html')
+    return render_template('index_restapi.html')
 
 @app.route('/api/todo', methods=['GET'])
 def get_todos():
