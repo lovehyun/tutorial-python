@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>To-Do App</title>
+    <style>
+        a {
+            text-decoration: none;
+            margin-left: 10px;
+            cursor: pointer;
+            color: blue;
+        }
+        .done {
+            text-decoration: line-through;
+            color: gray;
+        }
+    </style>
+</head>
+<body>
+    <h1>My To-Do List</h1>
+
+    <form id="todo-form">
+        <input type="text" id="task-input" placeholder="New task" required>
+        <button type="submit">Add</button>
+    </form>
+
+    <ul id="todo-list"></ul>
+
+    <script>
+        const todoList = document.getElementById('todo-list');
+        const todoForm = document.getElementById('todo-form');
+        const taskInput = document.getElementById('task-input');
+
+        // 초기 로드
+        loadTodos();
+
+        // To-Do 목록 불러오기
+        function loadTodos() {
+            fetch('/api/todo')
+                .then(response => response.json())
+                .then(data => {
+                    todoList.innerHTML = '';
+                    data.forEach(todo => {
+                        const li = document.createElement('li');
+                        li.innerHTML = `
+                            <span class="${todo.done ? 'done' : ''}" onclick="toggleTodo(${todo.id})">
+                                ${todo.task}
+                            </span>
+                            <a onclick="deleteTodo(${todo.id})">❌</a>
+                        `;
+                        todoList.appendChild(li);
+                    });
+                });
+        }
+
+        // To-Do 추가
+        todoForm.addEventListener('submit', function (e) {
+            e.preventDefault();
+            const task = taskInput.value.trim();
+            if (task) {
+                fetch('/api/todo', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ task: task })
+                }).then(() => {
+                    taskInput.value = '';
+                    loadTodos();
+                });
+            }
+        });
+
+        // 완료 토글
+        function toggleTodo(id) {
+            fetch(`/api/todo/${id}`, {
+                method: 'PUT'
+            }).then(() => loadTodos());
+        }
+
+        // To-Do 삭제
+        function deleteTodo(id) {
+            fetch(`/api/todo/${id}`, {
+                method: 'DELETE'
+            }).then(() => loadTodos());
+        }
+    </script>
+</body>
+</html>

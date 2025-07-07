@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>SSR To-Do App</title>
+    <style>
+        a, button {
+            text-decoration: none;
+            cursor: pointer;
+        }
+        .done {
+            text-decoration: line-through;
+            color: gray;
+        }
+    </style>
+</head>
+<body>
+    <h1>My To-Do List (Server Side Rendering)</h1>
+
+    <form action="/add" method="POST">
+        <input type="text" name="task" placeholder="New task" required>
+        <button type="submit">Add</button>
+    </form>
+
+    <ul>
+        {% for todo in todos %}
+            <li>
+                <form action="/toggle/{{ todo.id }}" method="POST" style="display: inline;">
+                    <button type="submit" class="{{ 'done' if todo.done else '' }}" style="border: none; background: none;">
+                        {{ todo.task }}
+                    </button>
+                </form>
+                <form action="/delete/{{ todo.id }}" method="POST" style="display: inline;">
+                    <button type="submit">❌</button>
+                </form>
+            </li>
+        {% endfor %}
+    </ul>
+</body>
+</html>
