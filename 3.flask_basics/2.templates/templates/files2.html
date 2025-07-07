@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>파일 목록</title>
+</head>
+<body>
+    <h1>업로드된 파일 목록</h1>
+    <ul>
+        {% for file in files %}
+            <li>
+                {{ file }}
+                <a href="/delete/{{ file }}" onclick="return confirm('정말 삭제하시겠습니까?')">[삭제]</a>
+            </li>
+        {% else %}
+            <li>업로드된 파일이 없습니다.</li>
+        {% endfor %}
+    </ul>
+    <a href="/">파일 업로드 페이지로 이동</a>
+</body>
+</html>
