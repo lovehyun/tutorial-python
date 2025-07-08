@@ -13,19 +13,11 @@ CORS(app)
 
 # 강아지 사진 URL 리스트
 dog_images = [
-    # "https://example.com/dog1.jpg",
-    # "https://example.com/dog2.jpg",
-    # "https://example.com/dog3.jpg",
-    # "https://example.com/dog4.jpg",
-    # "https://example.com/dog5.jpg",
-    # "https://example.com/dog6.jpg",
-    # "https://example.com/dog7.jpg",
-    # "https://example.com/dog8.jpg",
-    # "https://example.com/dog9.jpg",
-    # "https://example.com/dog10.jpg",
     "cat1.jpg",
     "cat2.jpg",
     "cat3.jpg",
+    "dog1.jpg",
+    "panda1.jpg"
 ]
 
 @app.route("/random-dog")

@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>검색 결과</title>
+</head>
+<body>
+    <h1>"{{ query }}"에 대한 검색 결과</h1>
+    <a href="{{ url_for('index') }}">← 검색으로 돌아가기</a>
+    <div style="display: flex; flex-wrap: wrap; margin-top: 20px;">
+        {% if results %}
+            {% for image in results %}
+                <div style="margin: 10px;">
+                    <img src="{{ image.url }}" alt="{{ image.filename }}" width="200"><br>
+                    <small>{{ image.filename }}</small>
+                </div>
+            {% endfor %}
+        {% else %}
+            <p>검색 결과가 없습니다.</p>
+        {% endif %}
+    </div>
+</body>
+</html>

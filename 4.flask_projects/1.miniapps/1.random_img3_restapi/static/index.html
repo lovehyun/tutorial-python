@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>REST 이미지 검색</title>
+    <style>
+        body { font-family: Arial, sans-serif; }
+        #results {
+            display: flex;
+            flex-wrap: wrap;  /* 줄바꿈 허용 (너무 길면 다음 줄로) */
+            gap: 20px;
+            margin-top: 20px;
+        }
+        .image-item {
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <h1>이미지 검색 (REST + JS)</h1>
+    <form id="searchForm">
+        <input type="text" id="query" placeholder="예: cat, dog, pet, cute" required>
+        <button type="submit">검색</button>
+    </form>
+
+    <div id="results"></div>
+
+    <script>
+        document.getElementById("searchForm").addEventListener("submit", function(e) {
+            e.preventDefault();
+            const query = document.getElementById("query").value;
+
+            fetch(`/api/search?q=${encodeURIComponent(query)}`)
+                .then(response => response.json())
+                .then(data => {
+                    const resultsDiv = document.getElementById("results");
+                    resultsDiv.innerHTML = ""; // 기존 결과 제거
+
+                    if (data.results.length === 0) {
+                        resultsDiv.innerHTML = "<p>검색 결과가 없습니다.</p>";
+                        return;
+                    }
+
+                    data.results.forEach(item => {
+                        const img = document.createElement("img");
+                        img.src = item.url;
+                        img.alt = item.filename;
+                        img.width = 200;
+
+                        const caption = document.createElement("p");
+                        caption.innerText = item.filename;
+
+                        const container = document.createElement("div");
+                        container.appendChild(img);
+                        container.appendChild(caption);
+
+                        resultsDiv.appendChild(container);
+                    });
+                })
+                .catch(error => {
+                    console.error("에러 발생:", error);
+                });
+        });
+    </script>
+</body>
+</html>
