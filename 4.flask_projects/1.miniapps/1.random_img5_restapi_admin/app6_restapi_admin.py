@@ -107,6 +107,13 @@ def update_keywords(filename):
     #     if kw.strip()
     # ))
 
+    # 중복 제거도 하면서 순서도 유지하기 (dict.fromkeys())    
+    # new_keywords = list(dict.fromkeys(
+    #     kw.strip().lower()
+    #     for kw in data.get("keywords", [])
+    #     if kw.strip()
+    # ))
+
     for item in image_db:
         if item["filename"] == filename:
             item["keywords"] = new_keywords
