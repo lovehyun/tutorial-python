@@ -1,21 +1,33 @@
 from flask import Flask, request, send_file, render_template
 from PIL import Image, ImageDraw, ImageFont
 import io
-
+import platform
 from werkzeug.middleware.proxy_fix import ProxyFix
 
 app = Flask(__name__)
 app.wsgi_app = ProxyFix(app.wsgi_app, x_prefix=1)  # 동적 URL 지원
+
+def get_font(font_size):
+    try:
+        system = platform.system()
+        if system == "Windows":
+            # Windows: 기본 Arial 폰트
+            font = ImageFont.truetype("arial.ttf", font_size)
+        else:
+            # Linux: Noto Sans (패키지 설치 필요)
+            font = ImageFont.truetype("/usr/share/fonts/truetype/noto/NotoSans-Regular.ttf", font_size)
+    except IOError:
+        # 폰트 로딩 실패 시 기본 폰트 사용
+        font = ImageFont.load_default()
+    
+    return font
 
 def generate_placeholder_image(width, height, text, format='png'):
     image = Image.new('RGB', (width, height), color='gray')
     draw = ImageDraw.Draw(image)
 
     font_size = min(width, height) // 4
-    try:
-        font = ImageFont.truetype("arial.ttf", font_size)
-    except IOError:
-        font = ImageFont.load_default()
+    font = get_font(font_size)
 
     text_bbox = draw.textbbox((0, 0), text, font=font)
     text_width = text_bbox[2] - text_bbox[0]
