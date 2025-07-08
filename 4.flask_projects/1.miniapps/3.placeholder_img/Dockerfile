@@ -23,7 +23,8 @@ EXPOSE 5000
 
 # Flask 앱 실행
 # CMD ["python", "app.py"]
-CMD ["gunicorn", "-w", "4", "-b", "0.0.0.0:5000", "app3_docker:app"]
+# CMD ["gunicorn", "-w", "4", "-b", "0.0.0.0:5000", "app3_docker:app"]
+CMD ["gunicorn", "-w", "4", "-b", "0.0.0.0:5000", "app3_docker:app", "--access-logfile", "-", "--error-logfile", "-"]
 
 # nginx 프록시 헤더 설정
 # location /placeholder/ {

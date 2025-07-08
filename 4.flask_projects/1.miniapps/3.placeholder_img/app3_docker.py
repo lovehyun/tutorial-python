@@ -5,7 +5,7 @@ import platform
 from werkzeug.middleware.proxy_fix import ProxyFix
 
 app = Flask(__name__)
-app.wsgi_app = ProxyFix(app.wsgi_app, x_prefix=1)  # 동적 URL 지원
+app.wsgi_app = ProxyFix(app.wsgi_app, x_prefix=1)  # 동적 URL 지원 (이 코드 내에서는 불필요, url_for 등 동적 url 미사용)
 
 def get_font(font_size):
     try:
