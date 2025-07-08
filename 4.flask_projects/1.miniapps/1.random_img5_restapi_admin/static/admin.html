@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>관리자 페이지</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <h1>이미지 업로드</h1>
+    <form id="upload-form" enctype="multipart/form-data">
+        <input type="file" name="image" required>
+        <input type="text" name="keywords" placeholder="예: cat, dog, cute" required>
+        <button type="submit">업로드</button>
+    </form>
+
+    <h2>이미지 목록</h2>
+    <table id="image-table">
+        <thead>
+            <tr>
+                <th>미리보기</th>
+                <th>파일명</th>
+                <th>키워드</th>
+                <th>삭제</th>
+            </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+
+    <!-- <script src="js/admin_newbie.js"></script> -->
+    <script src="js/admin2_betterevent.js"></script>
+</body>
+</html>
