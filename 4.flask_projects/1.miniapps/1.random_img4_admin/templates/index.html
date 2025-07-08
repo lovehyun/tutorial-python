@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>이미지 검색</title>
+    <style>
+        #results {
+            display: flex;
+            flex-wrap: wrap;
+            margin-top: 20px;
+        }
+        .image-box {
+            margin: 10px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <h1>이미지 검색</h1>
+    <form action="{{ url_for('index') }}" method="get">
+        <input type="text" name="q" placeholder="예: dog, cat, cute" value="{{ query }}" required>
+        <button type="submit">검색</button>
+    </form>
+
+    {% if query %}
+        <h3>"{{ query }}"에 대한 검색 결과</h3>
+        <div id="results">
+            {% if results %}
+                {% for image in results %}
+                    <div class="image-box">
+                        <img src="{{ image.url }}" alt="{{ image.filename }}" width="200"><br>
+                        <small>{{ image.filename }}</small>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <p>검색 결과가 없습니다.</p>
+            {% endif %}
+        </div>
+    {% endif %}
+</body>
+</html>

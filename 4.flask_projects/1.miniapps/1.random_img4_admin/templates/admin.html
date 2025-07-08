@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>관리자 페이지</title>
+</head>
+<body>
+    <h1>이미지 업로드</h1>
+    <form action="{{ url_for('upload') }}" method="post" enctype="multipart/form-data">
+        <input type="file" name="image" required>
+        <input type="text" name="keywords" placeholder="예: cat, animal" required>
+        <button type="submit">업로드</button>
+    </form>
+
+    <h2 style="margin-top: 40px;">이미지 목록</h2>
+    <table border="1" cellpadding="8" cellspacing="0">
+        <tr>
+            <th>미리보기</th>
+            <th>파일명</th>
+            <th>키워드</th>
+            <th>삭제</th>
+        </tr>
+        {% for image in images %}
+        <tr>
+            <td><img src="{{ url_for('static', filename='images/' + image.filename) }}" width="100"></td>
+            <td>{{ image.filename }}</td>
+            <td>
+                <form action="{{ url_for('update_keywords', filename=image.filename) }}" method="post">
+                    <input type="text" name="keywords" value="{{ image.keywords | join(', ') }}">
+                    <button type="submit">수정</button>
+                </form>
+            </td>
+            <td><a href="{{ url_for('delete_image', filename=image.filename) }}" onclick="return confirm('정말 삭제하시겠습니까?')">삭제</a></td>
+        </tr>
+        {% endfor %}
+    </table>
+</body>
+</html>
