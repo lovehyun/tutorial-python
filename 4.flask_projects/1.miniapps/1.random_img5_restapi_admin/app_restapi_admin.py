@@ -1,7 +1,8 @@
-from flask import Flask, request, render_template, redirect, url_for, send_from_directory, jsonify
+from flask import Flask, request, send_from_directory, jsonify
 import os
 from werkzeug.utils import secure_filename
 
+# app = Flask(__name__)
 app = Flask(__name__, static_url_path='')
 
 UPLOAD_FOLDER = 'static/images'

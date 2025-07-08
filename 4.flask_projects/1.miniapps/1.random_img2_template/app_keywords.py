@@ -1,5 +1,4 @@
 from flask import Flask, request, render_template, url_for
-import os
 
 app = Flask(__name__)
 
@@ -30,6 +29,8 @@ def search():
         #
         # if found:
         #     # 결과에 추가
+        #     image_url = url_for('static', filename=f'images/{item["filename"]}')
+        #     results.append({"filename": item["filename"], "url": image_url})
         
         # pythonic 한 코드 스타일 (짧고 직관적)
         if any(query in keyword for keyword in item["keywords"]):

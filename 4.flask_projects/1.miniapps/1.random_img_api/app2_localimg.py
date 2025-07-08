@@ -20,6 +20,10 @@ dog_images = [
     "panda1.jpg"
 ]
 
+# @app.route('/images/<filename>')
+# def serve_image(filename):
+#     return send_from_directory(IMAGE_FOLDER, filename)
+
 @app.route("/random-dog")
 def random_dog():
     # 강아지 사진 URL 중에서 랜덤으로 하나 선택
@@ -32,10 +36,6 @@ def random_dog():
     
     # JSON 형식으로 응답 반환
     return jsonify({"url": image_url})
-
-# @app.route('/images/<filename>')
-# def serve_image(filename):
-#     return send_from_directory(IMAGE_FOLDER, filename)
 
 if __name__ == "__main__":
     app.run(debug=True)
