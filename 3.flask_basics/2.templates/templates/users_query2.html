@@ -17,6 +17,7 @@
     <div>
         {% if page > 1 %}
             <a href="?pages={{ page - 1 }}">Previous</a>
+            <!-- <a href="/pages/{{ page - 1 }}">Previous</a> -->
         {% else %}
             Previous
         {% endif %}
@@ -25,6 +26,7 @@
 
         {% if users|length == 10 %}
             <a href="?pages={{ page + 1 }}">Next</a>
+            <!-- <a href="/pages/{{ page + 1 }}">Next</a> -->
         {% else %}
             Next
         {% endif %}

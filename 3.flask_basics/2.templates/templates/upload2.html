@@ -10,6 +10,17 @@
         <input type="file" name="file">
         <button type="submit">업로드</button>
     </form>
-    <a href="/files">업로드된 파일 목록 보기</a>
+    
+    <h1>업로드된 파일 목록</h1>
+    <ul>
+        {% for file in files %}
+            <li>
+                {{ file }}
+                <a href="/delete/{{ file }}" onclick="return confirm('정말 삭제하시겠습니까?')">[삭제]</a>
+            </li>
+        {% else %}
+            <li>업로드된 파일이 없습니다.</li>
+        {% endfor %}
+    </ul>
 </body>
 </html>

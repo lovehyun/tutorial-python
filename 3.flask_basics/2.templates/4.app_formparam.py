@@ -9,6 +9,8 @@ def index():
 @app.route('/submit', methods=['POST'])
 def submit():
     username = request.form.get('username')  # form 태그에서 name='username' 값을 받음
+    age = request.form.get('age')
+
     return f'안녕하세요, {username}님!'
 
 if __name__ == '__main__':

@@ -7,11 +7,28 @@ app = Flask(__name__)
 UPLOAD_FOLDER = 'uploads'
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
+# 업로드 폴더가 없으면 생성
+os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
+
 # 업로드 허용 확장자 (선택)
-ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif', 'pdf'}
+ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif', 'pdf'} # set 타입 (not dict)
 
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+
+def allowed_file_legacy(filename):
+    # 파일 이름에 '.'이 포함되어 있는지 확인
+    if '.' not in filename:
+        return False
+
+    # 파일 확장자를 추출 (마지막 점 기준 오른쪽부터 최대 1회만 분리)
+    ext = filename.rsplit('.', 1)[1].lower()
+
+    # 확장자가 허용된 목록에 있는지 확인
+    if ext in ALLOWED_EXTENSIONS:
+        return True
+    else:
+        return False
 
 @app.route('/')
 def index():
@@ -23,7 +40,6 @@ def upload_file():
         return '파일이 전송되지 않았습니다.'
 
     file = request.files['file']
-
     if file.filename == '':
         return '파일이 선택되지 않았습니다.'
 

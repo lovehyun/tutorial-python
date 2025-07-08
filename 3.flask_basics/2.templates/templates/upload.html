@@ -7,6 +7,12 @@
 <body>
     <h1>파일 업로드</h1>
     <form action="/upload" method="POST" enctype="multipart/form-data">
+        <!-- 
+        enctype 값	                        설명	                       사용 예시
+        application/x-www-form-urlencoded	기본값, 텍스트 데이터용         로그인/검색 등
+        multipart/form-data	                파일 포함 폼	               이미지 업로드 등
+        text/plain	                        인코딩 없음, 실사용 거의 없음   디버깅 용도
+        -->
         <input type="file" name="file">
         <button type="submit">업로드</button>
     </form>
