@@ -42,19 +42,26 @@
                     }
 
                     data.results.forEach(item => {
-                        const img = document.createElement("img");
-                        img.src = item.url;
-                        img.alt = item.filename;
-                        img.width = 200;
+                        // const img = document.createElement("img");
+                        // img.src = item.url;
+                        // img.alt = item.filename;
+                        // img.width = 200;
+                        //
+                        // const caption = document.createElement("p");
+                        // caption.innerText = item.filename;
+                        //
+                        // const container = document.createElement("div");
+                        // container.appendChild(img);
+                        // container.appendChild(caption);
+                        //
+                        // resultsDiv.appendChild(container);
 
-                        const caption = document.createElement("p");
-                        caption.innerText = item.filename;
-
-                        const container = document.createElement("div");
-                        container.appendChild(img);
-                        container.appendChild(caption);
-
-                        resultsDiv.appendChild(container);
+                        resultsDiv.innerHTML += `
+                            <div>
+                                <img src="${item.url}" alt="${item.filename}" width="200">
+                                <p>${item.filename}</p>
+                            </div>
+                        `;
                     });
                 })
                 .catch(error => {

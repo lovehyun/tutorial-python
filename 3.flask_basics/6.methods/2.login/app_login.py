@@ -22,16 +22,16 @@ def home():
         #     if u['id'] == id and u['pw'] == pw:
         #         user = u
         #         break
-        user = next((user for user in users if user['id'] == id and user['pw'] == pw), None)
+        user = next((u for u in users if u['id'] == id and u['pw'] == pw), None) # 조건에 맞는 사용자를 뽑아내는 '제너레이터 표현식'. 그 중 next 는 첫번째 것 하나 반환
 
         if user:
             error = None
         else:
             error = "Invalid ID or password"
 
-        return render_template('index2.html', user=user, error=error)
+        return render_template('index.html', user=user, error=error)
 
-    return render_template('index2.html')
+    return render_template('index.html')
 
 if __name__ == "__main__":
     app.run(debug=True)

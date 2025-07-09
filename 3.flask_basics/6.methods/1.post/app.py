@@ -6,10 +6,11 @@ app = Flask(__name__)
 def home():
     return render_template("index.html")
 
-@app.route("/login", methods=["POST", "GET"])
+@app.route("/login", methods=["GET", "POST"])
 def login():
     if request.method == "POST":
-        user = request.form["name"]
+        user = request.form["username"]
+        pw = request.form["password"]
         return redirect(url_for("user", user=user))
     else:
         return render_template("login.html")
