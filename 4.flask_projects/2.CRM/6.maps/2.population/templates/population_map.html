@@ -24,6 +24,10 @@
 
     <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
     <script>
+        // 기본적으로 Jinja2는 <, >, &, " 등의 문자를 자동으로 escape해서 XSS 공격을 방지합니다.
+        // {{ seoul_data | tojson }}       → HTML에선 일부 문자가 escape됨 (JS 에서 깨질 수 있음)
+        // {{ seoul_data | tojson | safe }}→ 그대로 출력됨 (JS 코드 안에서 안전하게 사용 가능)
+
         var seoulData = {{ seoul_data | tojson | safe }};
         var markers = [];
 

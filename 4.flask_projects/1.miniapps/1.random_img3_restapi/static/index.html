@@ -42,6 +42,7 @@
                     }
 
                     data.results.forEach(item => {
+                        // DOM 생성
                         // const img = document.createElement("img");
                         // img.src = item.url;
                         // img.alt = item.filename;
@@ -56,6 +57,7 @@
                         //
                         // resultsDiv.appendChild(container);
 
+                        // innerHTML 한줄코딩
                         resultsDiv.innerHTML += `
                             <div>
                                 <img src="${item.url}" alt="${item.filename}" width="200">

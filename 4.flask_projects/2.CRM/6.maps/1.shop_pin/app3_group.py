@@ -1,5 +1,6 @@
 from flask import Flask, render_template
 import folium
+from folium import Icon
 from folium.plugins import MarkerCluster
 
 app = Flask(__name__)
@@ -54,6 +55,7 @@ def index():
         for shop in shops:
             folium.Marker(
                 location=[shop['latitude'], shop['longitude']],
+                # icon=Icon(icon='coffee', prefix='fa', color='brown'),
                 popup=shop['name']
             ).add_to(marker_cluster)
 
