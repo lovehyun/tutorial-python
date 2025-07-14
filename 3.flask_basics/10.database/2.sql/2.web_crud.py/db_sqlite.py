@@ -3,7 +3,9 @@ import sqlite3
 DB_NAME = 'users.db'
 
 def connect_db():
-    return sqlite3.connect(DB_NAME)
+    conn = sqlite3.connect(DB_NAME)
+    conn.row_factory = sqlite3.Row  # row를 dict처럼 사용 가능하게 설정
+    return conn
 
 def create_table():
     conn = connect_db()

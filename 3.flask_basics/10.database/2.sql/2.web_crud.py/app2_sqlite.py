@@ -14,7 +14,7 @@ def index():
         return redirect('/')
 
     users = db.get_users()
-    return render_template("index.html", users=users)
+    return render_template("index_dict.html", users=users)
 
 @app.route('/delete/<int:user_id>')
 def delete(user_id):
@@ -30,7 +30,7 @@ def update(user_id):
         return redirect('/')
 
     user = db.get_user_by_id(user_id)
-    return render_template("update.html", user=user)
+    return render_template("update_dict.html", user=user)
 
 if __name__ == '__main__':
     app.run(debug=True)

@@ -1,0 +1,17 @@
+<!-- templates/update.html -->
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>사용자 수정</title>
+</head>
+<body>
+    <h3>사용자 수정</h3>
+    <form method="POST">
+        이름: <input type="text" name="name" value="{{ user.name }}" required>
+        나이: <input type="number" name="age" value="{{ user.age }}" required>
+        <button type="submit">저장</button>
+    </form>
+    <p><a href="/">← 돌아가기</a></p>
+</body>
+</html>
