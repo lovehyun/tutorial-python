@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Monthly Revenue Chart</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        table {
+            border-collapse: collapse;
+            margin-top: 30px;
+            width: 400px;
+        }
+        th, td {
+            border: 1px solid #333;
+            padding: 8px 12px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <h1>월별 총 매출 차트</h1>
+    <!-- 차트 영역 -->
+    <div style="width: 700px; height: 400px;">
+        <canvas id="revenue-chart"></canvas>
+    </div>
+
+    <!-- 매출 데이터 표 -->
+    <h2>월별 매출 수치</h2>
+
+    <!-- 심플 테이블 -->
+    <table border="1">
+        <thead>
+            <tr>
+                <th>월</th>
+                <th>매출액</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for i in range(data['labels'] | length) %}
+            <tr>
+                <td>{{ data['labels'][i] }}</td>
+                <td>{{ data['values'][i] }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <!-- 포멧팅 적용 테이블 -->
+    <table>
+        <thead>
+            <tr>
+                <th>월</th>
+                <th>총 매출액 (원)</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- data['labels']는 월 목록입니다 (예: ['2023-01', ..., '2023-12'])
+                | length는 리스트 길이를 구합니다 → 예: 12
+                range(12)이므로 i는 0부터 11까지 반복됩니다
+                즉, 이 줄은 labels와 values의 각 인덱스를 순회하는 반복문입니다 -->
+            {% for i in range(data['labels'] | length) %}
+            <tr>
+                <!-- 현재 인덱스 i에 해당하는 월(labels[i])을 셀에 표시
+                    예: 2023-01, 2023-02, ... -->
+                <td>{{ data['labels'][i] }}</td>
+                <td>
+                    <!-- data['values']는 각 월의 매출액 리스트입니다
+                        i가 리스트 범위 안에 있는지 확인한 후:
+                            ✔️ 범위 안이면 → v = data['values'][i]
+                            ❌ 범위 밖이면 → v = 0
+                        이유: 인덱스 초과로 인한 오류 방지 (안전하게 처리) -->
+                    {% set v = data['values'][i] if i < data['values'] | length else 0 %}
+
+                    <!-- 숫자 v를 쉼표로 포맷해서 보기 좋게 출력
+                    예: 1000000 → 1,000,000 -->
+                    {{ "{:,}".format(v) if v is not none else 0 }}
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <script>
+        const data = {{ data|tojson }};
+
+        function drawChart(data) {
+            const ctx = document.getElementById('revenue-chart').getContext('2d');
+            new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: data.labels,
+                    datasets: [{
+                        label: '총 매출 (원)',
+                        data: data.values,
+                        borderColor: 'rgba(54, 162, 235, 1)',
+                        backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                        borderWidth: 2,
+                        fill: true,
+                        tension: 0.3
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            title: {
+                                display: true,
+                                text: '총 매출액 (원)'
+                            }
+                        },
+                        x: {
+                            title: {
+                                display: true,
+                                text: '월'
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        window.onload = function () {
+            drawChart(data);
+        };
+    </script>
+</body>
+</html>

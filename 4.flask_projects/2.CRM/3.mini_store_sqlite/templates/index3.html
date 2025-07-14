@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Store List (Templated)</title>
+    <style>
+        table, th, td { border: 1px solid #000; border-collapse: collapse; }
+        th, td { padding: 6px 10px; }
+    </style>
+</head>
+<body>
+    <h1>Store List</h1>
+
+    <!-- 검색 폼 (GET 방식, 같은 URL로 제출) -->
+    <form method="get" action="/">
+        <input type="text" name="name" placeholder="Search by store name" value="{{ search|default('', true) }}" />
+        <!-- 
+         - default(''): 
+             - 만약 search가 None, undefined, 또는 빈 값이라면 '' (빈 문자열)을 기본값으로 사용합니다. 
+         - true옵션: 
+             - 이걸 설정하면 "값이 비어 있어도(default를 적용함)" 이라는 의미입니다. 
+             - 예를 들어 search = "" (빈문자열)이라도 default를 적용하게 됩니다. 
+        -->
+
+        <button type="submit">Search</button>
+        {% if search %}
+            <a href="/">🔄 전체 목록으로 돌아가기</a>
+        {% endif %}
+    </form>
+
+    <br />
+
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Type</th>
+                <th>Address</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% if stores %} 
+                {% for store in stores %}
+                <tr>
+                    <td>{{ store.Id }}</td>
+                    <td>{{ store.Name }}</td>
+                    <td>{{ store.Type }}</td>
+                    <td>{{ store.Address }}</td>
+                </tr>
+                {% endfor %} 
+            {% else %}
+                <tr>
+                    <td colspan="4" style="text-align: center">검색 결과가 없습니다.</td>
+                </tr>
+            {% endif %}
+        </tbody>
+    </table>
+</body>
+</html>

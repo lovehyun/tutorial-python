@@ -4,6 +4,7 @@
 from flask import Flask, render_template
 import folium
 from folium.plugins import MarkerCluster
+from folium import Icon, Popup, Marker
 import random
 
 app = Flask(__name__)
@@ -37,6 +38,15 @@ def create_map(num_points):
     marker_cluster = MarkerCluster().add_to(m)
     for coord in coordinates:
         folium.Marker(location=coord).add_to(marker_cluster)
+    
+    # 커피샵 아이콘 및 타이틀 마커    
+    # for i, coord in enumerate(coordinates):
+    #     popup_html = f"<strong>커피숍 #{i+1}</strong>"
+    #     Marker(
+    #         location=coord,
+    #         popup=Popup(popup_html, max_width=250),
+    #         icon=Icon(icon='coffee', prefix='fa', color='brown')
+    #     ).add_to(marker_cluster)
 
     return m
 

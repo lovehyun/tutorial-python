@@ -1,18 +1,15 @@
 from flask import Flask, jsonify, request
-from database3 import get_stores, get_store_by_name
+import database3 as db
 
 app = Flask(__name__, static_folder='static')
 
 @app.route('/api/stores', methods=['GET'])
 def api_stores():
-    # stores = get_stores()
-    # return jsonify(stores)
-
     name = request.args.get('name')
     if name:
-        stores = get_store_by_name(name)
+        stores = db.get_store_by_name(name)
     else:
-        stores = get_stores()
+        stores = db.get_stores()
     return jsonify(stores)
 
 @app.route('/')

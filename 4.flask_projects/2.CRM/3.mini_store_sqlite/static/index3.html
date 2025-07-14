@@ -9,6 +9,8 @@
     <h1>Store List</h1>
     <input type="text" id="search-input" placeholder="Search by store name">
     <button onclick="searchStores()">Search</button>
+    <br />
+
     <table border="1" id="store-table">
         <tr>
             <th>ID</th>
@@ -17,6 +19,7 @@
             <th>Address</th>
         </tr>
     </table>
+
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             fetchStores();
