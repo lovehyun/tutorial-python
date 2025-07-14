@@ -32,6 +32,7 @@ def get_users():
     cur = conn.cursor()
     cur.execute("SELECT * FROM users")
     rows = cur.fetchall()
+    # rows = [dict(row) for row in cur.fetchall()]
     conn.close()
     return rows
 
@@ -40,13 +41,14 @@ def get_user_by_id(user_id):
     cur = conn.cursor()
     cur.execute("SELECT * FROM users WHERE id = ?", (user_id,))
     row = cur.fetchone()
+    # row =  dict(row) if row else None
     conn.close()
     return row
 
-def update_user(user_id, name, age):
+def update_user(user_id, new_name, new_age):
     conn = connect_db()
     cur = conn.cursor()
-    cur.execute("UPDATE users SET name = ?, age = ? WHERE id = ?", (name, age, user_id))
+    cur.execute("UPDATE users SET name = ?, age = ? WHERE id = ?", (new_name, new_age, user_id))
     conn.commit()
     conn.close()
 

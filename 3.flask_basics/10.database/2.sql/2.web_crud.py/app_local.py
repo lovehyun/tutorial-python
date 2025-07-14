@@ -25,6 +25,16 @@ def index():
 def delete(user_id):
     global users
     users = [u for u in users if u['id'] != user_id]
+    
+    # for user in users:
+    #     if user['id'] == 3:
+    #         del user  # 리스트에서 삭제되지 않음
+        
+    # for i, u in enumerate(users):
+    #     if u['id'] == user_id:
+    #         del users[i]  # 해당 인덱스에서 삭제
+    #         break
+        
     return redirect('/')
 
 @app.route('/update/<int:user_id>', methods=['GET', 'POST'])
