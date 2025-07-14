@@ -1,4 +1,4 @@
-import db_crud as db
+import db_crud_sqlite as db
 
 def main():
     # 테이블 생성
@@ -11,7 +11,7 @@ def main():
 
     # 데이터 조회
     print("Initial data:")
-    users = db.fetch_users()
+    users = db.get_users()
     for user in users:
         print(user)
 
@@ -20,16 +20,16 @@ def main():
     
     # 업데이트 후 데이터 조회
     print("\nAfter updating Alice's age:")
-    users = db.fetch_users()
+    users = db.get_users()
     for user in users:
         print(user)
 
     # 데이터 삭제
-    db.delete_user('Bob')
+    db.delete_user_by_name('Bob')
     
     # 삭제 후 데이터 조회
     print("\nAfter deleting Bob:")
-    users = db.fetch_users()
+    users = db.get_users()
     for user in users:
         print(user)
 

@@ -1,10 +1,10 @@
 import sqlite3
 
-# 데이터베이스 연결 함수
-def connect_db():
-    return sqlite3.connect('example.db')
+DB_NAME = 'users.db'
 
-# 테이블 생성 함수
+def connect_db():
+    return sqlite3.connect(DB_NAME)
+
 def create_table():
     conn = connect_db()
     cur = conn.cursor()
@@ -18,41 +18,39 @@ def create_table():
     conn.commit()
     conn.close()
 
-# 데이터 삽입 함수
 def insert_user(name, age):
     conn = connect_db()
     cur = conn.cursor()
-    cur.execute('''
-        INSERT INTO users (name, age) VALUES (?, ?)
-    ''', (name, age))
+    cur.execute("INSERT INTO users (name, age) VALUES (?, ?)", (name, age))
     conn.commit()
     conn.close()
 
-# 데이터 조회 함수
-def fetch_users():
+def get_users():
     conn = connect_db()
     cur = conn.cursor()
-    cur.execute('SELECT * FROM users')
+    cur.execute("SELECT * FROM users")
     rows = cur.fetchall()
     conn.close()
     return rows
 
-# 데이터 업데이트 함수
-def update_user(name, new_age):
+def get_user_by_id(user_id):
     conn = connect_db()
     cur = conn.cursor()
-    cur.execute('''
-        UPDATE users SET age = ? WHERE name = ?
-    ''', (new_age, name))
+    cur.execute("SELECT * FROM users WHERE id = ?", (user_id,))
+    row = cur.fetchone()
+    conn.close()
+    return row
+
+def update_user(user_id, name, age):
+    conn = connect_db()
+    cur = conn.cursor()
+    cur.execute("UPDATE users SET name = ?, age = ? WHERE id = ?", (name, age, user_id))
     conn.commit()
     conn.close()
 
-# 데이터 삭제 함수
-def delete_user(name):
+def delete_user(user_id):
     conn = connect_db()
     cur = conn.cursor()
-    cur.execute('''
-        DELETE FROM users WHERE name = ?
-    ''', (name,))
+    cur.execute("DELETE FROM users WHERE id = ?", (user_id,))
     conn.commit()
     conn.close()

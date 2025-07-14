@@ -1,0 +1,49 @@
+<!-- templates/index.html -->
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>사용자 목록</title>
+    <style>
+        table, th, td {
+            border: 1px solid #aaa;
+            border-collapse: collapse;
+            padding: 8px;
+        }
+    </style>
+</head>
+<body>
+    <h2>사용자 목록</h2>
+
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>이름</th>
+                <th>나이</th>
+                <th>작업</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for u in users %}
+            <tr>
+                <td>{{ u[0] }}</td>
+                <td>{{ u[1] }}</td>
+                <td>{{ u[2] }}세</td>
+                <td>
+                    <a href="/update/{{ u[0] }}">수정</a> |
+                    <a href="/delete/{{ u[0] }}">삭제</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <h3>새 사용자 추가</h3>
+    <form method="POST">
+        이름: <input type="text" name="name" required>
+        나이: <input type="number" name="age" required>
+        <button type="submit">추가</button>
+    </form>
+</body>
+</html>
