@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>User Detail</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+        table {
+            border-collapse: collapse;
+            width: 80%;
+            margin: 0 auto;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+        }
+        th {
+            background-color: #ffa500;
+            color: white;
+        }
+        h1 {
+            text-align: center;
+        }
+        .back-link {
+            display: block;
+            text-align: center;
+            margin-top: 20px;
+        }
+        tr {
+            transition: transform 1.0s ease;
+        }
+        /* tr:hover { */
+        tr:not(:first-child):hover {
+            background-color: #d9dbd9;
+            transform: scale(1.2);
+        }
+    </style>
+</head>
+<body>
+    <h1>User Detail</h1>
+    <table>
+        <tr>
+            <th>Id</th>
+            <th>Name</th>
+            <th>Gender</th>
+            <th>Age</th>
+            <th>Birthdate</th>
+            <th>Address</th>
+        </tr>
+        <tr>
+            <td>{{ user['Id'] }}</td>
+            <td>{{ user['Name'] }}</td>
+            <td>{{ user['Gender'] }}</td>
+            <td>{{ user['Age'] }}</td>
+            <td>{{ user['Birthdate'] }}</td>
+            <td>{{ user['Address'] }}</td>
+        </tr>
+    </table>
+    <a href="/" class="back-link">Back to List</a>
+    <!-- 뒤로가기의 다양한 구현방법 -->
+    <!-- <a href="javascript:history.back()" class="back-link">Back to List</a>
+    <button onclick="window.history.back()">뒤로가기</button> -->
+</body>
+</html>

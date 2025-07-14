@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Pagination Example</title>
+    <style>
+        table {
+            border-collapse: collapse;
+            width: 100%;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #ffa500;
+            color: white;
+        }
+        tr:nth-child(even) { /* 추가 */
+            background-color: #f2f2f2;
+        }
+        .pagination {
+            margin-top: 20px;
+        }
+        .pagination a {
+            padding: 8px 16px;
+            text-decoration: none;
+            border: 1px solid #ddd;
+            margin: 0 8px;  /* 좌우 간격을 8px로 늘림 */
+            display: inline-block;  /* 간격 적용 확실히 보장 */
+        }
+        .pagination a.active {
+            background-color: #4CAF50;
+            color: white;
+            border: 1px solid #4CAF50;
+        }
+        .pagination a:hover:not(.active) { /* 추가 */
+            background-color: #ddd;
+        }
+    </style>
+</head>
+<body>
+    <h1>사용자 테이블 - 페이징 처리</h1>
+    <table>
+        <thead>
+            <tr>
+                {% for fieldname in fieldnames %}
+                <th>{{ fieldname }}</th>
+                {% endfor %}
+            </tr>
+        </thead>
+        <tbody>
+            {% for row in data %}
+            <tr>
+                {% for fieldname in fieldnames %}
+                <td>{{ row[fieldname] }}</td>
+                {% endfor %}
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <div class="pagination">
+        <!-- 이전페이지 표시 추가 -->
+        {% if page > 1 %}
+            <a href="?page={{ page - 1 }}">&laquo; Previous</a>
+        {% endif %}
+
+        {% for page_num in range(1, total_pages + 1) %}
+            {% if page_num == page %}
+                <a href="#" class="active">{{ page_num }}</a>
+            {% else %}
+                <a href="?page={{ page_num }}">{{ page_num }}</a>
+            {% endif %}
+        {% endfor %}
+        
+        <!-- 다음페이지 표시 추가 -->
+        {% if page < total_pages %}
+            <a href="?page={{ page + 1 }}">Next &raquo;</a>
+        {% endif %}
+    </div>
+</body>
+</html>
