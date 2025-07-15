@@ -1,10 +1,11 @@
-from flask import Flask, render_template, jsonify
+from flask import Flask, send_from_directory, jsonify
 
 app = Flask(__name__)
 
 @app.route('/')
 def index():
-    return render_template('index.html')
+    return send_from_directory('static', 'index_then.html')
+    # return send_from_directory('static', 'index_async.html')
 
 @app.route('/data')
 def get_data():

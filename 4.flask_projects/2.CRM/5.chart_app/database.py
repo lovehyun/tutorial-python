@@ -1,5 +1,4 @@
 import sqlite3
-from collections import defaultdict
 
 DB_PATH = 'database.db'  # DB 파일 경로
 
@@ -74,14 +73,14 @@ def get_monthly_revenue():
     cursor = conn.cursor()
 
     query = """
-    SELECT 
-        substr(o.OrderAt, 1, 7) as Month,
-        SUM(CAST(i.UnitPrice AS INTEGER)) as Revenue
-    FROM orders o
-    JOIN orderitems oi ON o.Id = oi.OrderId
-    JOIN items i ON oi.ItemId = i.Id
-    GROUP BY Month
-    ORDER BY Month
+        SELECT 
+            substr(o.OrderAt, 1, 7) as Month,
+            SUM(CAST(i.UnitPrice AS INTEGER)) as Revenue
+        FROM orders o
+        JOIN orderitems oi ON o.Id = oi.OrderId
+        JOIN items i ON oi.ItemId = i.Id
+        GROUP BY Month
+        ORDER BY Month
     """
 
     cursor.execute(query)
