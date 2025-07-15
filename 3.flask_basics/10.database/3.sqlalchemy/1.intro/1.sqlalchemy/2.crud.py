@@ -10,6 +10,9 @@ from sqlalchemy import create_engine, Column, Integer, String
 from sqlalchemy.orm import declarative_base
 from sqlalchemy.orm import sessionmaker
 
+from typing import Optional, List
+
+
 # 데이터베이스 엔진 생성 (SQLite 사용)
 # - create_engine: SQLite 데이터베이스 파일 example.db와 연결된 엔진 객체를 생성합니다.
 # - 'sqlite:///example.db': SQLite 데이터베이스 파일의 경로를 지정하는 URI입니다.
@@ -38,26 +41,6 @@ class User(Base):
 # - 여기서는 User 클래스에 해당하는 users 테이블을 생성합니다.
 Base.metadata.create_all(engine)
 
-# 세션 생성
-# - sessionmaker(bind=engine): 엔진과 연결된 세션 팩토리를 생성합니다.
-# - session = Session(): 세션 팩토리에서 세션 객체를 생성합니다. 이 세션 객체는 데이터베이스와의 상호작용을 관리합니다.
-Session = sessionmaker(bind=engine)
-session = Session()
-
-# 새로운 사용자 추가
-# - new_user = User(name='John Doe', age=30): User 모델의 인스턴스를 생성합니다.
-# - session.add(new_user): 새 사용자 객체를 세션에 추가합니다.
-# - session.commit(): 세션의 변경사항을 커밋하여, 데이터베이스에 실제로 반영합니다.
-new_user = User(name='John Doe', age=30)
-session.add(new_user)
-session.commit()
-
-# 모든 사용자 조회
-# - session.query(User).all(): User 테이블의 모든 레코드를 조회하여 리스트로 반환합니다.
-# - for user in users: 사용자 리스트를 순회하면서 각 사용자의 name과 age를 출력합니다.
-users = session.query(User).all()
-for user in users:
-    print(user.name, user.age)
 
 # CRUD 헬퍼 함수 예시 ----------------------------------------------
 
@@ -66,14 +49,18 @@ def create_user(session, name: str, age: int) -> User:
     new_user = User(name=name, age=age)
     session.add(new_user)
     session.commit()
-    session.refresh(new_user)            # INSERT 후 갱신된 PK 값 가져오기
+    # session.refresh(new_user)  # 왠만한 정보는 refresh 없이도 자동으로 가져옴. Trigger등으로 사후 변경되는 부분이 있다면 refresh 통해서 갱신 필요.
     return new_user
 
-def get_user_by_id(session, user_id: int) -> User | None:
+# def get_user_by_id(session, user_id: int) -> User | None:   # Python 3.10 문법
+def get_user_by_id(session, user_id: int) -> Optional[User]:  # Python 3.9 및 이전 문법
     """ID로 사용자 조회(단건 READ)"""
+    # user = session.query(User).filter_by(id=user_id).first()
+    # return user
     return session.get(User, user_id)    # SQLAlchemy 2.x 스타일의 편리한 get
 
-def list_users(session) -> list[User]:
+# def list_users(session) -> list[User]:  # Python 3.9 이후 문법
+def list_users(session) -> List[User]:    # Python 3.8 및 이전 문법 
     """모든 사용자 조회(다건 READ)"""
     return session.query(User).all()
 
@@ -86,7 +73,7 @@ def update_user_age(session, user_id: int, new_age: int) -> bool:
     session.commit()
     return True
 
-def delete_user(session, user_id: int) -> bool:
+def delete_user_by_id(session, user_id: int) -> bool:
     """사용자 삭제(DELETE) – 성공 시 True"""
     user = session.get(User, user_id)
     if not user:
@@ -94,6 +81,21 @@ def delete_user(session, user_id: int) -> bool:
     session.delete(user)
     session.commit()
     return True
+
+def delete_user_by_name(session, name: str) -> int:
+    """
+    주어진 이름을 가진 사용자 삭제 (동명이인 모두 삭제).
+    삭제된 사용자 수를 반환.
+    """
+    users = session.query(User).filter_by(name=name).all()
+    if not users:
+        return 0
+
+    for user in users:
+        session.delete(user)
+    session.commit()
+
+    return len(users)
 
 # ---------------------------------------------------------------
 
@@ -122,7 +124,7 @@ if __name__ == "__main__":
         print(f"Jane 나이 수정 성공? {updated}")
 
         # 4) DELETE
-        deleted = delete_user(session, john.id)
+        deleted = delete_user_by_id(session, john.id)
         print(f"John 삭제 성공? {deleted}")
 
         print("최종 사용자 목록:")

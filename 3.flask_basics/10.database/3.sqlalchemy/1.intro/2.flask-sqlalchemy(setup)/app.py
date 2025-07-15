@@ -5,8 +5,9 @@ from flask_sqlalchemy import SQLAlchemy
 
 # Flask 애플리케이션 생성
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///example.db'
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///example.db' # 경로가 상대 경로로 설정되어 있으면, 기본적으로 instance/ 폴더를 기준으로 파일을 저장
+# app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///./example.db' # 현재 디렉토리
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False # SQLAlchemy가 객체의 변경 사항을 추적할지 여부를 결정. Flask 에서는 비추천.
 
 # Flask-SQLAlchemy 객체 생성
 db = SQLAlchemy(app)

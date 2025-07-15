@@ -1,5 +1,6 @@
 {% extends "base.html" %}
 {% block title %}Home Page{% endblock %}
+
 {% block content %}
 <h1>Home Page</h1>
 {% with messages = get_flashed_messages() %}
@@ -15,4 +16,5 @@
 {% else %}
     <p>Please log in to see your name here.</p>
 {% endif %}
+
 {% endblock %}
