@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>공부 모드</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="container mt-4">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2>공부 모드</h2>
+            <a href="{{ url_for('index') }}" class="btn btn-secondary">홈으로</a>
+        </div>
+        
+        {% for question in questions %}
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5>문제 {{ question.id }}</h5>
+            </div>
+            <div class="card-body">
+                <p class="card-text fs-5">{{ question.question }}</p>
+                
+                <div class="row">
+                    {% set choices = [question.choice1, question.choice2, question.choice3, question.choice4] %}
+                    {% for choice in choices %}
+                    <div class="col-md-6 mb-2">
+                        <div class="p-2 border rounded {% if loop.index == question.answer %}bg-success text-white{% else %}bg-light{% endif %}">
+                            <strong>{{ loop.index }}.</strong> {{ choice }}
+                            {% if loop.index == question.answer %}
+                                <span class="badge bg-warning text-dark ms-2">정답</span>
+                            {% endif %}
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+                
+                {% if question.explanation %}
+                <div class="alert alert-info mt-3">
+                    <strong>해설:</strong> {{ question.explanation }}
+                </div>
+                {% endif %}
+            </div>
+        </div>
+        {% endfor %}
+        
+        <div class="text-center mb-4">
+            <a href="{{ url_for('quiz') }}" class="btn btn-primary btn-lg">시험 모드로 이동</a>
+        </div>
+    </div>
+</body>
+</html>
