@@ -1,0 +1,47 @@
+<!-- templates/accounts/profile.html -->
+{% extends 'base/base.html' %}
+
+{% block title %}프로필 - Quizlet 클론{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header">
+                <h3>프로필 정보</h3>
+            </div>
+            <div class="card-body">
+                <table class="table">
+                    <tr>
+                        <th>사용자명:</th>
+                        <td>{{ user.username }}</td>
+                    </tr>
+                    <tr>
+                        <th>이메일:</th>
+                        <td>{{ user.email }}</td>
+                    </tr>
+                    <tr>
+                        <th>이름:</th>
+                        <td>{{ user.first_name }} {{ user.last_name }}</td>
+                    </tr>
+                    <tr>
+                        <th>가입일:</th>
+                        <td>{{ user.date_joined|date:"Y년 m월 d일" }}</td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-header">
+                <h5>학습 통계</h5>
+            </div>
+            <div class="card-body">
+                <p>구현 예정...</p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

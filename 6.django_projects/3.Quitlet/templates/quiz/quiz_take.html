@@ -1,0 +1,340 @@
+<!-- templates/quiz/quiz_take.html -->
+{% extends 'base/base.html' %}
+
+{% block title %}퀴즈 응시 - {{ quiz.title }}{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-9">
+        <div class="card">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h4>{{ quiz.title }}</h4>
+                <div>
+                    <span class="badge bg-primary">{{ answered_count }}/{{ total_questions }}</span>
+                    <span id="timer" class="badge bg-info ms-2">00:00:00</span>
+                </div>
+            </div>
+            <div class="card-body">
+                <!-- 진행률 바 -->
+                <div class="progress mb-4">
+                    <div class="progress-bar" role="progressbar" 
+                         style="width: {{ answered_count|floatformat:0 }}{{ total_questions|floatformat:0 }}%"
+                         id="progress-bar">
+                        {{ answered_count }}/{{ total_questions }}
+                    </div>
+                </div>
+
+                <!-- 문제 목록 -->
+                {% for question in questions %}
+                <div class="question-container mb-4 p-4 border rounded" 
+                     id="question-{{ question.id }}"
+                     data-question-id="{{ question.id }}">
+                    
+                    <h5 class="question-title">
+                        문제 {{ forloop.counter }}
+                        {% if question.id in answered_questions %}
+                            <span class="badge bg-success ms-2">완료</span>
+                        {% endif %}
+                    </h5>
+                    
+                    <p class="question-text">{{ question.question_text }}</p>
+                    
+                    {% if question.question_image %}
+                        <img src="{{ question.question_image.url }}" 
+                             class="img-fluid mb-3 question-image" 
+                             alt="문제 이미지">
+                    {% endif %}
+                    
+                    <!-- 선택지 -->
+                    <div class="choices-container">
+                        {% for choice in question.choices.all %}
+                        <div class="choice-item mb-2">
+                            <div class="form-check">
+                                <input class="form-check-input choice-radio" 
+                                       type="radio" 
+                                       name="question_{{ question.id }}" 
+                                       id="choice_{{ choice.id }}"
+                                       value="{{ choice.id }}"
+                                       data-question-id="{{ question.id }}"
+                                       data-choice-id="{{ choice.id }}">
+                                <label class="form-check-label choice-label" 
+                                       for="choice_{{ choice.id }}">
+                                    <span class="choice-number">{{ forloop.counter }}.</span>
+                                    <span class="choice-text">{{ choice.choice_text }}</span>
+                                </label>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    
+                    <!-- 답안 제출 결과 표시 영역 -->
+                    <div class="answer-result mt-3" id="result-{{ question.id }}" style="display: none;">
+                        <div class="alert" id="alert-{{ question.id }}">
+                            <div class="result-content"></div>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+
+                <!-- 퀴즈 완료 버튼 -->
+                <div class="text-center mt-4">
+                    <button id="complete-quiz-btn" class="btn btn-success btn-lg" disabled>
+                        퀴즈 완료하기
+                    </button>
+                    <div class="mt-2">
+                        <small class="text-muted">모든 문제를 완료해야 퀴즈를 완료할 수 있습니다.</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 사이드바 -->
+    <div class="col-md-3">
+        <div class="card sticky-top">
+            <div class="card-header">
+                <h6>문제 네비게이션</h6>
+            </div>
+            <div class="card-body">
+                <div class="question-nav">
+                    {% for question in questions %}
+                    <button class="btn btn-outline-secondary btn-sm me-1 mb-1 question-nav-btn"
+                            data-question-id="{{ question.id }}"
+                            id="nav-btn-{{ question.id }}">
+                        {{ forloop.counter }}
+                    </button>
+                    {% endfor %}
+                </div>
+                
+                <hr>
+                
+                <div class="quiz-stats">
+                    <p><strong>총 문제:</strong> {{ total_questions }}개</p>
+                    <p><strong>완료:</strong> <span id="completed-count">{{ answered_count }}</span>개</p>
+                    <p><strong>남은 문제:</strong> <span id="remaining-count">{{ total_questions|add:"-"|add:answered_count }}</span>개</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- JavaScript -->
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const quizId = {{ quiz.id }};
+    const totalQuestions = {{ total_questions }};
+    let completedCount = {{ answered_count }};
+    let startTime = new Date();
+    
+    // 타이머 시작
+    updateTimer();
+    setInterval(updateTimer, 1000);
+    
+    // 선택지 클릭 이벤트
+    document.querySelectorAll('.choice-radio').forEach(radio => {
+        radio.addEventListener('change', function() {
+            if (this.checked) {
+                submitAnswer(this.dataset.questionId, this.dataset.choiceId);
+            }
+        });
+    });
+    
+    // 문제 네비게이션 버튼 클릭
+    document.querySelectorAll('.question-nav-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+            const questionId = this.dataset.questionId;
+            const questionElement = document.getElementById('question-' + questionId);
+            questionElement.scrollIntoView({ behavior: 'smooth' });
+        });
+    });
+    
+    // 퀴즈 완료 버튼 클릭
+    document.getElementById('complete-quiz-btn').addEventListener('click', function() {
+        if (completedCount === totalQuestions) {
+            if (confirm('퀴즈를 완료하시겠습니까?')) {
+                window.location.href = `/quiz/${quizId}/complete/`;
+            }
+        }
+    });
+    
+    // 답안 제출 함수
+    function submitAnswer(questionId, choiceId) {
+        fetch(`/quiz/${quizId}/submit/`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': getCookie('csrftoken')
+            },
+            body: JSON.stringify({
+                question_id: questionId,
+                choice_id: choiceId
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                showAnswerResult(questionId, data);
+                updateProgress(questionId);
+            } else {
+                alert('답안 제출 중 오류가 발생했습니다: ' + data.error);
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('네트워크 오류가 발생했습니다.');
+        });
+    }
+    
+    // 답안 결과 표시
+    function showAnswerResult(questionId, data) {
+        const resultDiv = document.getElementById('result-' + questionId);
+        const alertDiv = document.getElementById('alert-' + questionId);
+        const resultContent = alertDiv.querySelector('.result-content');
+        
+        if (data.is_correct) {
+            alertDiv.className = 'alert alert-success';
+            resultContent.innerHTML = '<strong>정답입니다!</strong>';
+        } else {
+            alertDiv.className = 'alert alert-danger';
+            resultContent.innerHTML = '<strong>틀렸습니다.</strong>';
+            
+            // 정답 표시
+            if (data.correct_choice_id) {
+                const correctChoice = document.getElementById('choice_' + data.correct_choice_id);
+                if (correctChoice) {
+                    correctChoice.parentElement.parentElement.style.backgroundColor = '#d4edda';
+                    correctChoice.parentElement.parentElement.style.border = '2px solid #28a745';
+                }
+            }
+        }
+        
+        // 해설 표시
+        if (data.explanation) {
+            resultContent.innerHTML += '<br><strong>해설:</strong> ' + data.explanation;
+        }
+        
+        resultDiv.style.display = 'block';
+        
+        // 선택지 비활성화
+        const radios = document.querySelectorAll(`input[name="question_${questionId}"]`);
+        radios.forEach(radio => radio.disabled = true);
+    }
+    
+    // 진행률 업데이트
+    function updateProgress(questionId) {
+        // 네비게이션 버튼 업데이트
+        const navBtn = document.getElementById('nav-btn-' + questionId);
+        navBtn.classList.remove('btn-outline-secondary');
+        navBtn.classList.add('btn-success');
+        
+        // 완료 배지 추가
+        const questionTitle = document.querySelector('#question-' + questionId + ' .question-title');
+        if (!questionTitle.querySelector('.badge')) {
+            const badge = document.createElement('span');
+            badge.className = 'badge bg-success ms-2';
+            badge.textContent = '완료';
+            questionTitle.appendChild(badge);
+        }
+        
+        // 통계 업데이트
+        completedCount++;
+        document.getElementById('completed-count').textContent = completedCount;
+        document.getElementById('remaining-count').textContent = totalQuestions - completedCount;
+        
+        // 진행률 바 업데이트
+        const progressBar = document.getElementById('progress-bar');
+        const percentage = (completedCount / totalQuestions) * 100;
+        progressBar.style.width = percentage + '%';
+        progressBar.textContent = completedCount + '/' + totalQuestions;
+        
+        // 완료 버튼 활성화
+        if (completedCount === totalQuestions) {
+            document.getElementById('complete-quiz-btn').disabled = false;
+        }
+    }
+    
+    // 타이머 업데이트
+    function updateTimer() {
+        const now = new Date();
+        const elapsed = Math.floor((now - startTime) / 1000);
+        const hours = Math.floor(elapsed / 3600);
+        const minutes = Math.floor((elapsed % 3600) / 60);
+        const seconds = elapsed % 60;
+        
+        const timeString = String(hours).padStart(2, '0') + ':' + 
+                          String(minutes).padStart(2, '0') + ':' + 
+                          String(seconds).padStart(2, '0');
+        
+        document.getElementById('timer').textContent = timeString;
+    }
+    
+    // CSRF 토큰 가져오기
+    function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+});
+</script>
+
+<style>
+.question-container {
+    transition: all 0.3s ease;
+}
+
+.question-container:hover {
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+.choice-item {
+    transition: all 0.2s ease;
+}
+
+.choice-item:hover {
+    background-color: #f8f9fa;
+    border-radius: 5px;
+    padding: 5px;
+}
+
+.choice-label {
+    cursor: pointer;
+    width: 100%;
+    margin-bottom: 0;
+}
+
+.choice-number {
+    font-weight: bold;
+    margin-right: 8px;
+}
+
+.question-nav-btn {
+    width: 40px;
+    height: 40px;
+}
+
+.quiz-stats p {
+    margin-bottom: 0.5rem;
+}
+
+.sticky-top {
+    top: 20px;
+}
+
+@media (max-width: 768px) {
+    .question-nav-btn {
+        width: 35px;
+        height: 35px;
+        font-size: 0.8rem;
+    }
+}
+</style>
+{% endblock %}

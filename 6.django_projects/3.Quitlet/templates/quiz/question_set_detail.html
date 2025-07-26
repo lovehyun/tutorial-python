@@ -1,0 +1,94 @@
+<!-- templates/quiz/question_set_detail.html -->
+{% extends 'base/base.html' %}
+
+{% block title %}{{ question_set.title }} - Quizlet 클론{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h3>{{ question_set.title }}</h3>
+                {% if user.is_authenticated %}
+                <a href="{% url 'quiz:quiz_start' question_set.pk %}" class="btn btn-success">
+                    <i class="bi bi-play-fill"></i> 퀴즈 시작
+                </a>
+                {% endif %}
+            </div>
+            <div class="card-body">
+                <p class="card-text">{{ question_set.description }}</p>
+                <p class="text-muted">
+                    <strong>작성자:</strong> {{ question_set.creator.username }} | 
+                    <strong>문제 수:</strong> {{ questions.count }}개 |
+                    <strong>작성일:</strong> {{ question_set.created_at|date:"Y년 m월 d일" }}
+                </p>
+            </div>
+        </div>
+
+        <!-- 문제 목록 -->
+        <div class="mt-4">
+            <h4>전체 문제와 정답</h4>
+            {% for question in questions %}
+            <div class="card mb-3">
+                <div class="card-body">
+                    <h5 class="card-title">문제 {{ forloop.counter }}</h5>
+                    <p class="card-text">{{ question.question_text }}</p>
+                    
+                    {% if question.question_image %}
+                    <img src="{{ question.question_image.url }}" class="img-fluid mb-3" alt="문제 이미지">
+                    {% endif %}
+                    
+                    <div class="row">
+                        {% for choice in question.choices.all %}
+                        <div class="col-md-6 mb-2">
+                            <div class="p-2 border rounded {% if choice.is_correct %}bg-success text-white{% else %}bg-light{% endif %}">
+                                <strong>{{ forloop.counter }}.</strong> {{ choice.choice_text }}
+                                {% if choice.is_correct %}
+                                <span class="badge bg-warning text-dark ms-2">정답</span>
+                                {% endif %}
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    
+                    {% if question.explanation %}
+                    <div class="alert alert-info mt-3">
+                        <strong>해설:</strong> {{ question.explanation }}
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    
+    <div class="col-md-4">
+        {% if user.is_authenticated and user_progress %}
+        <div class="card">
+            <div class="card-header">
+                <h5>나의 학습 기록</h5>
+            </div>
+            <div class="card-body">
+                <p><strong>학습 횟수:</strong> {{ user_progress.times_studied }}회</p>
+                <p><strong>최고 점수:</strong> {{ user_progress.best_score }}점</p>
+                <p><strong>마지막 학습:</strong> {{ user_progress.last_studied|date:"m월 d일 H:i" }}</p>
+            </div>
+        </div>
+        {% endif %}
+        
+        <div class="card mt-3">
+            <div class="card-header">
+                <h5>카테고리 정보</h5>
+            </div>
+            <div class="card-body">
+                {% if question_set.category %}
+                <p><strong>카테고리:</strong> {{ question_set.category.name }}</p>
+                <p>{{ question_set.category.description }}</p>
+                {% else %}
+                <p>카테고리가 설정되지 않았습니다.</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

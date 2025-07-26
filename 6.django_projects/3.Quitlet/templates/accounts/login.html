@@ -1,0 +1,43 @@
+<!-- templates/accounts/login.html -->
+{% extends 'base/base.html' %}
+
+{% block title %}로그인 - Quizlet 클론{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">
+                <h3 class="text-center">로그인</h3>
+            </div>
+            <div class="card-body">
+                <form method="post">
+                    {% csrf_token %}
+                    
+                    {% for field in form %}
+                        <div class="mb-3">
+                            <label for="{{ field.id_for_label }}" class="form-label">
+                                {{ field.label }}
+                            </label>
+                            {{ field }}
+                            {% if field.errors %}
+                                {% for error in field.errors %}
+                                    <div class="text-danger">{{ error }}</div>
+                                {% endfor %}
+                            {% endif %}
+                        </div>
+                    {% endfor %}
+                    
+                    <div class="d-grid">
+                        <button type="submit" class="btn btn-primary">로그인</button>
+                    </div>
+                </form>
+                
+                <div class="text-center mt-3">
+                    <p>계정이 없으신가요? <a href="{% url 'accounts:signup' %}">회원가입</a></p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,89 @@
+<!-- templates/quiz/my_quizzes.html -->
+{% extends 'base/base.html' %}
+{% load quiz_extras %}
+
+{% block title %}내 퀴즈 기록 - Quizlet 클론{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2>내 퀴즈 기록</h2>
+</div>
+
+{% if quizzes %}
+<div class="row">
+    {% for quiz in quizzes %}
+    <div class="col-md-6 mb-3">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">{{ quiz.question_set.title }}</h5>
+                <p class="card-text">{{ quiz.question_set.description|truncatewords:15 }}</p>
+                
+                <div class="quiz-stats">
+                    <div class="row text-center">
+                        <div class="col-3">
+                            <strong class="text-primary">{{ quiz.get_percentage_score }}%</strong>
+                            <br><small class="text-muted">점수</small>
+                        </div>
+                        <div class="col-3">
+                            <strong class="text-success">{{ quiz.score }}</strong>
+                            <br><small class="text-muted">정답</small>
+                        </div>
+                        <div class="col-3">
+                            <strong class="text-info">{{ quiz.total_questions }}</strong>
+                            <br><small class="text-muted">총 문제</small>
+                        </div>
+                        <div class="col-3">
+                            {% if quiz.time_taken %}
+                            <strong class="text-warning">{{ quiz.time_taken.seconds|floatformat:0|div:60 }}분</strong>
+                            <br><small class="text-muted">소요 시간</small>
+                            {% else %}
+                            <strong class="text-muted">-</strong>
+                            <br><small class="text-muted">시간</small>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                
+                <hr>
+                
+                <div class="d-flex justify-content-between align-items-center">
+                    <small class="text-muted">
+                        {% if quiz.is_completed %}
+                            {{ quiz.completed_at|date:"m월 d일 H:i" }} 완료
+                        {% else %}
+                            {{ quiz.started_at|date:"m월 d일 H:i" }} 시작 (미완료)
+                        {% endif %}
+                    </small>
+                    
+                    <div>
+                        {% if quiz.is_completed %}
+                            <a href="{% url 'quiz:quiz_complete' quiz.id %}" class="btn btn-sm btn-primary">
+                                결과 보기
+                            </a>
+                        {% else %}
+                            <a href="{% url 'quiz:quiz_take' quiz.id %}" class="btn btn-sm btn-warning">
+                                계속하기
+                            </a>
+                        {% endif %}
+                        <a href="{% url 'quiz:quiz_start' quiz.question_set.pk %}" class="btn btn-sm btn-success">
+                            다시 도전
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+
+<!-- 페이지네이션 (나중에 추가 가능) -->
+{% else %}
+<div class="text-center">
+    <div class="alert alert-info">
+        <h4>아직 퀴즈 기록이 없습니다</h4>
+        <p>문제집에서 퀴즈를 시작해보세요!</p>
+        <a href="{% url 'quiz:question_list' %}" class="btn btn-primary">문제집 보러가기</a>
+    </div>
+</div>
+{% endif %}
+{% endblock %}

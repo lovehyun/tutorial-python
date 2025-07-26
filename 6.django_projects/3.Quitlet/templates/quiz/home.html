@@ -1,0 +1,84 @@
+<!-- templates/quiz/home.html -->
+{% extends 'base/base.html' %}
+
+{% block title %}홈 - Quizlet 클론{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <div class="jumbotron bg-primary text-white p-5 rounded mb-4">
+            <h1 class="display-4">Quizlet 클론에 오신 것을 환영합니다!</h1>
+            <p class="lead">다양한 문제집으로 학습하고 퀴즈를 통해 실력을 테스트해보세요.</p>
+            <a class="btn btn-light btn-lg" href="{% url 'quiz:question_list' %}">문제집 둘러보기</a>
+        </div>
+    </div>
+</div>
+
+{% if user.is_authenticated and recent_progress %}
+<div class="row mb-4">
+    <div class="col-12">
+        <h3>최근 학습 기록</h3>
+        <div class="row">
+            {% for progress in recent_progress %}
+            <div class="col-md-4 mb-3">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ progress.question_set.title }}</h5>
+                        <p class="card-text">
+                            <small class="text-muted">{{ progress.last_studied|date:"m월 d일" }}</small><br>
+                            학습 횟수: {{ progress.times_studied }}회<br>
+                            최고 점수: {{ progress.best_score }}점
+                        </p>
+                        <a href="{% url 'quiz:question_set_detail' progress.question_set.pk %}" class="btn btn-primary">다시 학습</a>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endif %}
+
+<div class="row mb-4">
+    <div class="col-12">
+        <h3>카테고리</h3>
+        <div class="row">
+            {% for category in categories %}
+            <div class="col-md-3 mb-3">
+                <div class="card text-center">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ category.name }}</h5>
+                        <p class="card-text">{{ category.question_set_count }}개 문제집</p>
+                        <a href="{% url 'quiz:question_list' %}?category={{ category.id }}" class="btn btn-outline-primary">보기</a>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-12">
+        <h3>최신 문제집</h3>
+        <div class="row">
+            {% for question_set in latest_sets %}
+            <div class="col-md-4 mb-3">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ question_set.title }}</h5>
+                        <p class="card-text">{{ question_set.description|truncatewords:15 }}</p>
+                        <p class="card-text">
+                            <small class="text-muted">
+                                {{ question_set.creator.username }} · {{ question_set.created_at|date:"m월 d일" }}
+                            </small>
+                        </p>
+                        <a href="{% url 'quiz:question_set_detail' question_set.pk %}" class="btn btn-primary">학습하기</a>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endblock %}

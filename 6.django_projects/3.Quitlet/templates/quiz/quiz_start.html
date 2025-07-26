@@ -1,0 +1,49 @@
+<!-- templates/quiz/quiz_start.html -->
+{% extends 'base/base.html' %}
+
+{% block title %}퀴즈 시작 - {{ question_set.title }}{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header text-center">
+                <h3>퀴즈 시작 준비</h3>
+            </div>
+            <div class="card-body text-center">
+                <h4>{{ question_set.title }}</h4>
+                <p class="lead">{{ question_set.description }}</p>
+                
+                <div class="alert alert-info">
+                    <h5>퀴즈 정보</h5>
+                    <p><strong>총 문제 수:</strong> {{ question_count }}문제</p>
+                    <p><strong>출제 방식:</strong> 4지선다</p>
+                    <p><strong>시간 제한:</strong> 없음</p>
+                </div>
+                
+                <div class="alert alert-warning">
+                    <h6>주의사항</h6>
+                    <ul class="list-unstyled mb-0">
+                        <li>• 한 번 선택한 답은 변경할 수 있습니다</li>
+                        <li>• 모든 문제를 완료해야 결과를 볼 수 있습니다</li>
+                        <li>• 브라우저를 새로고침하면 진행 상황이 사라집니다</li>
+                    </ul>
+                </div>
+                
+                <form method="post">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-success btn-lg">
+                        <i class="bi bi-play-fill"></i> 퀴즈 시작하기
+                    </button>
+                </form>
+                
+                <div class="mt-3">
+                    <a href="{% url 'quiz:question_set_detail' question_set.pk %}" class="btn btn-secondary">
+                        문제 미리보기
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
