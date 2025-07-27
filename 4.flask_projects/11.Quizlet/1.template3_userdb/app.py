@@ -1,7 +1,7 @@
 # app.py
 # Flask 애플리케이션 메인 파일
 
-from flask import Flask, render_template, redirect, url_for, flash
+from flask import Flask, render_template, redirect, url_for
 from flask_login import LoginManager, login_required, current_user
 from werkzeug.middleware.proxy_fix import ProxyFix
 import os

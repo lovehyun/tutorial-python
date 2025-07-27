@@ -73,7 +73,7 @@ def submit_quiz():
     # 세션 정리
     session.pop('quiz_data', None)
     
-    return render_template('result.html', 
+    return render_template('result/result.html', 
                          results=results, 
                          correct_count=correct_count,
                          total_questions=total_questions, 
@@ -83,7 +83,7 @@ def submit_quiz():
 @login_required
 def stats():
     """통계 대시보드"""
-    return render_template('stats.html')
+    return render_template('result/stats.html')
 
 @result_bp.route('/api/stats/<period>')
 @login_required
@@ -192,7 +192,7 @@ def history():
     has_next = offset + per_page < total_count
     total_pages = (total_count + per_page - 1) // per_page
     
-    return render_template('history.html',
+    return render_template('result/history.html',
                          results=results,
                          page=page,
                          has_prev=has_prev,
@@ -223,7 +223,7 @@ def detail(result_id):
     # 설정 정보 파싱
     settings = json.loads(result['settings']) if result['settings'] else {}
     
-    return render_template('result_detail.html', result=result, settings=settings)
+    return render_template('result/result_detail.html', result=result, settings=settings)
 
 @result_bp.route('/delete/<int:result_id>', methods=['POST'])
 @login_required

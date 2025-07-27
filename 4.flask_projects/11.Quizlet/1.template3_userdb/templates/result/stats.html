@@ -89,11 +89,19 @@
 </div>
 
 <!-- 데이터 없음 표시 -->
-<div id="no-data" class="text-center" style="display: none;">
+<div id="no-data" class="text-center py-5" style="display: none;">
     <div class="alert alert-info">
-        <h5>📈 통계 데이터가 없습니다</h5>
-        <p>시험을 완료하면 통계를 확인할 수 있습니다.</p>
-        <a href="{{ url_for('quiz.dashboard') }}" class="btn btn-primary">시험 보러 가기</a>
+        <div class="display-1 text-muted mb-4">📊</div>
+        <h4>통계 데이터가 없습니다</h4>
+        <p class="text-muted mb-4">
+            아직 완료한 시험이 없어서 표시할 통계가 없습니다.<br>
+            첫 시험을 완료하면 여기에 점수 추이를 확인할 수 있어요!
+        </p>
+        <div class="d-grid gap-2 d-md-flex justify-content-md-center">
+            <a href="{{ url_for('quiz.dashboard') }}" class="btn btn-primary">
+                🎯 첫 시험 보러 가기
+            </a>
+        </div>
     </div>
 </div>
 
@@ -163,6 +171,8 @@ function initChart() {
 // 통계 데이터 로드
 async function loadStats(period) {
     showLoading(true);
+    showNoData(false);
+    showChart(false);
     
     try {
         const response = await fetch(`/result/api/stats/${period}`);
@@ -171,6 +181,8 @@ async function loadStats(period) {
         if (data.data.length === 0) {
             showNoData(true);
             showChart(false);
+            // 통계 요약도 초기화
+            updateStats({count: 0, average: 0, max: 0, min: 0});
         } else {
             showNoData(false);
             showChart(true);
@@ -181,7 +193,17 @@ async function loadStats(period) {
         updateChartTitle(period);
     } catch (error) {
         console.error('통계 로드 실패:', error);
-        alert('통계 데이터를 불러오는데 실패했습니다.');
+        showNoData(true);
+        showChart(false);
+        // 사용자에게 에러 메시지 표시 (팝업 대신 페이지 내 표시)
+        document.getElementById('no-data').innerHTML = `
+            <div class="alert alert-danger">
+                <h5>📊 데이터를 불러올 수 없습니다</h5>
+                <p>서버와의 통신 중 오류가 발생했습니다. 잠시 후 다시 시도해주세요.</p>
+                <button class="btn btn-outline-danger" onclick="loadStats('${period}')">다시 시도</button>
+            </div>
+        `;
+        updateStats({count: 0, average: 0, max: 0, min: 0});
     } finally {
         showLoading(false);
     }
@@ -209,10 +231,10 @@ function updateChart(data) {
 
 // 통계 요약 업데이트
 function updateStats(stats) {
-    document.getElementById('stat-count').textContent = stats.count;
-    document.getElementById('stat-average').textContent = stats.average + '%';
-    document.getElementById('stat-max').textContent = stats.max + '%';
-    document.getElementById('stat-min').textContent = stats.min + '%';
+    document.getElementById('stat-count').textContent = stats.count || 0;
+    document.getElementById('stat-average').textContent = (stats.average || 0) + '%';
+    document.getElementById('stat-max').textContent = (stats.max || 0) + '%';
+    document.getElementById('stat-min').textContent = (stats.min || 0) + '%';
 }
 
 // 차트 제목 업데이트

@@ -33,7 +33,7 @@ def login():
         
         if not username or not password:
             flash('사용자명과 비밀번호를 모두 입력해주세요.', 'error')
-            return render_template('login.html')
+            return render_template('user/login.html')
         
         conn = get_db_connection()
         user = conn.execute(
@@ -44,6 +44,16 @@ def login():
         if user and check_password_hash(user['password_hash'], password):
             user_obj = User(user['id'], user['username'], user['email'])
             login_user(user_obj, remember=remember)
+            
+            # 최근 로그인 시간 업데이트
+            conn = get_db_connection()
+            conn.execute(
+                'UPDATE users SET last_login_at = CURRENT_TIMESTAMP WHERE id = ?',
+                (user['id'],)
+            )
+            conn.commit()
+            conn.close()
+            
             flash(f'{username}님, 환영합니다!', 'success')
             
             # 로그인 후 원래 가려던 페이지로 리디렉션
@@ -54,7 +64,7 @@ def login():
         else:
             flash('사용자명 또는 비밀번호가 올바르지 않습니다.', 'error')
     
-    return render_template('login.html')
+    return render_template('user/login.html')
 
 @user_bp.route('/register', methods=['GET', 'POST'])
 def register():
@@ -88,7 +98,7 @@ def register():
         if errors:
             for error in errors:
                 flash(error, 'error')
-            return render_template('register.html')
+            return render_template('user/register.html')
         
         # 중복 확인
         conn = get_db_connection()
@@ -100,7 +110,7 @@ def register():
         if existing_user:
             flash('이미 사용 중인 사용자명 또는 이메일입니다.', 'error')
             conn.close()
-            return render_template('register.html')
+            return render_template('user/register.html')
         
         # 사용자 생성
         password_hash = generate_password_hash(password)
@@ -127,7 +137,7 @@ def register():
         flash('회원가입이 완료되었습니다! 로그인해주세요.', 'success')
         return redirect(url_for('user.login'))
     
-    return render_template('register.html')
+    return render_template('user/register.html')
 
 @user_bp.route('/logout')
 @login_required
@@ -142,6 +152,11 @@ def logout():
 def profile():
     # 사용자 통계 정보 가져오기
     conn = get_db_connection()
+    
+    user_info = conn.execute(
+        'SELECT username, email, created_at, last_login_at FROM users WHERE id = ?',
+        (current_user.id,)
+    ).fetchone()
     
     # 업로드된 파일 수
     file_count = conn.execute(
@@ -176,7 +191,7 @@ def profile():
         'max_score': max_score if max_score else 0
     }
     
-    return render_template('profile.html', stats=stats)
+    return render_template('user/profile.html', user_info=user_info, stats=stats)
 
 @user_bp.route('/change_password', methods=['POST'])
 @login_required

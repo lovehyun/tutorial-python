@@ -34,6 +34,28 @@
                         <button class="btn btn-outline-warning btn-sm ms-2" data-bs-toggle="modal" data-bs-target="#passwordModal">변경</button>
                     </div>
                 </div>
+                <div class="row mb-3">
+                    <div class="col-sm-4"><strong>가입일:</strong></div>
+                    <div class="col-sm-8">
+                        {% if user_info and user_info.created_at %}
+                            {{ user_info.created_at }}
+                        {% else %}
+                            정보 없음
+                        {% endif %}
+                    </div>
+                </div>
+                <!--
+                <div class="row mb-3">
+                    <div class="col-sm-4"><strong>최근 로그인:</strong></div>
+                    <div class="col-sm-8">
+                        {% if user_info and user_info.last_login_at %}
+                            <span class="text-success">{{ user_info.last_login_at }}</span>
+                        {% else %}
+                            <span class="text-muted">정보 없음</span>
+                        {% endif %}
+                    </div>
+                </div>
+                -->
                 <div class="row">
                     <div class="col-sm-4"><strong>회원 등급:</strong></div>
                     <div class="col-sm-8">

@@ -256,7 +256,7 @@ def study(file_id):
         return redirect(url_for('quiz.dashboard'))
     
     prepared_questions = prepare_questions(questions, 'study', current_user.id)
-    return render_template('study.html', questions=prepared_questions, file_info=file_info)
+    return render_template('quiz/study.html', questions=prepared_questions, file_info=file_info)
 
 @quiz_bp.route('/quiz/<int:file_id>')
 @login_required
@@ -287,7 +287,7 @@ def quiz_start(file_id):
         'settings': get_user_settings(current_user.id, 'quiz')
     }
     
-    return render_template('quiz.html', questions=prepared_questions, file_info=file_info)
+    return render_template('quiz/quiz.html', questions=prepared_questions, file_info=file_info)
 
 @quiz_bp.route('/settings', methods=['GET', 'POST'])
 @login_required
@@ -342,4 +342,4 @@ def settings():
             }
     conn.close()
     
-    return render_template('settings.html', settings=settings)
+    return render_template('quiz/settings.html', settings=settings)

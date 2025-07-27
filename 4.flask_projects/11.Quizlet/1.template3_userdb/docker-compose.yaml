@@ -11,7 +11,6 @@ services:
     volumes:
       # 사용자 업로드 파일 및 데이터베이스
       - ./data:/app/data
-      - ./quizlet.db:/app/quizlet.db
     restart: unless-stopped
     
     # 헬스체크
