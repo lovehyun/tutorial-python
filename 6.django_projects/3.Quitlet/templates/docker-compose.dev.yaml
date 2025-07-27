@@ -1,0 +1,15 @@
+version: '3.8'
+
+services:
+  django:
+    build:
+      context: .
+      dockerfile: dev.Dockerfile
+    container_name: django-quizlet-dev
+    ports:
+      - "8000:8000"
+    volumes:
+      - .:/app   # 개발 시만 소스코드 실시간 반영
+    environment:
+      - DJANGO_SETTINGS_MODULE=quizproject.settings
+    restart: unless-stopped

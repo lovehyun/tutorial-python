@@ -1,0 +1,14 @@
+version: '3.8'
+
+services:
+  flask-app:
+    build: .
+    container_name: flask-quiz-app
+    ports:
+      - "5000:5000"
+    environment:
+      - FLASK_APP=app.py
+      - FLASK_ENV=production
+    volumes:
+      - ./uploads:/app/uploads   # 사용자 업로드 파일은 마운트 필요
+    restart: unless-stopped
