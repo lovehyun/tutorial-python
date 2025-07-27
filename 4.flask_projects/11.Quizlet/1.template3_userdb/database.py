@@ -3,9 +3,8 @@
 
 import sqlite3
 import os
-from datetime import datetime
 
-DB_PATH = 'quizlet.db'
+DB_PATH = 'data/quizlet.db'
 
 def init_database():
     """데이터베이스 및 테이블 초기화"""
@@ -23,7 +22,7 @@ def init_database():
             email VARCHAR(120) UNIQUE NOT NULL,
             password_hash VARCHAR(255) NOT NULL,
             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-            last_login TIMESTAMP
+            last_login_at TIMESTAMP
         )
     ''')
     

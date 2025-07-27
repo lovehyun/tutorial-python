@@ -24,4 +24,4 @@ RUN mkdir -p data/uploads
 EXPOSE 5000
 
 # Production용 실행 (Gunicorn 사용)
-CMD ["sh", "-c", "python database.py && gunicorn --bind 0.0.0.0:5000 --workers 2 --timeout 60 app:app"]
+CMD ["sh", "-c", "python database.py && gunicorn --bind 0.0.0.0:5000 --workers 2 --timeout 60 --access-logfile - app:app"]

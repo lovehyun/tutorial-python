@@ -76,11 +76,11 @@ def dashboard():
 # 에러 핸들러
 @app.errorhandler(404)
 def not_found(error):
-    return render_template('404.html'), 404
+    return render_template('error/404.html'), 404
 
 @app.errorhandler(500)
 def internal_error(error):
-    return render_template('500.html'), 500
+    return render_template('error/500.html'), 500
 
 # 업로드 폴더 생성
 os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
@@ -101,5 +101,5 @@ if __name__ == '__main__':
         app.run(debug=True, host='0.0.0.0', port=5000)
     else:
         print("Production 모드에서는 Gunicorn을 사용하세요:")
-        print("gunicorn --bind 0.0.0.0:5000 --workers 4 app:app")
+        print("gunicorn --bind 0.0.0.0:5000 --workers 4 --access-logfile - app:app")
         # Production에서는 직접 실행하지 않음

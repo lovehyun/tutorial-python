@@ -79,16 +79,11 @@ def submit_quiz():
                          total_questions=total_questions, 
                          score_percentage=score_percentage)
 
-@result_bp.route('/stats')
+@result_bp.route('/stats', defaults={'period': 'recent10'})
+@result_bp.route('/stats/<period>')
 @login_required
-def stats():
+def stats(period):
     """통계 대시보드"""
-    return render_template('result/stats.html')
-
-@result_bp.route('/api/stats/<period>')
-@login_required
-def get_stats_data(period):
-    """통계 데이터 API (AJAX용)"""
     conn = get_db_connection()
     
     # 기간별 쿼리 조건 설정
@@ -137,9 +132,9 @@ def get_stats_data(period):
     
     # 데이터 포맷팅
     data = []
-    for i, result in enumerate(reversed(results), 1):  # 시간순으로 정렬
+    for result in reversed(results):  # 시간순으로 정렬
         data.append({
-            'x': i,
+            'x': result['created_at'][:16],  # 'YYYY-MM-DD HH:MM' 형식
             'y': result['score'],
             'date': result['created_at'],
             'filename': result['original_filename']
@@ -154,10 +149,12 @@ def get_stats_data(period):
         'min': min(scores) if scores else 0
     }
     
-    return jsonify({
-        'data': data,
-        'stats': stats_summary
-    })
+    return render_template(
+        'result/stats.html',
+        data=data,
+        stats=stats_summary,
+        period=period
+    )
 
 @result_bp.route('/history')
 @login_required
