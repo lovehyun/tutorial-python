@@ -1,0 +1,172 @@
+{% extends "base.html" %}
+
+{% block title %}설정 - 퀴즈 앱{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2>⚙️ 퀴즈 설정</h2>
+    <a href="{{ url_for('quiz.dashboard') }}" class="btn btn-secondary">← 대시보드</a>
+</div>
+
+<div class="alert alert-info">
+    <strong>💡 설정 안내:</strong> 공부 모드와 시험 모드의 설정을 각각 다르게 구성할 수 있습니다.
+</div>
+
+<form method="POST">
+    <div class="row">
+        <!-- 공부 모드 설정 -->
+        <div class="col-md-6">
+            <div class="card mb-4">
+                <div class="card-header bg-info text-white">
+                    <h5 class="mb-0">📖 공부 모드 설정</h5>
+                </div>
+                <div class="card-body">
+                    <!-- 문제 순서 -->
+                    <div class="mb-4">
+                        <label class="form-label fw-bold">문제 순서</label>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="study_question_order" 
+                                   value="original" id="study_q_original"
+                                   {% if settings.get('study', {}).get('question_order') != 'shuffle' %}checked{% endif %}>
+                            <label class="form-check-label" for="study_q_original">
+                                📑 순서대로 (파일 순서 유지)
+                            </label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="study_question_order" 
+                                   value="shuffle" id="study_q_shuffle"
+                                   {% if settings.get('study', {}).get('question_order') == 'shuffle' %}checked{% endif %}>
+                            <label class="form-check-label" for="study_q_shuffle">
+                                🔀 섞기 (랜덤 순서)
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- 보기 순서 -->
+                    <div class="mb-4">
+                        <label class="form-label fw-bold">보기 순서</label>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="study_choice_order" 
+                                   value="original" id="study_c_original"
+                                   {% if settings.get('study', {}).get('choice_order') != 'shuffle' %}checked{% endif %}>
+                            <label class="form-check-label" for="study_c_original">
+                                📝 순서대로 (1,2,3,4 순서)
+                            </label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="study_choice_order" 
+                                   value="shuffle" id="study_c_shuffle"
+                                   {% if settings.get('study', {}).get('choice_order') == 'shuffle' %}checked{% endif %}>
+                            <label class="form-check-label" for="study_c_shuffle">
+                                🔀 섞기 (보기 순서 랜덤)
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- 문항 수 제한 -->
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">문항 수 제한</label>
+                        <input type="number" class="form-control" name="study_limit" 
+                               value="{{ settings.get('study', {}).get('question_limit', 0) }}"
+                               min="0" placeholder="0 = 전체 문제">
+                        <div class="form-text">0을 입력하면 모든 문제를 사용합니다.</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 시험 모드 설정 -->
+        <div class="col-md-6">
+            <div class="card mb-4">
+                <div class="card-header bg-warning text-dark">
+                    <h5 class="mb-0">🎯 시험 모드 설정</h5>
+                </div>
+                <div class="card-body">
+                    <!-- 문제 순서 -->
+                    <div class="mb-4">
+                        <label class="form-label fw-bold">문제 순서</label>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="quiz_question_order" 
+                                   value="original" id="quiz_q_original"
+                                   {% if settings.get('quiz', {}).get('question_order') != 'shuffle' %}checked{% endif %}>
+                            <label class="form-check-label" for="quiz_q_original">
+                                📑 순서대로 (파일 순서 유지)
+                            </label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="quiz_question_order" 
+                                   value="shuffle" id="quiz_q_shuffle"
+                                   {% if settings.get('quiz', {}).get('question_order') == 'shuffle' %}checked{% endif %}>
+                            <label class="form-check-label" for="quiz_q_shuffle">
+                                🔀 섞기 (랜덤 순서)
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- 보기 순서 -->
+                    <div class="mb-4">
+                        <label class="form-label fw-bold">보기 순서</label>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="quiz_choice_order" 
+                                   value="original" id="quiz_c_original"
+                                   {% if settings.get('quiz', {}).get('choice_order') != 'shuffle' %}checked{% endif %}>
+                            <label class="form-check-label" for="quiz_c_original">
+                                📝 순서대로 (1,2,3,4 순서)
+                            </label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="quiz_choice_order" 
+                                   value="shuffle" id="quiz_c_shuffle"
+                                   {% if settings.get('quiz', {}).get('choice_order') == 'shuffle' %}checked{% endif %}>
+                            <label class="form-check-label" for="quiz_c_shuffle">
+                                🔀 섞기 (보기 순서 랜덤)
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- 문항 수 제한 -->
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">문항 수 제한</label>
+                        <input type="number" class="form-control" name="quiz_limit" 
+                               value="{{ settings.get('quiz', {}).get('question_limit', 0) }}"
+                               min="0" placeholder="0 = 전체 문제">
+                        <div class="form-text">0을 입력하면 모든 문제를 사용합니다.</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 저장 버튼 -->
+    <div class="text-center mb-4">
+        <button type="submit" class="btn btn-primary btn-lg">💾 설정 저장</button>
+        <a href="{{ url_for('quiz.dashboard') }}" class="btn btn-secondary btn-lg">취소</a>
+    </div>
+</form>
+
+<!-- 설정 예시 -->
+<div class="card">
+    <div class="card-header bg-light">
+        <h6>💡 설정 가이드</h6>
+    </div>
+    <div class="card-body">
+        <div class="row">
+            <div class="col-md-6">
+                <h6>🏆 추천 설정</h6>
+                <ul>
+                    <li><strong>공부 모드:</strong> 순서대로, 전체 문제</li>
+                    <li><strong>시험 모드:</strong> 문제/보기 섞기, 제한된 문항 수</li>
+                </ul>
+            </div>
+            <div class="col-md-6">
+                <h6>🎯 활용 팁</h6>
+                <ul>
+                    <li>처음엔 공부 모드로 전체 학습</li>
+                    <li>시험 모드는 섞기 설정으로 실력 테스트</li>
+                    <li>문항 수 제한으로 빠른 복습 가능</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

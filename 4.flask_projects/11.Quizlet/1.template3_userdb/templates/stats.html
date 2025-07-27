@@ -1,0 +1,262 @@
+{% extends "base.html" %}
+
+{% block title %}통계 대시보드 - 퀴즈 앱{% endblock %}
+
+{% block extra_head %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2>📊 통계 대시보드</h2>
+    <a href="{{ url_for('quiz.dashboard') }}" class="btn btn-secondary">← 대시보드</a>
+</div>
+
+<!-- 필터 버튼 -->
+<div class="card mb-4">
+    <div class="card-body">
+        <div class="d-flex justify-content-center gap-2 flex-wrap">
+            <button class="btn btn-outline-primary filter-btn active" data-period="recent10">
+                최근 10회
+            </button>
+            <button class="btn btn-outline-primary filter-btn" data-period="recent30">
+                최근 30회
+            </button>
+            <button class="btn btn-outline-primary filter-btn" data-period="last30days">
+                최근 30일
+            </button>
+            <button class="btn btn-outline-primary filter-btn" data-period="all">
+                전체
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- 통계 요약 -->
+<div class="row mb-4">
+    <div class="col-md-3">
+        <div class="card text-center">
+            <div class="card-body">
+                <div class="display-6 text-primary" id="stat-count">-</div>
+                <p class="card-text">시험 횟수</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-center">
+            <div class="card-body">
+                <div class="display-6 text-success" id="stat-average">-</div>
+                <p class="card-text">평균 점수</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-center">
+            <div class="card-body">
+                <div class="display-6 text-warning" id="stat-max">-</div>
+                <p class="card-text">최고 점수</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-center">
+            <div class="card-body">
+                <div class="display-6 text-danger" id="stat-min">-</div>
+                <p class="card-text">최저 점수</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 차트 영역 -->
+<div class="card mb-4">
+    <div class="card-header">
+        <h5 id="chart-title">점수 추이 - 최근 10회</h5>
+    </div>
+    <div class="card-body">
+        <div class="chart-container" style="position: relative; height: 400px;">
+            <canvas id="scoreChart"></canvas>
+        </div>
+    </div>
+</div>
+
+<!-- 로딩 표시 -->
+<div id="loading" class="text-center" style="display: none;">
+    <div class="spinner-border text-primary" role="status">
+        <span class="visually-hidden">로딩중...</span>
+    </div>
+    <p class="mt-2">데이터를 불러오는 중...</p>
+</div>
+
+<!-- 데이터 없음 표시 -->
+<div id="no-data" class="text-center" style="display: none;">
+    <div class="alert alert-info">
+        <h5>📈 통계 데이터가 없습니다</h5>
+        <p>시험을 완료하면 통계를 확인할 수 있습니다.</p>
+        <a href="{{ url_for('quiz.dashboard') }}" class="btn btn-primary">시험 보러 가기</a>
+    </div>
+</div>
+
+<script>
+let scoreChart = null;
+let currentPeriod = 'recent10';
+
+// 차트 초기화
+function initChart() {
+    const ctx = document.getElementById('scoreChart').getContext('2d');
+    scoreChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: [],
+            datasets: [{
+                label: '점수',
+                data: [],
+                borderColor: 'rgb(75, 192, 192)',
+                backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                tension: 0.1,
+                fill: true
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                title: {
+                    display: true,
+                    text: '시험 점수 추이'
+                },
+                legend: {
+                    display: false
+                }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    max: 100,
+                    ticks: {
+                        callback: function(value) {
+                            return value + '%';
+                        }
+                    }
+                },
+                x: {
+                    title: {
+                        display: true,
+                        text: '시험 순서'
+                    }
+                }
+            },
+            elements: {
+                point: {
+                    radius: 6,
+                    hoverRadius: 8
+                }
+            },
+            interaction: {
+                intersect: false,
+                mode: 'index'
+            }
+        }
+    });
+}
+
+// 통계 데이터 로드
+async function loadStats(period) {
+    showLoading(true);
+    
+    try {
+        const response = await fetch(`/result/api/stats/${period}`);
+        const data = await response.json();
+        
+        if (data.data.length === 0) {
+            showNoData(true);
+            showChart(false);
+        } else {
+            showNoData(false);
+            showChart(true);
+            updateChart(data);
+            updateStats(data.stats);
+        }
+        
+        updateChartTitle(period);
+    } catch (error) {
+        console.error('통계 로드 실패:', error);
+        alert('통계 데이터를 불러오는데 실패했습니다.');
+    } finally {
+        showLoading(false);
+    }
+}
+
+// 차트 업데이트
+function updateChart(data) {
+    const chartData = data.data;
+    
+    scoreChart.data.labels = chartData.map((_, index) => `${index + 1}회`);
+    scoreChart.data.datasets[0].data = chartData.map(item => item.y);
+    
+    // 점수에 따른 색상 변경
+    const colors = chartData.map(item => {
+        if (item.y >= 80) return 'rgba(40, 167, 69, 0.8)';  // 초록
+        if (item.y >= 60) return 'rgba(255, 193, 7, 0.8)';   // 노랑
+        return 'rgba(220, 53, 69, 0.8)';  // 빨강
+    });
+    
+    scoreChart.data.datasets[0].backgroundColor = colors;
+    scoreChart.data.datasets[0].borderColor = colors.map(color => color.replace('0.8', '1'));
+    
+    scoreChart.update();
+}
+
+// 통계 요약 업데이트
+function updateStats(stats) {
+    document.getElementById('stat-count').textContent = stats.count;
+    document.getElementById('stat-average').textContent = stats.average + '%';
+    document.getElementById('stat-max').textContent = stats.max + '%';
+    document.getElementById('stat-min').textContent = stats.min + '%';
+}
+
+// 차트 제목 업데이트
+function updateChartTitle(period) {
+    const titles = {
+        'recent10': '점수 추이 - 최근 10회',
+        'recent30': '점수 추이 - 최근 30회',
+        'last30days': '점수 추이 - 최근 30일',
+        'all': '점수 추이 - 전체'
+    };
+    document.getElementById('chart-title').textContent = titles[period];
+}
+
+// UI 제어 함수들
+function showLoading(show) {
+    document.getElementById('loading').style.display = show ? 'block' : 'none';
+}
+
+function showNoData(show) {
+    document.getElementById('no-data').style.display = show ? 'block' : 'none';
+}
+
+function showChart(show) {
+    document.querySelector('.card .card-body .chart-container').parentElement.parentElement.style.display = 
+        show ? 'block' : 'none';
+}
+
+// 필터 버튼 이벤트
+document.querySelectorAll('.filter-btn').forEach(btn => {
+    btn.addEventListener('click', function() {
+        // 활성 버튼 변경
+        document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+        this.classList.add('active');
+        
+        // 데이터 로드
+        currentPeriod = this.dataset.period;
+        loadStats(currentPeriod);
+    });
+});
+
+// 페이지 로드 시 초기화
+document.addEventListener('DOMContentLoaded', function() {
+    initChart();
+    loadStats(currentPeriod);
+});
+</script>
+{% endblock %}

@@ -1,0 +1,139 @@
+{% extends "base.html" %}
+
+{% block title %}시험 결과{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2>📊 시험 결과</h2>
+    <a href="{{ url_for('quiz.dashboard') }}" class="btn btn-secondary">← 대시보드</a>
+</div>
+
+<!-- 점수 요약 -->
+<div class="card mb-4">
+    <div class="card-header text-center bg-primary text-white">
+        <h3>채점 결과</h3>
+    </div>
+    <div class="card-body">
+        <div class="row text-center">
+            <div class="col-md-3">
+                <div class="display-4 {% if score_percentage >= 80 %}text-success{% elif score_percentage >= 60 %}text-warning{% else %}text-danger{% endif %}">
+                    {{ score_percentage }}%
+                </div>
+                <p class="fs-5">총점</p>
+            </div>
+            <div class="col-md-3">
+                <div class="display-6 text-success">{{ correct_count }}</div>
+                <p>정답</p>
+            </div>
+            <div class="col-md-3">
+                <div class="display-6 text-danger">{{ total_questions - correct_count }}</div>
+                <p>오답</p>
+            </div>
+            <div class="col-md-3">
+                <div class="display-6 text-info">{{ total_questions }}</div>
+                <p>총 문제</p>
+            </div>
+        </div>
+        
+        <!-- 성과 메시지 -->
+        <div class="text-center mt-3">
+            {% if score_percentage >= 90 %}
+                <div class="alert alert-success">🎉 훌륭합니다! 완벽한 실력이네요!</div>
+            {% elif score_percentage >= 80 %}
+                <div class="alert alert-success">👏 잘했습니다! 우수한 성과입니다!</div>
+            {% elif score_percentage >= 70 %}
+                <div class="alert alert-warning">👍 괜찮습니다! 조금 더 노력하면 더 좋은 결과가 있을 거예요!</div>
+            {% elif score_percentage >= 60 %}
+                <div class="alert alert-warning">📚 더 공부가 필요해요. 공부 모드를 활용해보세요!</div>
+            {% else %}
+                <div class="alert alert-danger">💪 다시 도전하세요! 공부 모드로 복습 후 재시험을 추천합니다!</div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<!-- 문제별 상세 결과 -->
+<div class="mb-4">
+    <h4>📝 문제별 상세 결과</h4>
+</div>
+
+{% for result in results %}
+<div class="card mb-3">
+    <div class="card-header d-flex justify-content-between align-items-center">
+        <h6 class="mb-0">문제 {{ result.question.display_id }}</h6>
+        {% if result.is_correct %}
+            <span class="badge bg-success fs-6">✓ 정답</span>
+        {% else %}
+            <span class="badge bg-danger fs-6">✗ 오답</span>
+        {% endif %}
+    </div>
+    <div class="card-body">
+        <p class="fw-bold mb-3">{{ result.question.question }}</p>
+
+        {% for choice in result.question.shuffled_choices %}
+        <div class="p-2 mb-2 rounded 
+            {% if choice.original_index == result.question.answer %}bg-success text-white
+            {% elif choice.display_index == result.user_answer and not result.is_correct %}bg-danger text-white
+            {% else %}bg-light{% endif %}">
+            
+            <strong>{{ choice.display_index }}.</strong> {{ choice.text }}
+            
+            {% if choice.original_index == result.question.answer %}
+                <span class="badge bg-warning text-dark ms-2">✓ 정답</span>
+            {% endif %}
+            
+            {% if choice.display_index == result.user_answer %}
+                <span class="badge bg-info ms-2">👆 내 선택</span>
+            {% endif %}
+        </div>
+        {% endfor %}
+
+        {% if result.question.explanation %}
+        <div class="alert alert-info mt-3 mb-0">
+            <strong>💬 해설:</strong> {{ result.question.explanation }}
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endfor %}
+
+<!-- 하단 액션 버튼 -->
+<div class="d-flex justify-content-center gap-3 mb-5">
+    <a href="{{ url_for('result.stats') }}" class="btn btn-info">
+        📊 통계 보기
+    </a>
+    <a href="{{ url_for('quiz.study', file_id=results[0].question.id if results else '#') }}" class="btn btn-primary">
+        📖 공부 모드로
+    </a>
+    <a href="{{ url_for('quiz.quiz_start', file_id=results[0].question.id if results else '#') }}" class="btn btn-warning">
+        🔄 다시 시험보기
+    </a>
+</div>
+
+<!-- 스크롤 톱 버튼 -->
+<button type="button" class="btn btn-primary position-fixed bottom-0 end-0 m-3" 
+        onclick="window.scrollTo({top: 0, behavior: 'smooth'})" 
+        style="z-index: 1000;">
+    ↑ 맨 위로
+</button>
+
+<script>
+// 결과 애니메이션
+document.addEventListener('DOMContentLoaded', function() {
+    // 점수 카운트업 애니메이션
+    const scoreElement = document.querySelector('.display-4');
+    const finalScore = {{ score_percentage }};
+    let currentScore = 0;
+    const increment = finalScore / 50; // 50 스텝으로 애니메이션
+    
+    const countUp = setInterval(function() {
+        currentScore += increment;
+        if (currentScore >= finalScore) {
+            currentScore = finalScore;
+            clearInterval(countUp);
+        }
+        scoreElement.textContent = Math.round(currentScore) + '%';
+    }, 20);
+});
+</script>
+{% endblock %}

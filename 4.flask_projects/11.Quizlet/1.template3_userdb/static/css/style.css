@@ -1,0 +1,283 @@
+/* static/css/style.css */
+/* 퀴즈 앱 공통 스타일 */
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f8f9fa;
+    padding-bottom: 60px; /* 푸터 공간 확보 */
+}
+
+/* 카드 스타일 */
+.card {
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    border: none;
+    margin-bottom: 1rem;
+    border-radius: 0.5rem;
+}
+
+.card-header {
+    background-color: #e9ecef;
+    border-bottom: 1px solid #dee2e6;
+    border-radius: 0.5rem 0.5rem 0 0 !important;
+}
+
+/* 폼 스타일 */
+.form-check-label {
+    cursor: pointer;
+    width: 100%;
+}
+
+.choice-label {
+    transition: all 0.2s ease;
+    cursor: pointer;
+}
+
+.choice-label:hover {
+    background-color: #e9ecef !important;
+}
+
+/* 버튼 스타일 */
+.btn {
+    border-radius: 0.5rem;
+    transition: all 0.2s ease;
+}
+
+.btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+/* 알림 스타일 */
+.alert {
+    border-radius: 0.5rem;
+    border: none;
+}
+
+/* 네비게이션 바 */
+.navbar-brand {
+    font-weight: bold;
+    font-size: 1.5rem;
+}
+
+.navbar {
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+/* 색상 스타일 */
+.bg-success {
+    background-color: #28a745 !important;
+}
+
+.bg-danger {
+    background-color: #dc3545 !important;
+}
+
+.bg-warning {
+    background-color: #ffc107 !important;
+}
+
+.bg-info {
+    background-color: #17a2b8 !important;
+}
+
+.text-primary {
+    color: #007bff !important;
+}
+
+/* 통계 카드 */
+.display-6 {
+    font-weight: bold;
+}
+
+/* 진행률 바 */
+.progress {
+    height: 10px;
+    border-radius: 5px;
+}
+
+.progress-bar {
+    transition: width 0.3s ease;
+}
+
+/* 퀴즈 모드별 스타일 */
+.question-card {
+    transition: all 0.3s ease;
+}
+
+.question-card:hover {
+    box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+}
+
+/* 선택지 스타일 */
+.form-check {
+    margin-bottom: 0.5rem;
+}
+
+.form-check-input:checked ~ .form-check-label .choice-label {
+    background-color: #007bff !important;
+    color: white !important;
+    border-color: #007bff !important;
+}
+
+/* 정답/오답 스타일 */
+.correct-answer {
+    background-color: #d4edda !important;
+    border-color: #c3e6cb !important;
+    color: #155724 !important;
+}
+
+.wrong-answer {
+    background-color: #f8d7da !important;
+    border-color: #f5c6cb !important;
+    color: #721c24 !important;
+}
+
+/* 배지 스타일 */
+.badge {
+    font-size: 0.9em;
+}
+
+.badge-large {
+    font-size: 1.5rem;
+    padding: 0.75rem 1rem;
+}
+
+/* 테이블 스타일 */
+.table {
+    border-radius: 0.5rem;
+    overflow: hidden;
+}
+
+.table-hover tbody tr:hover {
+    background-color: #f8f9fa;
+}
+
+/* 차트 컨테이너 */
+.chart-container {
+    min-height: 300px;
+}
+
+/* 로딩 스피너 */
+.spinner-border {
+    width: 3rem;
+    height: 3rem;
+}
+
+/* 푸터 */
+footer {
+    margin-top: auto;
+}
+
+/* 반응형 스타일 */
+@media (max-width: 768px) {
+    .container {
+        padding-left: 15px;
+        padding-right: 15px;
+    }
+    
+    .btn-group {
+        flex-direction: column;
+    }
+    
+    .btn-group .btn {
+        border-radius: 0.25rem !important;
+        margin-bottom: 0.25rem;
+    }
+    
+    .display-4, .display-6 {
+        font-size: 2rem;
+    }
+}
+
+/* 다크 모드 지원 (선택사항) */
+@media (prefers-color-scheme: dark) {
+    body {
+        background-color: #121212;
+        color: #ffffff;
+    }
+    
+    .card {
+        background-color: #1e1e1e;
+        color: #ffffff;
+    }
+    
+    .card-header {
+        background-color: #2d2d2d;
+        border-bottom-color: #404040;
+    }
+}
+
+/* 애니메이션 */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.fade-in {
+    animation: fadeIn 0.5s ease-out;
+}
+
+/* 스크롤바 스타일 */
+::-webkit-scrollbar {
+    width: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #c1c1c1;
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #a8a8a8;
+}
+
+/* 포커스 스타일 */
+.form-control:focus,
+.form-check-input:focus {
+    box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+    border-color: #80bdff;
+}
+
+/* 버튼 그룹 스타일 */
+.btn-group-sm .btn {
+    padding: 0.25rem 0.5rem;
+    font-size: 0.875rem;
+}
+
+/* 상태 배지 */
+.status-badge {
+    font-size: 0.75rem;
+    padding: 0.25rem 0.5rem;
+}
+
+/* 카드 호버 효과 */
+.card-hover:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    transition: all 0.3s ease;
+}
+
+/* 텍스트 선택 방지 (시험 모드) */
+.no-select {
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+/* 인쇄 스타일 */
+@media print {
+    .navbar, .btn, footer {
+        display: none !important;
+    }
+    
+    .card {
+        box-shadow: none;
+        border: 1px solid #dee2e6;
+    }
+}

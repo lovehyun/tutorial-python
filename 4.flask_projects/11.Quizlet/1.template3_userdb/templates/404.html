@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+
+{% block title %}404 - 페이지를 찾을 수 없습니다{% endblock %}
+
+{% block content %}
+<div class="text-center py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-body">
+                    <div class="display-1 text-muted mb-4">🔍</div>
+                    <h1 class="display-4 text-primary">404</h1>
+                    <h2 class="h4 text-muted mb-4">페이지를 찾을 수 없습니다</h2>
+                    <p class="text-muted mb-4">
+                        요청하신 페이지가 존재하지 않거나 이동되었을 수 있습니다.
+                    </p>
+                    
+                    <div class="d-grid gap-2 d-md-flex justify-content-md-center">
+                        <a href="{{ url_for('quiz.dashboard') if current_user.is_authenticated else url_for('user.login') }}" 
+                           class="btn btn-primary">
+                            🏠 메인으로 돌아가기
+                        </a>
+                        <button class="btn btn-outline-secondary" onclick="history.back()">
+                            ← 이전 페이지
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+
+{% block title %}공부 모드 - {{ file_info.original_filename }}{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h2>📖 공부 모드</h2>
+        <p class="text-muted mb-0">{{ file_info.original_filename }} ({{ questions|length }}문제)</p>
+    </div>
+    <div>
+        <a href="{{ url_for('quiz.dashboard') }}" class="btn btn-secondary">← 대시보드</a>
+        <a href="{{ url_for('quiz.quiz_start', file_id=file_info.id) }}" class="btn btn-warning">🎯 시험 모드</a>
+    </div>
+</div>
+
+<div class="alert alert-info">
+    <strong>💡 공부 모드:</strong> 정답과 해설을 바로 확인하며 학습할 수 있습니다.
+</div>
+
+{% for question in questions %}
+<div class="card mb-4">
+    <div class="card-header">
+        <h5>문제 {{ question.display_id }}</h5>
+    </div>
+    <div class="card-body">
+        <p class="fs-5 mb-4">{{ question.question }}</p>
+
+        <div class="row">
+            {% for choice in question.shuffled_choices %}
+            <div class="col-md-6 mb-3">
+                <div class="p-3 border rounded {% if choice.original_index == question.answer %}bg-success text-white{% else %}bg-light{% endif %}">
+                    <strong>{{ choice.display_index }}.</strong> {{ choice.text }}
+                    {% if choice.original_index == question.answer %}
+                        <span class="badge bg-warning text-dark ms-2">✓ 정답</span>
+                    {% endif %}
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+        {% if question.explanation %}
+        <div class="alert alert-info mt-3">
+            <strong>💬 해설:</strong> {{ question.explanation }}
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endfor %}
+
+<!-- 하단 네비게이션 -->
+<div class="d-flex justify-content-between mt-5 mb-4">
+    <a href="{{ url_for('quiz.dashboard') }}" class="btn btn-outline-secondary">← 대시보드로</a>
+    <a href="{{ url_for('quiz.quiz_start', file_id=file_info.id) }}" class="btn btn-primary">시험 모드로 이동 →</a>
+</div>
+
+<!-- 스크롤 톱 버튼 -->
+<button type="button" class="btn btn-primary position-fixed bottom-0 end-0 m-3" 
+        onclick="window.scrollTo({top: 0, behavior: 'smooth'})" 
+        style="z-index: 1000;">
+    ↑ 맨 위로
+</button>
+{% endblock %}

@@ -1,0 +1,23 @@
+version: '3.8'
+
+services:
+  flask-app:
+    build: .
+    container_name: flask-quiz-app
+    ports:
+      - "5000:5000"
+    environment:
+      - FLASK_ENV=production
+    volumes:
+      # 사용자 업로드 파일 및 데이터베이스
+      - ./data:/app/data
+      - ./quizlet.db:/app/quizlet.db
+    restart: unless-stopped
+    
+    # 헬스체크
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:5000 || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s

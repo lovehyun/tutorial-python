@@ -1,0 +1,139 @@
+{% extends "base.html" %}
+
+{% block title %}대시보드 - 퀴즈 앱{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-8">
+        <!-- 파일 업로드 섹션 -->
+        <div class="card mb-4">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5>📁 퀴즈 파일 관리</h5>
+                <a href="{{ url_for('quiz.download_template') }}" class="btn btn-outline-success btn-sm">
+                    📥 템플릿 다운로드
+                </a>
+            </div>
+            <div class="card-body">
+                <form method="POST" action="{{ url_for('quiz.upload_file') }}" enctype="multipart/form-data">
+                    <div class="row">
+                        <div class="col-md-8">
+                            <input type="file" class="form-control" name="file" accept=".xlsx" required>
+                        </div>
+                        <div class="col-md-4">
+                            <button type="submit" class="btn btn-primary w-100">📤 업로드</button>
+                        </div>
+                    </div>
+                    <div class="form-text mt-2">Excel(.xlsx) 파일만 업로드 가능합니다.</div>
+                </form>
+            </div>
+        </div>
+
+        <!-- 업로드된 파일 목록 -->
+        <div class="card">
+            <div class="card-header">
+                <h5>📚 내 퀴즈 파일 ({{ files|length }}개)</h5>
+            </div>
+            <div class="card-body">
+                {% if files %}
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>파일명</th>
+                                    <th>문제 수</th>
+                                    <th>업로드 날짜</th>
+                                    <th>작업</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for file in files %}
+                                <tr>
+                                    <td>
+                                        <strong>{{ file.original_filename }}</strong>
+                                    </td>
+                                    <td>
+                                        <span class="badge bg-info">{{ file.question_count }}문제</span>
+                                    </td>
+                                    <td>
+                                        <small class="text-muted">{{ file.created_at }}</small>
+                                    </td>
+                                    <td>
+                                        <div class="btn-group btn-group-sm" role="group">
+                                            <a href="{{ url_for('quiz.study', file_id=file.id) }}" 
+                                               class="btn btn-outline-info">📖 공부</a>
+                                            <a href="{{ url_for('quiz.quiz_start', file_id=file.id) }}" 
+                                               class="btn btn-outline-warning">🎯 시험</a>
+                                            <form method="POST" action="{{ url_for('quiz.delete_file', file_id=file.id) }}" 
+                                                  style="display: inline;" 
+                                                  onsubmit="return confirm('정말 삭제하시겠습니까?')">
+                                                <button type="submit" class="btn btn-outline-danger">🗑️</button>
+                                            </form>
+                                        </div>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                {% else %}
+                    <div class="text-center py-4">
+                        <p class="text-muted">아직 업로드된 파일이 없습니다.</p>
+                        <p>템플릿을 다운로드하여 문제를 작성하고 업로드해보세요!</p>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <!-- 사이드바 -->
+    <div class="col-md-4">
+        <!-- 빠른 시작 가이드 -->
+        <div class="card mb-4">
+            <div class="card-header bg-light">
+                <h6>🚀 빠른 시작</h6>
+            </div>
+            <div class="card-body">
+                <ol class="list-unstyled">
+                    <li>1️⃣ 템플릿 다운로드</li>
+                    <li>2️⃣ 문제 작성</li>
+                    <li>3️⃣ 파일 업로드</li>
+                    <li>4️⃣ 공부/시험 모드 선택</li>
+                </ol>
+                <div class="d-grid gap-2">
+                    <a href="{{ url_for('quiz.settings') }}" class="btn btn-outline-secondary btn-sm">⚙️ 설정</a>
+                    <a href="{{ url_for('result.stats') }}" class="btn btn-outline-primary btn-sm">📊 통계</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- 최근 시험 결과 -->
+        {% if recent_results %}
+        <div class="card">
+            <div class="card-header bg-light">
+                <h6>📈 최근 시험 결과</h6>
+            </div>
+            <div class="card-body">
+                {% for result in recent_results %}
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                    <div>
+                        <small class="text-muted">{{ result.original_filename }}</small>
+                        <br>
+                        <small class="text-muted">{{ result.created_at }}</small>
+                    </div>
+                    <div>
+                        <span class="badge {% if result.score >= 80 %}bg-success{% elif result.score >= 60 %}bg-warning{% else %}bg-danger{% endif %}">
+                            {{ result.score }}%
+                        </span>
+                    </div>
+                </div>
+                {% if not loop.last %}<hr class="my-2">{% endif %}
+                {% endfor %}
+                <div class="d-grid mt-3">
+                    <a href="{{ url_for('result.history') }}" class="btn btn-outline-primary btn-sm">전체 보기</a>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
