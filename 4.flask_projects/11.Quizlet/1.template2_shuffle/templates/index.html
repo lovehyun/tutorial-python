@@ -51,7 +51,15 @@
                         <hr>
                         <div class="mb-4">
                             <h5>3. 학습 시작</h5>
-                            <p class="text-muted small">파일명: {{ session.filename }}</p>
+
+                            <div class="d-flex align-items-center mb-1">
+                                <span class="text-muted small me-2">파일명: {{ session.filename }}</span>
+                                <form method="post" action="{{ url_for('delete_file') }}">
+                                    <input type="hidden" name="filename" value="{{ session.filename }}">
+                                    <button type="submit" class="btn btn-sm btn-outline-danger py-0 px-2" style="font-size: 0.75rem;">삭제</button>
+                                </form>
+                            </div>
+
                             <p>현재 문제: {{ session.questions|length }}개</p>
                             <div class="d-grid gap-2">
                                 <a href="{{ url_for('study') }}" class="btn btn-info btn-lg">

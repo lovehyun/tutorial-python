@@ -1,6 +1,7 @@
 # app.py
 # - 설정 추가 (문제/보기 순서 선택)
 # - 보기/문제 셔플 후 번호 정렬 및 정답 매핑 보존
+# - 업로드한 파일 삭제
 from flask import Flask, render_template, request, redirect, url_for, flash, send_file, session
 from openpyxl import Workbook, load_workbook
 import os
@@ -92,6 +93,30 @@ def upload_file():
     else:
         flash('Excel 파일만 업로드 가능합니다.')
         return redirect(url_for('index'))
+
+@app.route('/delete_file', methods=['POST'])
+def delete_file():
+    filename = request.form.get('filename')
+
+    if not filename:
+        flash('삭제할 파일명이 지정되지 않았습니다.')
+        return redirect(url_for('index'))
+
+    filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+
+    try:
+        if os.path.exists(filepath):
+            os.remove(filepath)
+            flash(f"'{filename}' 파일이 삭제되었습니다.")
+            if session.get('filename') == filename:
+                session.pop('filename', None)
+                session.pop('questions', None)
+        else:
+            flash('파일이 존재하지 않습니다.')
+    except Exception as e:
+        flash(f'파일 삭제 중 오류 발생: {str(e)}')
+
+    return redirect(url_for('index'))
 
 def prepare_questions(mode):
     questions = session.get('questions', [])
