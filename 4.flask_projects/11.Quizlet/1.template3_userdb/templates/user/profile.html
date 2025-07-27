@@ -110,189 +110,68 @@
 <!-- 이메일 변경 모달 -->
 <div class="modal fade" id="emailModal" tabindex="-1">
     <div class="modal-dialog">
-        <div class="modal-content">
+        <form class="modal-content" method="POST" action="{{ url_for('user.change_email') }}">
             <div class="modal-header">
                 <h5 class="modal-title">📧 이메일 변경</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
             <div class="modal-body">
-                <form id="emailForm">
-                    <div class="mb-3">
-                        <label for="newEmail" class="form-label">새 이메일 주소</label>
-                        <input type="email" class="form-control" id="newEmail" required
-                               placeholder="새 이메일 주소를 입력하세요">
-                    </div>
-                </form>
+                <div class="mb-3">
+                    <label for="newEmail" class="form-label">새 이메일 주소</label>
+                    <input
+                        type="email"
+                        class="form-control"
+                        id="newEmail"
+                        name="new_email"
+                        required
+                        placeholder="새 이메일 주소를 입력하세요"
+                    />
+                </div>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">취소</button>
-                <button type="button" class="btn btn-info" onclick="changeEmail()">변경</button>
+                <button type="submit" class="btn btn-info">변경</button>
             </div>
-        </div>
+        </form>
     </div>
 </div>
 
 <!-- 비밀번호 변경 모달 -->
 <div class="modal fade" id="passwordModal" tabindex="-1">
     <div class="modal-dialog">
-        <div class="modal-content">
+        <form class="modal-content" method="POST" action="{{ url_for('user.change_password') }}">
             <div class="modal-header">
                 <h5 class="modal-title">🔒 비밀번호 변경</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
             <div class="modal-body">
-                <form id="passwordForm">
-                    <div class="mb-3">
-                        <label for="currentPassword" class="form-label">현재 비밀번호</label>
-                        <input type="password" class="form-control" id="currentPassword" required
-                               placeholder="현재 비밀번호를 입력하세요">
-                    </div>
-                    <div class="mb-3">
-                        <label for="newPassword" class="form-label">새 비밀번호</label>
-                        <input type="password" class="form-control" id="newPassword" required minlength="6"
-                               placeholder="새 비밀번호 (6자 이상)">
-                    </div>
-                    <div class="mb-3">
-                        <label for="confirmPassword" class="form-label">새 비밀번호 확인</label>
-                        <input type="password" class="form-control" id="confirmPassword" required
-                               placeholder="새 비밀번호를 다시 입력하세요">
-                    </div>
-                </form>
+                <div class="mb-3">
+                    <label for="currentPassword" class="form-label">현재 비밀번호</label>
+                    <input type="password" class="form-control" id="currentPassword" name="current_password" required />
+                </div>
+                <div class="mb-3">
+                    <label for="newPassword" class="form-label">새 비밀번호</label>
+                    <input
+                        type="password"
+                        class="form-control"
+                        id="newPassword"
+                        name="new_password"
+                        required
+                        minlength="6"
+                    />
+                </div>
+                <div class="mb-3">
+                    <label for="confirmPassword" class="form-label">새 비밀번호 확인</label>
+                    <input type="password" class="form-control" id="confirmPassword" name="confirm_password" required />
+                </div>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">취소</button>
-                <button type="button" class="btn btn-warning" onclick="changePassword()">변경</button>
+                <button type="submit" class="btn btn-warning">변경</button>
             </div>
-        </div>
+        </form>
     </div>
 </div>
-
-<script>
-// 이메일 변경
-async function changeEmail() {
-    const newEmail = document.getElementById('newEmail').value.trim();
-    
-    if (!newEmail) {
-        alert('이메일을 입력해주세요.');
-        return;
-    }
-    
-    try {
-        const response = await fetch('/user/change_email', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ new_email: newEmail })
-        });
-        
-        const data = await response.json();
-        
-        if (data.success) {
-            // 성공: 화면의 이메일 업데이트
-            document.getElementById('current-email').textContent = data.new_email;
-            bootstrap.Modal.getInstance(document.getElementById('emailModal')).hide();
-            showAlert('success', data.message);
-            document.getElementById('newEmail').value = '';
-        } else {
-            showAlert('danger', data.message);
-        }
-    } catch (error) {
-        showAlert('danger', '이메일 변경 중 오류가 발생했습니다.');
-    }
-}
-
-// 비밀번호 변경
-async function changePassword() {
-    const currentPassword = document.getElementById('currentPassword').value;
-    const newPassword = document.getElementById('newPassword').value;
-    const confirmPassword = document.getElementById('confirmPassword').value;
-    
-    if (!currentPassword || !newPassword || !confirmPassword) {
-        alert('모든 필드를 입력해주세요.');
-        return;
-    }
-    
-    if (newPassword !== confirmPassword) {
-        alert('새 비밀번호가 일치하지 않습니다.');
-        return;
-    }
-    
-    if (newPassword.length < 6) {
-        alert('새 비밀번호는 6자 이상이어야 합니다.');
-        return;
-    }
-    
-    try {
-        const response = await fetch('/user/change_password', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ 
-                current_password: currentPassword,
-                new_password: newPassword 
-            })
-        });
-        
-        const data = await response.json();
-        
-        if (data.success) {
-            bootstrap.Modal.getInstance(document.getElementById('passwordModal')).hide();
-            showAlert('success', data.message);
-            document.getElementById('passwordForm').reset();
-        } else {
-            showAlert('danger', data.message);
-        }
-    } catch (error) {
-        showAlert('danger', '비밀번호 변경 중 오류가 발생했습니다.');
-    }
-}
-
-// 알림 표시 (일관성 있게 수정)
-function showAlert(type, message) {
-    // 기존 커스텀 알림 제거
-    const existingCustomAlert = document.querySelector('.custom-alert');
-    if (existingCustomAlert) {
-        existingCustomAlert.remove();
-    }
-    
-    // 기존 Flask 플래시 메시지도 제거
-    const existingFlashAlert = document.querySelector('.alert');
-    if (existingFlashAlert && existingFlashAlert.parentNode.classList.contains('container')) {
-        existingFlashAlert.remove();
-    }
-    
-    // 새 알림을 Flask 플래시 메시지와 같은 위치에 생성
-    const alertDiv = document.createElement('div');
-    alertDiv.className = `alert alert-${type} alert-dismissible fade show`;
-    alertDiv.innerHTML = `
-        ${message}
-        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-    `;
-    
-    // 메인 컨테이너의 맨 위에 추가 (다른 페이지와 동일)
-    const container = document.querySelector('main.container');
-    if (container) {
-        // 플래시 메시지 영역 다음에 추가
-        const firstChild = container.children[0];
-        if (firstChild && firstChild.classList.contains('alert')) {
-            // 기존 플래시 메시지가 있으면 교체
-            container.replaceChild(alertDiv, firstChild);
-        } else {
-            // 없으면 맨 위에 추가
-            container.insertBefore(alertDiv, firstChild);
-        }
-    }
-    
-    // 5초 후 자동 제거
-    setTimeout(() => {
-        if (alertDiv.parentNode) {
-            alertDiv.remove();
-        }
-    }, 5000);
-}
-</script>
 
 <!-- 성취 배지 -->
 <div class="card mb-4">
@@ -487,37 +366,37 @@ function showAlert(type, message) {
 </div>
 
 <style>
-.badge-large {
-    font-size: 2rem;
-    padding: 1rem;
-    border-radius: 50%;
-    width: 60px;
-    height: 60px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
+    .badge-large {
+        font-size: 2rem;
+        padding: 1rem;
+        border-radius: 50%;
+        width: 60px;
+        height: 60px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
 
-.badge-item {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-}
+    .badge-item {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
 
-.progress-stacked {
-    display: flex;
-    border-radius: 0.375rem;
-    overflow: hidden;
-}
+    .progress-stacked {
+        display: flex;
+        border-radius: 0.375rem;
+        overflow: hidden;
+    }
 
-.progress-stacked .progress {
-    background-color: transparent;
-}
+    .progress-stacked .progress {
+        background-color: transparent;
+    }
 
-.progress-stacked .progress-bar {
-    font-size: 0.75rem;
-    line-height: 20px;
-    text-align: center;
-}
+    .progress-stacked .progress-bar {
+        font-size: 0.75rem;
+        line-height: 20px;
+        text-align: center;
+    }
 </style>
 {% endblock %}

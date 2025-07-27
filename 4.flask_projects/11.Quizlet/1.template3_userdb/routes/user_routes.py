@@ -196,18 +196,22 @@ def profile():
 @user_bp.route('/change_password', methods=['POST'])
 @login_required
 def change_password():
-    """AJAX로 비밀번호 변경"""
-    current_password = request.json.get('current_password')
-    new_password = request.json.get('new_password')
+    current_password = request.form.get('current_password')
+    new_password = request.form.get('new_password')
+    confirm_password = request.form.get('confirm_password')
     
-    # 유효성 검사
-    if not current_password:
-        return jsonify({'success': False, 'message': '현재 비밀번호를 입력해주세요.'})
+    if not current_password or not new_password or not confirm_password:
+        flash('모든 필드를 입력해주세요.', 'danger')
+        return redirect(url_for('user.profile'))
     
-    if not new_password or len(new_password) < 6:
-        return jsonify({'success': False, 'message': '새 비밀번호는 6자 이상이어야 합니다.'})
+    if new_password != confirm_password:
+        flash('새 비밀번호가 일치하지 않습니다.', 'danger')
+        return redirect(url_for('user.profile'))
     
-    # 현재 비밀번호 확인
+    if len(new_password) < 6:
+        flash('새 비밀번호는 6자 이상이어야 합니다.', 'danger')
+        return redirect(url_for('user.profile'))
+    
     conn = get_db_connection()
     user = conn.execute(
         'SELECT password_hash FROM users WHERE id = ?', 
@@ -216,9 +220,9 @@ def change_password():
     
     if not check_password_hash(user['password_hash'], current_password):
         conn.close()
-        return jsonify({'success': False, 'message': '현재 비밀번호가 올바르지 않습니다.'})
+        flash('현재 비밀번호가 올바르지 않습니다.', 'danger')
+        return redirect(url_for('user.profile'))
     
-    # 비밀번호 업데이트
     new_password_hash = generate_password_hash(new_password)
     conn.execute(
         'UPDATE users SET password_hash = ? WHERE id = ?',
@@ -227,19 +231,18 @@ def change_password():
     conn.commit()
     conn.close()
     
-    return jsonify({'success': True, 'message': '비밀번호가 성공적으로 변경되었습니다.'})
-    
+    flash('비밀번호가 성공적으로 변경되었습니다.', 'success')
+    return redirect(url_for('user.profile'))
+
 @user_bp.route('/change_email', methods=['POST'])
 @login_required
 def change_email():
-    """AJAX로 이메일 변경"""
-    new_email = request.json.get('new_email', '').strip()
+    new_email = request.form.get('new_email', '').strip()
     
-    # 유효성 검사
     if not new_email or not re.match(r'^[^@]+@[^@]+\.[^@]+$', new_email):
-        return jsonify({'success': False, 'message': '올바른 이메일 주소를 입력해주세요.'})
+        flash('올바른 이메일 주소를 입력해주세요.', 'danger')
+        return redirect(url_for('user.profile'))
     
-    # 이메일 중복 확인
     conn = get_db_connection()
     existing_user = conn.execute(
         'SELECT id FROM users WHERE email = ? AND id != ?', 
@@ -248,9 +251,9 @@ def change_email():
     
     if existing_user:
         conn.close()
-        return jsonify({'success': False, 'message': '이미 사용 중인 이메일 주소입니다.'})
+        flash('이미 사용 중인 이메일 주소입니다.', 'danger')
+        return redirect(url_for('user.profile'))
     
-    # 이메일 업데이트
     conn.execute(
         'UPDATE users SET email = ? WHERE id = ?',
         (new_email, current_user.id)
@@ -258,4 +261,5 @@ def change_email():
     conn.commit()
     conn.close()
     
-    return jsonify({'success': True, 'message': '이메일이 성공적으로 변경되었습니다.', 'new_email': new_email})
+    flash('이메일이 성공적으로 변경되었습니다.', 'success')
+    return redirect(url_for('user.profile'))
