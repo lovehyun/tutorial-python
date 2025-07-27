@@ -258,7 +258,7 @@ def study(file_id):
     prepared_questions = prepare_questions(questions, 'study', current_user.id)
     return render_template('quiz/study.html', questions=prepared_questions, file_info=file_info)
 
-@quiz_bp.route('/quiz/<int:file_id>')
+@quiz_bp.route('/exam/<int:file_id>')
 @login_required
 def quiz_start(file_id):
     """시험 모드 시작"""

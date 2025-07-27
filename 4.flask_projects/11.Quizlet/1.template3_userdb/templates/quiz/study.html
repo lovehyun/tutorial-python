@@ -29,7 +29,7 @@
         <div class="row">
             {% for choice in question.shuffled_choices %}
             <div class="col-md-6 mb-3">
-                <div class="p-3 border rounded {% if choice.original_index == question.answer %}bg-success text-white{% else %}bg-light{% endif %}">
+                <div class="p-3 border rounded bg-light">
                     <strong>{{ choice.display_index }}.</strong> {{ choice.text }}
                     {% if choice.original_index == question.answer %}
                         <span class="badge bg-warning text-dark ms-2">✓ 정답</span>

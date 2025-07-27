@@ -26,7 +26,7 @@
                     {% set choices = [question.choice1, question.choice2, question.choice3, question.choice4] %}
                     {% for choice in choices %}
                     <div class="col-md-6 mb-2">
-                        <div class="p-2 border rounded {% if loop.index == question.answer %}bg-success text-white{% else %}bg-light{% endif %}">
+                        <div class="p-2 border rounded bg-light">
                             <strong>{{ loop.index }}.</strong> {{ choice }}
                             {% if loop.index == question.answer %}
                                 <span class="badge bg-warning text-dark ms-2">정답</span>
