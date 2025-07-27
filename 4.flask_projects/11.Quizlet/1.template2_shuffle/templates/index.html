@@ -1,3 +1,4 @@
+<!-- templates/index.html -->
 <!DOCTYPE html>
 <html lang="ko">
 <head>
@@ -12,9 +13,11 @@
         <div class="row justify-content-center">
             <div class="col-md-8">
                 <div class="card">
-                    <div class="card-header text-center">
+                    <div class="card-header d-flex justify-content-between align-items-center">
                         <h2>간단 퀴즈 앱</h2>
+                        <a href="{{ url_for('settings') }}" class="btn btn-outline-secondary">⚙️ 설정</a>
                     </div>
+
                     <div class="card-body">
                         {% with messages = get_flashed_messages() %}
                             {% if messages %}
@@ -23,7 +26,7 @@
                                 {% endfor %}
                             {% endif %}
                         {% endwith %}
-                        
+
                         <div class="mb-4">
                             <h5>1. 템플릿 다운로드</h5>
                             <p>먼저 문제 템플릿을 다운로드하여 문제를 작성하세요.</p>
@@ -31,9 +34,9 @@
                                 템플릿 다운로드 (Excel)
                             </a>
                         </div>
-                        
+
                         <hr>
-                        
+
                         <div class="mb-4">
                             <h5>2. 문제 파일 업로드</h5>
                             <form method="post" action="{{ url_for('upload_file') }}" enctype="multipart/form-data">
@@ -43,7 +46,7 @@
                                 <button type="submit" class="btn btn-primary">파일 업로드</button>
                             </form>
                         </div>
-                        
+
                         {% if session.questions %}
                         <hr>
                         <div class="mb-4">

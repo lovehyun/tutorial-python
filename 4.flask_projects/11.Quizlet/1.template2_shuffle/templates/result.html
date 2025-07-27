@@ -1,0 +1,81 @@
+<!-- templates/result.html -->
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8" />
+    <title>시험 결과</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+</head>
+<body>
+    <div class="container mt-4">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2>시험 결과</h2>
+            <a href="{{ url_for('index') }}" class="btn btn-secondary">홈으로</a>
+        </div>
+
+        <div class="card mb-4">
+            <div class="card-header text-center bg-primary text-white">
+                <h3>채점 결과</h3>
+            </div>
+            <div class="card-body text-center">
+                <div class="row">
+                    <div class="col-md-3">
+                        <h2 class="text-primary">{{ score_percentage }}%</h2>
+                        <p>총점</p>
+                    </div>
+                    <div class="col-md-3">
+                        <h3 class="text-success">{{ correct_count }}</h3>
+                        <p>정답</p>
+                    </div>
+                    <div class="col-md-3">
+                        <h3 class="text-danger">{{ total_questions - correct_count }}</h3>
+                        <p>오답</p>
+                    </div>
+                    <div class="col-md-3">
+                        <h3 class="text-info">{{ total_questions }}</h3>
+                        <p>총 문제</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        {% for result in results %}
+        <div class="card mb-3">
+            <div class="card-header d-flex justify-content-between">
+                <h6>문제 {{ result.question.display_id }}</h6>
+                {% if result.is_correct %}
+                <span class="badge bg-success">정답</span>
+                {% else %}
+                <span class="badge bg-danger">오답</span>
+                {% endif %}
+            </div>
+            <div class="card-body">
+                <p class="fw-bold">{{ result.question.question }}</p>
+
+                {% for choice in result.question.shuffled_choices %}
+                <div
+                    class="p-2 mb-1 rounded {% if choice.original_index == result.question.answer %}bg-success text-white {% elif choice.display_index == result.user_answer and not result.is_correct %}bg-danger text-white {% else %}bg-light{% endif %}"
+                >
+                    <strong>{{ choice.display_index }}.</strong> {{ choice.text }} {% if choice.original_index ==
+                    result.question.answer %}
+                    <span class="badge bg-warning text-dark ms-2">정답</span>
+                    {% endif %} {% if choice.display_index == result.user_answer %}
+                    <span class="badge bg-info ms-2">선택</span>
+                    {% endif %}
+                </div>
+                {% endfor %} {% if result.question.explanation %}
+                <div class="alert alert-info mt-3 mb-0">
+                    <strong>해설:</strong> {{ result.question.explanation }}
+                </div>
+                {% endif %}
+            </div>
+        </div>
+        {% endfor %}
+
+        <div class="text-center mb-4">
+            <a href="{{ url_for('study') }}" class="btn btn-info">공부 모드로</a>
+            <a href="{{ url_for('quiz') }}" class="btn btn-warning">다시 시험보기</a>
+        </div>
+    </div>
+</body>
+</html>

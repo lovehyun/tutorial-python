@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>설정</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+<div class="container mt-5">
+    <h2 class="mb-4">모드별 설정</h2>
+
+    {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            {% for msg in messages %}
+                <div class="alert alert-info">{{ msg }}</div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+
+    <form method="post">
+        <div class="card mb-4">
+            <div class="card-header"><strong>공부 모드 설정</strong></div>
+            <div class="card-body">
+                <label class="form-label">문제 순서</label><br>
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio" name="study_question_order" value="original"
+                        {% if settings.get('study', {}).get('question_order') != 'shuffle' %}checked{% endif %}>
+                    <label class="form-check-label">순서대로</label>
+                </div>
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio" name="study_question_order" value="shuffle"
+                        {% if settings.get('study', {}).get('question_order') == 'shuffle' %}checked{% endif %}>
+                    <label class="form-check-label">섞기</label>
+                </div>
+
+                <hr>
+
+                <label class="form-label">보기 순서</label><br>
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio" name="study_choice_order" value="original"
+                        {% if settings.get('study', {}).get('choice_order') != 'shuffle' %}checked{% endif %}>
+                    <label class="form-check-label">순서대로</label>
+                </div>
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio" name="study_choice_order" value="shuffle"
+                        {% if settings.get('study', {}).get('choice_order') == 'shuffle' %}checked{% endif %}>
+                    <label class="form-check-label">섞기</label>
+                </div>
+
+                <hr>
+
+                <label class="form-label">문항 개수 (0 = 모두)</label>
+                <input type="number" class="form-control" name="study_limit"
+                    value="{{ settings.get('study', {}).get('limit', 0) }}">
+            </div>
+        </div>
+
+        <div class="card mb-4">
+            <div class="card-header"><strong>시험 모드 설정</strong></div>
+            <div class="card-body">
+                <label class="form-label">문제 순서</label><br>
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio" name="quiz_question_order" value="original"
+                        {% if settings.get('quiz', {}).get('question_order') != 'shuffle' %}checked{% endif %}>
+                    <label class="form-check-label">순서대로</label>
+                </div>
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio" name="quiz_question_order" value="shuffle"
+                        {% if settings.get('quiz', {}).get('question_order') == 'shuffle' %}checked{% endif %}>
+                    <label class="form-check-label">섞기</label>
+                </div>
+
+                <hr>
+
+                <label class="form-label">보기 순서</label><br>
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio" name="quiz_choice_order" value="original"
+                        {% if settings.get('quiz', {}).get('choice_order') != 'shuffle' %}checked{% endif %}>
+                    <label class="form-check-label">순서대로</label>
+                </div>
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio" name="quiz_choice_order" value="shuffle"
+                        {% if settings.get('quiz', {}).get('choice_order') == 'shuffle' %}checked{% endif %}>
+                    <label class="form-check-label">섞기</label>
+                </div>
+
+                <hr>
+
+                <label class="form-label">문항 개수 (0 = 모두)</label>
+                <input type="number" class="form-control" name="quiz_limit"
+                    value="{{ settings.get('quiz', {}).get('limit', 0) }}">
+            </div>
+        </div>
+
+        <div class="text-center">
+            <button class="btn btn-primary" type="submit">저장하기</button>
+            <a href="{{ url_for('index') }}" class="btn btn-secondary">홈으로</a>
+        </div>
+    </form>
+</div>
+</body>
+</html>
