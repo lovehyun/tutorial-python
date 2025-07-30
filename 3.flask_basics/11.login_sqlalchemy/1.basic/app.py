@@ -2,6 +2,8 @@ from flask import Flask, render_template, request, redirect, url_for, current_ap
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
 
+# 이 Flask 코드는 **사용자 인증 시스템(회원가입, 로그인, 로그아웃, 프로필 수정)**이 포함된 간단한 웹 애플리케이션입니다
+
 """
 LoginManager: 로그인 관리를 담당하는 클래스로, Flask 애플리케이션에서 로그인 기능을 초기화하고 관리하는 역할을 합니다.
 UserMixin: UserMixin 클래스는 Flask-Login이 기본적으로 사용하는 사용자 모델 클래스를 정의하기 위해 사용됩니다. 이 클래스를 사용하여 사용자 모델 클래스에 필요한 메서드들을 간단하게 추가할 수 있습니다.

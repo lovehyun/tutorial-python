@@ -13,16 +13,14 @@
 <body>
     <H2>로그인</H2>
     {% with messages = get_flashed_messages(with_categories=true) %}
-        {% if messages %}
-            {% for category, msg in messages %}
-                <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
-                    {{ msg }}
-                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                </div>
-            {% endfor %}
-        {% endif %}
+        {% for category, msg in messages %}
+            <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+                {{ msg }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        {% endfor %}
     {% endwith %}
-    
+
     <form method="POST" action="/login">
         <label for="id">아이디:</label>
         <input type="text" name="id">
@@ -32,5 +30,9 @@
         <br>
         <input type="submit" value="로그인">
     </form>
+
+    <p>
+        <a href="{{ url_for('register') }}">회원가입하기</a>
+    </p>
 </body>
 </html>

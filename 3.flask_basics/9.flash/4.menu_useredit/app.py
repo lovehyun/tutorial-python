@@ -57,5 +57,31 @@ def logout():
         flash("이미 로그아웃된 상태입니다.", "warning")
     return redirect(url_for("login"))
 
+@app.route("/profile", methods=["GET", "POST"])
+def profile():
+    if "user" not in session:
+        flash("로그인이 필요합니다.", "warning")
+        return redirect(url_for("login"))
+
+    if request.method == "POST":
+        current_pw = request.form.get("current_pw")
+        new_pw = request.form.get("new_pw")
+        confirm_pw = request.form.get("confirm_pw")
+
+        user = session["user"]
+        found_user = next((u for u in users if u["id"] == user["id"]), None)
+
+        if found_user and found_user["pw"] == current_pw:
+            if new_pw == confirm_pw:
+                found_user["pw"] = new_pw
+                flash("비밀번호가 성공적으로 변경되었습니다.", "success")
+                return redirect(url_for("user"))
+            else:
+                flash("새 비밀번호가 일치하지 않습니다.", "danger")
+        else:
+            flash("현재 비밀번호가 틀렸습니다.", "danger")
+
+    return render_template("profile.html", user=session["user"])
+
 if __name__ == "__main__":
     app.run(debug=True, port=5000)

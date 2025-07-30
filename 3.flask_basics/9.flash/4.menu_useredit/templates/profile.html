@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% block title %}프로필 수정{% endblock %}
+
+{% block content %}
+<h2 class="mb-4">🔧 프로필 수정</h2>
+
+<form method="post" class="card p-4 shadow-sm bg-light">
+    <div class="mb-3">
+        <label for="current_pw" class="form-label">현재 비밀번호</label>
+        <input type="password" class="form-control" id="current_pw" name="current_pw" required>
+    </div>
+    <div class="mb-3">
+        <label for="new_pw" class="form-label">새 비밀번호</label>
+        <input type="password" class="form-control" id="new_pw" name="new_pw" required>
+    </div>
+    <div class="mb-3">
+        <label for="confirm_pw" class="form-label">새 비밀번호 확인</label>
+        <input type="password" class="form-control" id="confirm_pw" name="confirm_pw" required>
+    </div>
+    <button type="submit" class="btn btn-primary w-100">비밀번호 변경</button>
+</form>
+{% endblock %}

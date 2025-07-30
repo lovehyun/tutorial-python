@@ -1,0 +1,37 @@
+<!-- templates/register.html -->
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>회원가입</title>
+</head>
+<body>
+    <h2>회원가입</h2>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% for category, msg in messages %}
+            <div class="alert alert-{{ category }}">
+                {{ msg }}
+            </div>
+        {% endfor %}
+    {% endwith %}
+
+    <form method="POST" action="/register">
+        <label for="name">이름:</label>
+        <input type="text" name="name" id="name" required><br>
+
+        <label for="id">아이디:</label>
+        <input type="text" name="id" id="id" required><br>
+
+        <label for="password">비밀번호:</label>
+        <input type="password" name="password" id="password" required><br>
+
+        <label for="confirm_password">비밀번호 확인:</label>
+        <input type="password" name="confirm_password" id="confirm_password" required><br>
+
+        <input type="submit" value="회원가입">
+    </form>
+
+    <p><a href="{{ url_for('home') }}">← 로그인으로 돌아가기</a></p>
+</body>
+</html>
