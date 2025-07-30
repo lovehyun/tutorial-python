@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>네이버 로그인</title>
+</head>
+<body>
+    {% if user %}
+        <h2>안녕하세요, {{ user.nickname }}님!</h2>
+        <p>이름: {{ user.name }}</p>
+        {% if user.profile_image %}
+            <img src="{{ user.profile_image }}" width="100">
+        {% endif %}
+        <p><a href="{{ url_for('logout') }}">로그아웃</a></p>
+    {% else %}
+        <a href="{{ url_for('login_naver') }}">
+            <img src="https://static.nid.naver.com/oauth/small_g_in.PNG" width="200" alt="네이버 로그인 버튼" />
+        </a>
+    {% endif %}
+</body>
+</html>

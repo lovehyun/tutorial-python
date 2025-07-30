@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8" />
+    <title>카카오 로그인</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    {% if user %}
+        <h2>안녕하세요, {{ user.properties.nickname }}님!</h2>
+        <p><a href="{{ url_for('profile') }}">내 프로필 보기</a></p>
+        <p><a href="{{ url_for('logout') }}">로그아웃</a></p>
+    {% else %}
+        <h2>카카오 로그인</h2>
+        <a href="{{ kakao_auth_url }}">
+            <img src="/static/kakao_login_medium_narrow.png" alt="카카오 로그인 버튼">
+        </a>
+    {% endif %}
+</body>
+</html>

@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8" />
+    <title>내 프로필</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <h1>👤 내 프로필</h1>
+    <p><strong>닉네임:</strong> {{ user.properties.nickname }}</p>
+    <p><strong>이메일:</strong> {{ user.kakao_account.email or '없음' }}</p>
+    
+    {% if user.properties.profile_image %}
+        <img src="{{ user.properties.profile_image }}" alt="프로필 이미지" style="width: 120px; border-radius: 50%;">
+    {% endif %}
+
+    <p><a href="{{ url_for('logout') }}">로그아웃</a></p>
+</body>
+</html>
