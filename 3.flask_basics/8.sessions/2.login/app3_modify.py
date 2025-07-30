@@ -10,24 +10,36 @@ users = [
     {'name': 'Charlie', 'id': 'charlie', 'pw': 'hello'},
 ]
 
-@app.route('/', methods=['GET', 'POST'])
+@app.route('/', methods=['GET'])
 def home():
-    if request.method == 'POST':
-        # POST 방식의 FORM-Data 에서 id와 password 가져오기
-        id = request.form['id']
-        pw = request.form['password']
+    if session.get('user'):
+        return redirect(url_for('welcome'))
+    
+    return render_template('index.html')
 
-        # 사용자 목록과 매칭 확인
-        user = next((user for user in users if user['id'] == id and user['pw'] == pw), None)
+@app.route('/', methods=['POST'])
+def login():
+    # POST 방식의 FORM-Data 에서 id와 password 가져오기
+    id = request.form['id']
+    pw = request.form['password']
 
-        if user:
-            session['user'] = user  # 로그인한 사용자 정보를 세션에 저장
-            return redirect(url_for('profile'))
-        else:
-            error = "Invalid ID or password"
-            return render_template('index2.html', error=error)
+    # 사용자 목록과 매칭 확인
+    user = next((u for u in users if u['id'] == id and u['pw'] == pw), None)
 
-    return render_template('index2.html')
+    if user:
+        session['user'] = user  # 로그인한 사용자 정보를 세션에 저장
+        return redirect(url_for('welcome'))
+    else:
+        error = "Invalid ID or password"
+        return render_template('index2.html', error=error)
+
+@app.route('/dashboard')
+def welcome():
+    user = session.get('user')
+    if user:
+        return render_template('dashboard2.html', name=user['name'])
+    else:
+        return redirect(url_for('home'))
 
 @app.route('/profile', methods=['GET', 'POST'])
 def profile():
@@ -37,7 +49,7 @@ def profile():
 
     if request.method == 'POST':
         # 새 비밀번호를 폼에서 가져오기
-        new_password = request.form['new_password']
+        new_password = request.form['new_password'] # request.form.get('new_password')
         for u in users:
             if u['id'] == user['id']:
                 u['pw'] = new_password  # 사용자 목록에서 비밀번호 업데이트
@@ -45,6 +57,7 @@ def profile():
 
         user['pw'] = new_password  # 세션에서 비밀번호 업데이트
         session['user'] = user  # 업데이트된 사용자 정보를 세션에 저장
+        
         message = "Password successfully updated"
         
         return render_template('profile3.html', user=user, message=message)

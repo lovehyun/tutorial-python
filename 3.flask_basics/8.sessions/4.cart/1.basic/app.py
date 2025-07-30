@@ -16,7 +16,7 @@ items = [
 
 @app.route('/')
 def index():
-    return render_template('index.html', items=items)
+    return render_template('product.html', items=items)
 
 @app.route('/add_to_cart/<item_id>')
 def add_to_cart(item_id):

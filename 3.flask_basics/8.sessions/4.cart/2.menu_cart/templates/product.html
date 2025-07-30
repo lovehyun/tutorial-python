@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% block title %}User Page{% endblock %}
+
+{% block content %}
+<ul>
+    {% for item in items %}
+        <li>
+            <strong>{{ item.name }}</strong> - {{ item.price | int | format }}원
+                                                <!-- 숫자를 문자열로 포멧팅 -->
+
+            <!-- <a href="/add_to_cart?item_id=001">담기</a> -->
+
+            <form action="{{ url_for('add_to_cart') }}" method="POST" style="display:inline;">
+                <input type="hidden" name="item_id" value="{{ item.id }}">
+                <button type="submit">담기</button>
+            </form>
+        </li>
+    {% endfor %}
+</ul>
+{% endblock %}

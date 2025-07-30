@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% block title %}Login{% endblock %}
+
+{% block content %}
+<h2 class="mb-4">🔐 로그인</h2>
+
+<form action="{{ url_for('login') }}" method="post" class="card p-4 shadow-sm bg-light">
+    <div class="mb-3">
+        <label for="id" class="form-label">아이디</label>
+        <input type="text" class="form-control" id="id" name="id" required>
+    </div>
+
+    <div class="mb-3">
+        <label for="pw" class="form-label">비밀번호</label>
+        <input type="password" class="form-control" id="pw" name="pw" required>
+    </div>
+
+    <button type="submit" class="btn btn-primary w-100">로그인</button>
+</form>
+{% endblock %}

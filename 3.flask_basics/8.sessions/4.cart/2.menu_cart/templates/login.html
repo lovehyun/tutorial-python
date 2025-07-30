@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% block title %}Login Page{% endblock %}
+
+{% block content %}
+<div class="container mt-5" style="max-width: 400px;">
+    <h3 class="mb-4">🔐 로그인</h3>
+
+    {% if error %}
+        <div class="alert alert-danger">{{ error }}</div>
+    {% endif %}
+    
+    <form method="post">
+        <div class="mb-3">
+            <label for="id" class="form-label">아이디</label>
+            <input type="text" class="form-control" name="id" id="id" required>
+        </div>
+
+        <div class="mb-3">
+            <label for="password" class="form-label">비밀번호</label>
+            <input type="password" class="form-control" name="password" id="password" required>
+        </div>
+
+        <div class="d-grid">
+            <button type="submit" class="btn btn-primary">로그인</button>
+        </div>
+    </form>
+</div>
+{% endblock %}

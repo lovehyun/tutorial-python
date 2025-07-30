@@ -17,19 +17,19 @@
                 },
                 body: JSON.stringify({ id, password })
             })
-            .then(response => response.json())
-            .then(result => {
-                if (result.status === 'success') {
-                    window.location.href = '/profile';
-                } else {
-                    document.getElementById('error').innerText = result.message;
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                document.getElementById('error').innerText = 'An error occurred. Please try again.';
-            });
-        }
+                .then(response => response.json())
+                .then(result => {
+                    if (result.status === 'success') {
+                        window.location.href = '/profile';
+                    } else {
+                        document.getElementById('error').innerText = result.message;
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    document.getElementById('error').innerText = 'An error occurred. Please try again.';
+                });
+            }
     </script>
 </head>
 <body>

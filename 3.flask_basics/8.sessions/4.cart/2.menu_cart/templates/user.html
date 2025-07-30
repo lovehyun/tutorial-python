@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% block title %}User Page{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="card">
+        <div class="card-body text-center">
+            <h4 class="card-title mb-3">👋 환영합니다!</h4>
+            <p class="card-text">안녕하세요, <strong>{{ user }}</strong>님! 로그인에 성공하셨습니다.</p>
+        </div>
+    </div>
+</div>
+{% endblock %}

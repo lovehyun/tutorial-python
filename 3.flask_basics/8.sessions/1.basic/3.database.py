@@ -1,8 +1,8 @@
-# pip install Flask-Session Flask-SQLAlchemy
+# pip install flask-session flask-sqlalchemy
 
 from flask import Flask, session
-from flask_sqlalchemy import SQLAlchemy
 from flask_session import Session
+from flask_sqlalchemy import SQLAlchemy
 
 app = Flask(__name__)
 app.secret_key = 'your_secret_key'

@@ -1,4 +1,4 @@
-# pip install flask_session
+# pip install flask-session
 from flask import Flask, session # 클라이언트(브라우저)에 저장되는 쿠키 기반 세션 관리
 from flask_session import Session # 서버측(백엔드) 세션을 저장할 수 있는 확장기능 클래스
 import os
@@ -7,11 +7,19 @@ app = Flask(__name__)
 app.secret_key = 'your_secret_key'  # 세션 데이터 암호화에 사용되는 키
 
 # 세션 설정: 서버 메모리에 세션 저장
-app.config['SESSION_TYPE'] = 'null'  # 기본값(null이 없음), 쿠키 기반 세션 사용 (서버에 저장하지 않음)
-# app.config['SESSION_TYPE'] = 'filesystem'  # 서버 파일시스템에 저장 (filesystem / redis / memcached / mongod / sqlalchemy)
+app.config['SESSION_TYPE'] = 'filesystem'  # 서버 파일시스템에 저장 (filesystem / redis / memcached / mongod / sqlalchemy)
+# app.config['SESSION_FILE_DIR'] = os.path.join(os.getcwd(), 'my_sessions')  # 저장 경로 지정 (기본값은 flask_session 내에 세션uuid.session 으로 pickle 직렬화)
+app.config['SESSION_FILE_DIR'] = './my_sessions'
+
 app.config['SESSION_PERMANENT'] = False  # 세션의 영구적 저장 여부 (옵션) - False는 브라우저 닫히면 삭제
 app.config['SESSION_USE_SIGNER'] = True  # 세션 쿠키에 서명 사용
-# app.config['SESSION_FILE_DIR'] = os.path.join(os.getcwd(), 'my_sessions')  # 저장 경로 지정 (기본값은 flask_session 내에 세션uuid.session 으로 pickle 직렬화)
+
+# 그 외에도 보안적으로 추가 설정 가능한...
+# app.config['SESSION_COOKIE_HTTPONLY'] = True # ← JS 접근 방지
+# app.config['SESSION_COOKIE_SECURE'] = True # ← HTTPS만 전송
+# app.config['PERMANENT_SESSION_LIFETIME'] # ← 유효기간 설정 가능
+# app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(minutes=10) # 세션 유효기간 설정 (예: 10분)
+
 Session(app)  # Flask-Session 초기화
 
 # 세션 설정 예제

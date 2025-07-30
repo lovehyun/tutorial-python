@@ -22,6 +22,14 @@ app.config['SESSION_TYPE'] = 'sqlalchemy'
 app.config['SESSION_SQLALCHEMY'] = db
 Session(app)
 
+# 세션 모델 정의: 추가 데이터를 저장할 저장소 생성
+# 세션 모델 정의는 Flask-Session 확장을 사용하여 세션 데이터를 데이터베이스에 저장할 때 필요한 데이터베이스 테이블을 정의하는 것입니다. 
+# Flask-Session은 다양한 세션 저장소를 지원하는데, 이 중 하나가 SQLAlchemy를 사용하여 세션 데이터를 관계형 데이터베이스에 저장하는 방법입니다.
+class SessionData(db.Model):
+    id = db.Column(db.String(255), primary_key=True)
+    data = db.Column(db.Text)
+
+
 # 세션 데이터 저장 라우트
 @app.route('/')
 def index():
@@ -32,7 +40,7 @@ def index():
     session['count'] = 42
     
     # 리스트 데이터 저장
-    session['my_list'] = [1, 2, 3, 4, 5]
+    session['my_list'] = ['apple', 'orange', 'banana']
     
     # 세션 데이터 저장
     session_store(session.sid, dict(session))
@@ -71,12 +79,6 @@ def get_session_data(sid):
         return json.loads(session_data.data)
     return {}
 
-# 세션 모델 정의
-# 세션 모델 정의는 Flask-Session 확장을 사용하여 세션 데이터를 데이터베이스에 저장할 때 필요한 데이터베이스 테이블을 정의하는 것입니다. 
-# Flask-Session은 다양한 세션 저장소를 지원하는데, 이 중 하나가 SQLAlchemy를 사용하여 세션 데이터를 관계형 데이터베이스에 저장하는 방법입니다.
-class SessionData(db.Model):
-    id = db.Column(db.String(255), primary_key=True)
-    data = db.Column(db.Text)
 
 # 애플리케이션 실행
 if __name__ == '__main__':

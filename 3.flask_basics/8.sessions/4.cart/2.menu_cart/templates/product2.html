@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+{% block title %}상품 목록{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2 class="mb-4">🛒 상품 목록</h2>
+    
+    {% if error %}
+        <div class="alert alert-danger">{{ error }}</div>
+    {% endif %}
+    {% if message %}
+        <div class="alert alert-success">{{ message }}</div>
+    {% endif %}
+
+    <table class="table table-striped table-hover">
+        <thead class="table-dark">
+            <tr>
+                <th scope="col">#</th>
+                <th scope="col">상품명</th>
+                <th scope="col">가격</th>
+                <th scope="col">담기</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in items %}
+            <tr>
+                <th scope="row">{{ loop.index }}</th>
+                <td>{{ item.name }}</td>
+                <td>{{ "{:,}".format(item.price) }}원</td>
+                
+                <td>
+                    <form action="{{ url_for('add_to_cart') }}" method="POST" class="d-inline">
+                        <input type="hidden" name="item_id" value="{{ item.id }}">
+                        <button type="submit" class="btn btn-sm btn-primary">담기</button>
+                    </form>
+                </td>
+
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}
