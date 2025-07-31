@@ -61,14 +61,14 @@ def callback():
         "https://kapi.kakao.com/v2/user/me",
         headers={"Authorization": f"Bearer {access_token}"}
     ).json()
-
-     # 세션에 저장
-    session["user"] = user_info
-    session["access_token"] = access_token
     
     print("[카카오 로그인 완료] 사용자 정보:")
     print(json.dumps(user_info, indent=2, ensure_ascii=False))
 
+    # 세션에 저장
+    session["user"] = user_info
+    session["access_token"] = access_token
+    
     return redirect(url_for("index"))
     # return redirect(url_for("profile"))
 
@@ -87,6 +87,14 @@ def logout():
     return redirect(url_for("index"))
 
 # 나에게 메세지 전송
+# 왜 알림이 없고 읽음 표시가 뜨는가?
+#  - "나에게 보내기"로 전송된 메시지는 실제 사용자 대화가 아니라, 앱에서 보낸 시스템 메시지로 분류됩니다.
+# 그래서:
+#  - 카카오톡에 푸시 알림이 오지 않습니다
+#  - 앱 안에서는 이미 읽음 처리된 상태로 표시됩니다
+#  - 말풍선에는 보이지만, 채팅방 알림 숫자 뱃지도 없음
+#  - 테스트용 메시지이기 때문입니다 (실사용자 메시지가 아님)
+# 이건 카카오의 정책이며, 개발자가 테스트용으로만 사용할 수 있도록 설계한 것입니다.
 @app.route("/message")
 def send_message():
     access_token = session.get("access_token")
@@ -125,6 +133,11 @@ def send_message():
 # 친구 목록 조회 (선택 기능)
 # 앱 설정에서 친구 목록 제공 활성화, 사용자 동의 항목에 "friends" scope 추가
 # 이 기능은 비즈 앱 등록 및 검수 통과 후에만 사용 가능합니다.
+# 제한 조건:
+#  - 비즈니스 채널(비즈 앱)로 전환되어 있어야 함
+#  - 카카오 API 검수를 통과해야 함
+#  - 사용자가 친구 목록 제공에 동의해야 함 (scope: friends)
+#  - 메시지를 보낼 친구가 앱에 연결되어 있어야 함
 @app.route("/friends")
 def friends():
     access_token = session.get("access_token")
