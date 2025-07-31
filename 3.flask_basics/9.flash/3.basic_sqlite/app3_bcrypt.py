@@ -1,9 +1,9 @@
-# hashlib은 Python 표준 라이브러리에 포함
+# pip install bcrypt
 from flask import Flask, render_template, request, redirect, url_for, session, flash
 from datetime import timedelta
 import sqlite3
-import hashlib
 import os
+import bcrypt  # bcrypt 모듈 사용
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'abcd1234'
@@ -11,26 +11,27 @@ app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(minutes=5)
 
 DB_PATH = 'users.db'
 
-# 특징
-# - 해시 결과가 항상 동일함
-# - DB에도 고정된 해시 값이 저장되어 있으므로, SQL에서 비교가 바로 가능
-# - 빠르고 간단하지만, 보안 취약 (예: rainbow table 공격에 취약)
+# 주요 변경 포인트
+# 변경 항목	                                    설명
+# bcrypt.hashpw(plain_pw, bcrypt.gensalt())	    비밀번호 해시 생성
+# bcrypt.checkpw(plain_pw, hashed_pw)	        비밀번호 검증
+# SQLite의 password 컬럼 타입	                TEXT → BLOB 또는 password BLOB (해시값이 바이트이므로)
 
-# 비밀번호 해시화
-def hash_password(password):
-    return hashlib.sha256(password.encode()).hexdigest()
-
-# 사용자 조회
+# 사용자 조회 및 로그인 검증
 def get_user_for_login(username, password):
     conn = sqlite3.connect(DB_PATH)
     conn.row_factory = sqlite3.Row
     cur = conn.cursor()
-    hashed_pw = hash_password(password)
-    cur.execute("SELECT * FROM users WHERE username = ? AND password = ?", (username, hashed_pw))
+    cur.execute("SELECT * FROM users WHERE username = ?", (username,))
     user = cur.fetchone()
     conn.close()
-    return user
 
+    if user and bcrypt.checkpw(password.encode('utf-8'), user['password']):
+        return user
+    return None
+
+
+# 사용자 존재 여부 확인
 def get_user_by_username(username):
     conn = sqlite3.connect(DB_PATH)
     conn.row_factory = sqlite3.Row
@@ -39,6 +40,7 @@ def get_user_by_username(username):
     user = cur.fetchone()
     conn.close()
     return user
+
 
 # DB 초기화 (최초 1회 실행)
 def init_db():
@@ -49,20 +51,22 @@ def init_db():
             CREATE TABLE IF NOT EXISTS users (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 username TEXT UNIQUE NOT NULL,
-                password TEXT NOT NULL,
+                password BLOB NOT NULL,
                 name TEXT NOT NULL
             )
         ''')
-        # 테스트 사용자 삽입 (비밀번호는 암호화 저장)
+        # 테스트 사용자 추가
+        hashed_pw = bcrypt.hashpw('password'.encode('utf-8'), bcrypt.gensalt())
         cur.execute("INSERT INTO users (username, password, name) VALUES (?, ?, ?)",
-                    ('user', hash_password('password'), 'MyName'))
+                    ('user', hashed_pw, 'MyName'))
         conn.commit()
         conn.close()
 
+
 @app.route('/')
 def home():
-    # return render_template('index.html')
     return render_template('index2.html')
+
 
 @app.route('/register', methods=["GET", "POST"])
 def register():
@@ -84,8 +88,7 @@ def register():
             flash("이미 존재하는 아이디입니다.", "danger")
             return redirect(url_for('register'))
 
-        # 해시 후 저장 (hash_password 함수 사용 전제)
-        hashed_pw = hash_password(password)
+        hashed_pw = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt())
         conn = sqlite3.connect(DB_PATH)
         cur = conn.cursor()
         cur.execute("INSERT INTO users (username, password, name) VALUES (?, ?, ?)",
@@ -120,15 +123,16 @@ def login():
 
         return redirect(url_for('home'))
 
+
 @app.route('/user')
 def user():
     if 'user' in session:
         user = session['user']
-        # return render_template('user.html', name=user['name'])
         return render_template('user2.html', name=user['name'])
 
     flash("비정상 접근입니다. 로그인을 필요로 합니다.", "warning")
     return redirect(url_for('home'))
+
 
 @app.route("/logout")
 def logout():
@@ -140,6 +144,7 @@ def logout():
 
     return redirect(url_for('home'))
 
+
 if __name__ == "__main__":
-    init_db()  # 실행 시 DB 및 테스트 계정 생성
+    init_db()
     app.run(debug=True)

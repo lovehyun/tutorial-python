@@ -1,9 +1,8 @@
-# hashlib은 Python 표준 라이브러리에 포함
 from flask import Flask, render_template, request, redirect, url_for, session, flash
 from datetime import timedelta
 import sqlite3
-import hashlib
 import os
+from werkzeug.security import generate_password_hash, check_password_hash
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'abcd1234'
@@ -11,26 +10,28 @@ app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(minutes=5)
 
 DB_PATH = 'users.db'
 
-# 특징
-# - 해시 결과가 항상 동일함
-# - DB에도 고정된 해시 값이 저장되어 있으므로, SQL에서 비교가 바로 가능
-# - 빠르고 간단하지만, 보안 취약 (예: rainbow table 공격에 취약)
 
-# 비밀번호 해시화
-def hash_password(password):
-    return hashlib.sha256(password.encode()).hexdigest()
+# 변경된 주요 포인트
+# 1. hashlib.sha256 → werkzeug.security.generate_password_hash() 사용
+# 2. 비밀번호 검증 시 check_password_hash()로 해시 비교
+# 3. DB에 저장되는 비밀번호는 pbkdf2:sha256 기반 해시 값으로 저장
 
-# 사용자 조회
+# 사용자 조회 (로그인용)
 def get_user_for_login(username, password):
     conn = sqlite3.connect(DB_PATH)
     conn.row_factory = sqlite3.Row
     cur = conn.cursor()
-    hashed_pw = hash_password(password)
-    cur.execute("SELECT * FROM users WHERE username = ? AND password = ?", (username, hashed_pw))
+    cur.execute("SELECT * FROM users WHERE username = ?", (username,))
     user = cur.fetchone()
     conn.close()
-    return user
 
+    # 비밀번호 검증
+    if user and check_password_hash(user['password'], password):
+        return user
+    return None
+
+
+# 사용자 조회 (중복 확인용)
 def get_user_by_username(username):
     conn = sqlite3.connect(DB_PATH)
     conn.row_factory = sqlite3.Row
@@ -39,6 +40,7 @@ def get_user_by_username(username):
     user = cur.fetchone()
     conn.close()
     return user
+
 
 # DB 초기화 (최초 1회 실행)
 def init_db():
@@ -53,16 +55,17 @@ def init_db():
                 name TEXT NOT NULL
             )
         ''')
-        # 테스트 사용자 삽입 (비밀번호는 암호화 저장)
+        # 테스트 사용자 삽입 (비밀번호는 werkzeug로 해시)
         cur.execute("INSERT INTO users (username, password, name) VALUES (?, ?, ?)",
-                    ('user', hash_password('password'), 'MyName'))
+                    ('user', generate_password_hash('password'), 'MyName'))
         conn.commit()
         conn.close()
 
+
 @app.route('/')
 def home():
-    # return render_template('index.html')
     return render_template('index2.html')
+
 
 @app.route('/register', methods=["GET", "POST"])
 def register():
@@ -84,8 +87,8 @@ def register():
             flash("이미 존재하는 아이디입니다.", "danger")
             return redirect(url_for('register'))
 
-        # 해시 후 저장 (hash_password 함수 사용 전제)
-        hashed_pw = hash_password(password)
+        # 해시 후 저장 (generate_password_hash 사용)
+        hashed_pw = generate_password_hash(password)
         conn = sqlite3.connect(DB_PATH)
         cur = conn.cursor()
         cur.execute("INSERT INTO users (username, password, name) VALUES (?, ?, ?)",
@@ -120,15 +123,16 @@ def login():
 
         return redirect(url_for('home'))
 
+
 @app.route('/user')
 def user():
     if 'user' in session:
         user = session['user']
-        # return render_template('user.html', name=user['name'])
         return render_template('user2.html', name=user['name'])
 
     flash("비정상 접근입니다. 로그인을 필요로 합니다.", "warning")
     return redirect(url_for('home'))
+
 
 @app.route("/logout")
 def logout():
@@ -139,6 +143,7 @@ def logout():
         flash("이미 로그아웃 되었습니다.", "warning")
 
     return redirect(url_for('home'))
+
 
 if __name__ == "__main__":
     init_db()  # 실행 시 DB 및 테스트 계정 생성
