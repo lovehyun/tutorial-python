@@ -41,8 +41,16 @@ def get_user_by_username(username):
     conn.close()
     return user
 
+# 사용자 생성
+def create_user(username, password, name):
+    hashed_pw = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt())
+    conn = sqlite3.connect(DB_PATH)
+    cur = conn.cursor()
+    cur.execute("INSERT INTO users (username, password, name) VALUES (?, ?, ?)",
+                (username, hashed_pw, name))
+    conn.commit()
+    conn.close()
 
-# DB 초기화 (최초 1회 실행)
 def init_db():
     if not os.path.exists(DB_PATH):
         conn = sqlite3.connect(DB_PATH)
@@ -62,11 +70,9 @@ def init_db():
         conn.commit()
         conn.close()
 
-
 @app.route('/')
 def home():
     return render_template('index2.html')
-
 
 @app.route('/register', methods=["GET", "POST"])
 def register():
@@ -88,19 +94,12 @@ def register():
             flash("이미 존재하는 아이디입니다.", "danger")
             return redirect(url_for('register'))
 
-        hashed_pw = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt())
-        conn = sqlite3.connect(DB_PATH)
-        cur = conn.cursor()
-        cur.execute("INSERT INTO users (username, password, name) VALUES (?, ?, ?)",
-                    (username, hashed_pw, name))
-        conn.commit()
-        conn.close()
+        create_user(username, password, name)
 
         flash("회원가입이 완료되었습니다. 로그인해주세요.", "success")
         return redirect(url_for('home'))
 
     return render_template('register2.html')
-
 
 @app.route('/login', methods=["GET", "POST"])
 def login():
@@ -123,7 +122,6 @@ def login():
 
         return redirect(url_for('home'))
 
-
 @app.route('/user')
 def user():
     if 'user' in session:
@@ -132,7 +130,6 @@ def user():
 
     flash("비정상 접근입니다. 로그인을 필요로 합니다.", "warning")
     return redirect(url_for('home'))
-
 
 @app.route("/logout")
 def logout():
@@ -144,7 +141,6 @@ def logout():
 
     return redirect(url_for('home'))
 
-
 if __name__ == "__main__":
-    init_db()
+    # init_db()
     app.run(debug=True)

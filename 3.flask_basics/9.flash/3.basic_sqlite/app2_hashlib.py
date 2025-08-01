@@ -40,6 +40,15 @@ def get_user_by_username(username):
     conn.close()
     return user
 
+def create_user(username, password, name):
+    hashed_pw = hash_password(password)
+    conn = sqlite3.connect(DB_PATH)
+    cur = conn.cursor()
+    cur.execute("INSERT INTO users (username, password, name) VALUES (?, ?, ?)",
+                (username, hashed_pw, name))
+    conn.commit()
+    conn.close()
+
 # DB 초기화 (최초 1회 실행)
 def init_db():
     if not os.path.exists(DB_PATH):
@@ -84,14 +93,7 @@ def register():
             flash("이미 존재하는 아이디입니다.", "danger")
             return redirect(url_for('register'))
 
-        # 해시 후 저장 (hash_password 함수 사용 전제)
-        hashed_pw = hash_password(password)
-        conn = sqlite3.connect(DB_PATH)
-        cur = conn.cursor()
-        cur.execute("INSERT INTO users (username, password, name) VALUES (?, ?, ?)",
-                    (username, hashed_pw, name))
-        conn.commit()
-        conn.close()
+        create_user(username, password, name)
 
         flash("회원가입이 완료되었습니다. 로그인해주세요.", "success")
         return redirect(url_for('home'))
