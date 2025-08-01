@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>추가 정보 입력</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="container py-5">
+    <div class="card mx-auto" style="max-width: 500px;">
+        <div class="card-body">
+            <h3 class="card-title mb-4 text-center">추가 회원 정보 입력</h3>
+            <form method="POST">
+                <div class="mb-3">
+                    <label class="form-label">이름</label>
+                    <input type="text" class="form-control" value="{{ name or '제공되지 않음' }}" disabled>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">이메일</label>
+                    {% if email %}
+                        <!-- 제공된 이메일은 읽기 전용으로 표시 -->
+                        <input type="email" class="form-control" value="{{ email }}" readonly> <!-- 보임 + 수정불가 -->
+                        <input type="hidden" name="email" value="{{ email }}"> <!-- 제출용 -->
+                    {% else %}
+                        <!-- 제공되지 않은 경우 입력 가능 -->
+                        <input type="email" name="email" class="form-control" placeholder="이메일을 입력하세요">
+                    {% endif %}
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">전화번호</label>
+                    <input type="text" name="phone" class="form-control">
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">주소</label>
+                    <input type="text" name="address" class="form-control">
+                </div>
+                <div class="d-grid">
+                    <button type="submit" class="btn btn-success">회원가입 완료</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,5 +1,6 @@
 from dotenv import load_dotenv
 from flask import Flask, redirect, request, session, render_template, url_for
+from user_db2 import get_user_by_naver_id, save_user_if_not_exists, update_user_profile, delete_user_by_id
 import requests
 import os
 
@@ -17,7 +18,7 @@ NAVER_REDIRECT_URI = os.getenv("NAVER_REDIRECT_URI")
 def index():
     # [1] 사용자 → 내 사이트 접속
     user = session.get("user") # 세션에 저장된 사용자 정보가 있으면 index.html로 전달
-    return render_template("index.html", user=user)
+    return render_template("index2.html", user=user)
 
 @app.route("/login/naver")
 def login_naver():
@@ -75,16 +76,95 @@ def naver_callback():
     #     "message": "success",
     #     "response": {
     #         "id": "unique_id",
-    #         "email": "abc@naver.com",
+    #         "email": "abc@naver.com", # 선택 동의시
     #         "nickname": "길동",
     #         "name": "홍길동",
     #         "profile_image": "https://..."
     #     }
     # }
+    
+    # [회원가입 또는 기존 사용자 확인]
+    user_info = profile["response"]
 
-    # [11] 내 사이트 → 로그인 처리 완료
-    # 세션에 사용자 정보 저장
-    session["user"] = profile["response"]
+    # [11] 내 사이트 → 로그인 처리 완료 (또는 회원가입 및 추가정보 요청)
+    # DB에서 사용자 조회
+    user = get_user_by_naver_id(user_info["id"])
+    if user:
+        # 이미 가입된 사용자 → 로그인 처리
+        session["user"] = dict(user)
+        return redirect(url_for("index"))
+    else:
+        # 아직 추가정보 입력 안된 사용자 → 임시 세션 저장 후 입력 페이지로 이동
+        session["temp_user"] = user_info
+        return redirect(url_for("signup"))
+
+@app.route("/signup", methods=["GET", "POST"])
+def signup():
+    temp_user = session.get("temp_user")
+    if not temp_user:
+        return redirect(url_for("index"))
+
+    if request.method == "POST":
+        address = request.form.get("address")
+        phone = request.form.get("phone")
+        
+        # nickname 이 없으면 이름으로 저장
+        nickname = temp_user.get("nickname", temp_user.get("name"))
+        temp_user["nickname"] = nickname
+
+        # DB에 회원 정보 저장
+        save_user_if_not_exists(temp_user, address, phone)
+
+        # 세션 저장
+        user = get_user_by_naver_id(temp_user["id"])
+        session.pop("temp_user", None)
+        session["user"] = dict(user)
+        return redirect(url_for("index"))
+
+    name = temp_user.get('name', None)
+    email = temp_user.get('email', None)
+    
+    return render_template("signup2.html", name=name, email=email)
+
+@app.route("/edit_profile", methods=["GET", "POST"])
+def edit_profile():
+    user = session.get("user")
+    if not user:
+        return redirect(url_for("index"))
+
+    if request.method == "POST":
+        new_name = request.form.get("name")
+        new_nickname = request.form.get("nickname")
+        new_email = request.form.get("email")
+        new_phone = request.form.get("phone")
+        new_address = request.form.get("address")
+
+        # DB 업데이트
+        update_user_profile(
+            user["id"], new_name, new_nickname, new_email, new_phone, new_address
+        )
+
+        # 세션도 업데이트
+        user["name"] = new_name
+        user["nickname"] = new_nickname
+        user["email"] = new_email
+        user["phone"] = new_phone
+        user["address"] = new_address
+        session["user"] = user
+
+        return redirect(url_for("index"))
+
+    return render_template("edit_profile2.html", user=user)
+
+@app.route("/delete_account")
+def delete_account():
+    user = session.get("user")
+    if not user:
+        return redirect(url_for("index"))
+
+    user_id = user["id"]
+    delete_user_by_id(user_id)
+    session.clear()
     return redirect(url_for("index"))
 
 @app.route("/logout")

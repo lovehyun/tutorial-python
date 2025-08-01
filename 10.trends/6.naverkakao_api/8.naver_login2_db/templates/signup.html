@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>추가 정보 입력</title>
+</head>
+<body>
+    <h2>추가 회원 정보 입력</h2>
+    <form method="POST">
+        <p>이름: {{ name or '' }}</p>
+        <p>이메일: {{ email or '' }}</p>
+        <p>전화번호: <input type="text" name="phone" required></p>
+        <p>주소: <input type="text" name="address" required></p>
+        <button type="submit">회원가입 완료</button>
+    </form>
+</body>
+</html>

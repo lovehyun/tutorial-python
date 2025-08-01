@@ -1,9 +1,7 @@
-import os
-import json
-import urllib.request
-import urllib.parse
 from dotenv import load_dotenv
 from tabulate import tabulate
+import os
+import requests
 import html
 import re
 
@@ -19,21 +17,19 @@ def clean_html(raw_html):
 
 def search_naver_blog(query):
     """네이버 블로그 검색 API 호출 및 결과 반환"""
-    encoded = urllib.parse.quote(query)
-    url = f"https://openapi.naver.com/v1/search/blog?query={encoded}"
-
-    req = urllib.request.Request(url)
-    req.add_header("X-Naver-Client-Id", client_id)
-    req.add_header("X-Naver-Client-Secret", client_secret)
+    url = "https://openapi.naver.com/v1/search/blog"
+    headers = {
+        "X-Naver-Client-Id": client_id,
+        "X-Naver-Client-Secret": client_secret
+    }
+    params = {"query": query}
 
     try:
-        with urllib.request.urlopen(req) as res:
-            if res.status != 200:
-                print("API 호출 실패:", res.status)
-                return []
-            data = json.loads(res.read())
-            return data["items"]
-    except Exception as e:
+        response = requests.get(url, headers=headers, params=params)
+        response.raise_for_status()
+        data = response.json()
+        return data.get("items", [])
+    except requests.exceptions.RequestException as e:
         print("요청 중 오류 발생:", e)
         return []
 

@@ -1,5 +1,6 @@
 from dotenv import load_dotenv
 from flask import Flask, redirect, request, session, render_template, url_for
+from user_db import save_user_if_not_exists
 import requests
 import os
 
@@ -81,10 +82,20 @@ def naver_callback():
     #         "profile_image": "https://..."
     #     }
     # }
+    
+    # [회원가입 또는 기존 사용자 확인]
+    user_info = profile["response"]
+    user = save_user_if_not_exists(user_info)
 
     # [11] 내 사이트 → 로그인 처리 완료
-    # 세션에 사용자 정보 저장
-    session["user"] = profile["response"]
+    # 세션에 사용자 정보 저장 (DB 기반)
+    session["user"] = {
+        "id": user["id"],
+        "nickname": user["name"],  # 닉네임 대신 이름 사용
+        "name": user["name"],
+        "profile_image": user["profile_image"]
+    }
+
     return redirect(url_for("index"))
 
 @app.route("/logout")

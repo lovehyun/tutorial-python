@@ -1,5 +1,3 @@
-import os
-import sys
 import urllib.request
 import json
 from tabulate import tabulate

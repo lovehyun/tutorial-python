@@ -1,9 +1,10 @@
-import os
-import json
-import sys
-import urllib.request
+# pip install requests tabulate python-dotenv
+
 from dotenv import load_dotenv
 from tabulate import tabulate
+import os
+import sys
+import requests
 
 # .env 파일에서 환경 변수 로딩
 load_dotenv()
@@ -12,26 +13,28 @@ client_id = os.getenv("NAVER_CLIENT_ID")
 client_secret = os.getenv("NAVER_CLIENT_SECRET")
 
 text = "Python 개발"
-encText = urllib.parse.quote(text)
-url = "https://openapi.naver.com/v1/search/blog?query=" + encText
+url = "https://openapi.naver.com/v1/search/blog"
 
-request = urllib.request.Request(url)
-request.add_header("X-Naver-Client-Id", client_id)
-request.add_header("X-Naver-Client-Secret", client_secret)
+headers = {
+    "X-Naver-Client-Id": client_id,
+    "X-Naver-Client-Secret": client_secret
+}
 
-response = urllib.request.urlopen(request)
-rescode = response.getcode()
+params = {
+    "query": text
+}
 
-if rescode == 200:
-    response_body = response.read()
-    data = json.loads(response_body)
-else:
-    print("Error Code:", rescode)
+try:
+    response = requests.get(url, headers=headers, params=params)
+    response.raise_for_status()
+    data = response.json()
+except requests.exceptions.RequestException as e:
+    print("요청 실패:", e)
     sys.exit(1)
 
 # 출력
 selected_columns = [["title", "link", "description"]]
-for item in data["items"]:
+for item in data.get("items", []):
     selected_columns.append([item["title"], item["link"], item["description"]])
 
 print(tabulate(selected_columns, headers="firstrow", tablefmt="list"))
