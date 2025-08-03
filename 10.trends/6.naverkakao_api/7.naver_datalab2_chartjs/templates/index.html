@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>네이버 트렌드 비교</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <h1>네이버 검색어 트렌드 비교</h1>
+
+    <form method="POST">
+        <input type="text" name="keywords" placeholder="예: 운동화, 샌들, 부츠" required>
+        <button type="submit">검색</button>
+    </form>
+
+    {% if table_data %}
+        <h2>검색 결과 테이블</h2>
+        <table border="1" cellpadding="8">
+            <thead>
+                <tr>
+                    <th>기간</th>
+                    {% for group in table_data %}
+                        <th>{{ group.group }}</th>
+                    {% endfor %}
+                </tr>
+            </thead>
+            <tbody>
+                {% for i in range(labels|length) %}
+                <tr>
+                    <td>{{ labels[i] }}</td>
+                    {% for group in table_data %}
+                        <td>{{ group.data[i].ratio }}%</td>
+                    {% endfor %}
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <h2>검색어 그래프</h2>
+        <canvas id="trendChart"></canvas>
+
+        <script>
+            const ctx = document.getElementById('trendChart').getContext('2d');
+            const chart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: {{ labels|tojson }},
+                    datasets: [
+                        {% for group in datasets %}
+                        {
+                            label: "{{ group.label }}",
+                            data: {{ group.data|tojson }},
+                            borderWidth: 2,
+                            fill: false
+                        },
+                        {% endfor %}
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            position: 'bottom'
+                        },
+                        title: {
+                            display: true,
+                            text: '검색어별 월간 검색 트렌드'
+                        }
+                    }
+                }
+            });
+        </script>
+    {% endif %}
+</body>
+</html>

@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>네이버 검색 트렌드</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.2.0"></script>
+  <style>
+    body { font-family: Arial; padding: 20px; }
+    .container { display: flex; gap: 20px; }
+    .chart-group { display: flex; flex-direction: column; width: 70%; }
+    .chart-pie { width: 30%; display: flex; flex-wrap: wrap; justify-content: center; }
+    .pie-container { width: 100%; max-width: 400px; margin: 10px auto; }
+    table { border-collapse: collapse; width: 100%; margin-top: 10px; }
+    td, th { border: 1px solid #ccc; padding: 4px; text-align: center; }
+    .tables { display: flex; justify-content: space-between; gap: 10px; margin-top: 30px; }
+    .table-wrap { width: 50%; }
+    canvas { max-width: 100% !important; }
+  </style>
+</head>
+<body>
+
+  <h1>네이버 검색 트렌드 분석</h1>
+  <form method="POST">
+    키워드 (쉼표로 구분): <input name="keywords" value="{{ request.form.keywords or '샌들,부츠' }}">
+    시작일: <input name="startDate" type="date" value="{{ request.form.startDate or '2024-01-01' }}">
+    종료일: <input name="endDate" type="date" value="{{ request.form.endDate or '2024-12-31' }}">
+    단위:
+    <select name="timeUnit">
+      <option value="date" {% if request.form.timeUnit == 'date' %}selected{% endif %}>일간</option>
+      <option value="week" {% if request.form.timeUnit == 'week' %}selected{% endif %}>주간</option>
+      <option value="month" {% if request.form.timeUnit == 'month' or not request.form.timeUnit %}selected{% endif %}>월간</option>
+    </select>
+    <button type="submit">검색</button>
+  </form>
+
+  {% if error %}
+    <p style="color:red;">{{ error }}</p>
+  {% endif %}
+
+  {% if result %}
+    <div class="container">
+      <!-- 왼쪽 영역 -->
+      <div class="chart-group">
+        <canvas id="lineChart"></canvas>
+        <canvas id="genderChart"></canvas>
+      </div>
+
+      <!-- 오른쪽 파이차트 영역 -->
+      <div class="chart-pie">
+        {% for keyword, data in result.age.items() %}
+          <div class="pie-container">
+            <h4>{{ keyword }} 연령대</h4>
+            <canvas id="pie_{{ loop.index }}"></canvas>
+          </div>
+        {% endfor %}
+      </div>
+    </div>
+
+    <!-- 테이블 2개를 좌우 배치 -->
+    <div class="tables">
+      <!-- 월별 트렌드 -->
+      <div class="table-wrap">
+        <h2>월별 트렌드 검색 비중</h2>
+        <table>
+          <tr>
+            <th>기간</th>
+            {% for keyword in result.results %}
+              <th>{{ keyword.title }}</th>
+            {% endfor %}
+          </tr>
+          {% for i in range(result.results[0].data | length) %}
+          <tr>
+            <td>{{ result.results[0].data[i].period }}</td>
+            {% for keyword in result.results %}
+              <td>{{ keyword.data[i].ratio }}</td>
+            {% endfor %}
+          </tr>
+          {% endfor %}
+        </table>
+      </div>
+
+      <!-- 연령대별 검색 -->
+      <div class="table-wrap">
+        <h2>연령대별 검색 비중</h2>
+        <table>
+          <tr>
+            <th>연령대</th>
+            {% for keyword in result.age.keys() %}
+              <th>{{ keyword }}</th>
+            {% endfor %}
+          </tr>
+          {% for i in range(result.age[result.age.keys()|list|first] | length) %}
+          <tr>
+            <td>{{ result.age[result.age.keys()|list|first][i].age }}</td>
+            {% for keyword in result.age.keys() %}
+              <td>{{ result.age[keyword][i].ratio }}</td>
+            {% endfor %}
+          </tr>
+          {% endfor %}
+        </table>
+      </div>
+    </div>
+
+    <!-- Chart Scripts -->
+    <script>
+      // 선형 그래프
+      const lineCtx = document.getElementById("lineChart");
+      new Chart(lineCtx, {
+        type: "line",
+        data: {
+          labels: {{ result.results[0].data | map(attribute='period') | list | tojson }},
+          datasets: [
+            {% for r in result.results %}
+            {
+              label: "{{ r.title }}",
+              data: {{ r.data | map(attribute='ratio') | list | tojson }},
+              fill: false,
+              tension: 0.3
+            },
+            {% endfor %}
+          ]
+        }
+      });
+
+      // 성별 Bar Chart (그룹형)
+      const genderCtx = document.getElementById("genderChart");
+      const genderLabels = {{ result.gender[result.gender|list|first] | map(attribute='period') | list | tojson }};
+      const maleDatasets = [];
+      const femaleDatasets = [];
+
+      {% for keyword, gender_list in result.gender.items() %}
+        maleDatasets.push({
+          label: "{{ keyword }} (남)",
+          data: {{ gender_list | map(attribute='ratio_male') | list | tojson }},
+          backgroundColor: "rgba(54, 162, 235, 0.7)"
+        });
+        femaleDatasets.push({
+          label: "{{ keyword }} (여)",
+          data: {{ gender_list | map(attribute='ratio_female') | list | tojson }},
+          backgroundColor: "rgba(255, 99, 132, 0.7)"
+        });
+      {% endfor %}
+
+      new Chart(genderCtx, {
+        type: "bar",
+        data: {
+          labels: genderLabels,
+          datasets: [...maleDatasets, ...femaleDatasets]
+        },
+        options: {
+          responsive: true,
+          scales: {
+            x: { stacked: false },
+            y: { beginAtZero: true }
+          }
+        }
+      });
+
+      // 파이차트
+      {% for keyword, age_rows in result.age.items() %}
+        new Chart(document.getElementById("pie_{{ loop.index }}"), {
+          type: 'pie',
+          data: {
+            labels: {{ age_rows | map(attribute='age') | list | tojson }},
+            datasets: [{
+              data: {{ age_rows | map(attribute='ratio') | list | tojson }},
+              backgroundColor: [
+                '#FF6384', '#36A2EB', '#FFCE56', '#9966FF', '#4BC0C0',
+                '#F7464A', '#46BFBD', '#FDB45C', '#949FB1', '#4D5360',
+                '#FF9F40', '#A4DE02', '#00CED1', '#DC143C'
+              ]
+            }]
+          },
+          options: {
+            plugins: {
+              datalabels: {
+                color: '#000',
+                font: { weight: 'bold', size: 11 },
+                formatter: (value, ctx) => {
+                  const label = ctx.chart.data.labels[ctx.dataIndex];
+                  return `${label}\n${value}%`;
+                }
+              },
+              tooltip: {
+                callbacks: {
+                  label: ctx => `${ctx.label}: ${ctx.parsed}%`
+                }
+              },
+              legend: { position: 'bottom' }
+            },
+            animation: {
+              animateScale: true,
+              animateRotate: true
+            }
+          },
+          plugins: [ChartDataLabels]
+        });
+      {% endfor %}
+    </script>
+  {% endif %}
+</body>
+</html>

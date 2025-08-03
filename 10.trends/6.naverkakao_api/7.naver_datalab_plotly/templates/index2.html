@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>네이버 검색어 트렌드</title>
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+</head>
+<body>
+    <h1>네이버 검색어 트렌드 분석</h1>
+
+    <!-- <form action="/search" method="post">
+        <input type="text" name="keyword" placeholder="검색어 입력" required>
+
+        <label for="startDate">시작일:</label>
+        <input type="date" name="startDate" required>
+
+        <label for="endDate">종료일:</label>
+        <input type="date" name="endDate" required>
+
+        <button type="submit">검색</button>
+    </form> -->
+
+    <form action="/search" method="post">
+        <input type="text" name="keyword" placeholder="검색어 입력" required value="{{ keyword or '' }}">
+
+        <label for="startDate">시작일:</label>
+        <input type="date" name="startDate" required value="{{ start_date or '' }}">
+
+        <label for="endDate">종료일:</label>
+        <input type="date" name="endDate" required value="{{ end_date or '' }}">
+
+        <label for="timeUnit">단위:</label>
+        <select name="timeUnit" required>
+            <option value="date" {% if time_unit == 'date' %}selected{% endif %}>일 단위</option>
+            <option value="week" {% if time_unit == 'week' %}selected{% endif %}>주 단위</option>
+            <option value="month" {% if time_unit == 'month' or not time_unit %}selected{% endif %}>월 단위</option>
+        </select>
+        
+        <button type="submit">검색</button>
+    </form>
+
+    {% if keyword %}
+        <h2>'{{ keyword }}'의 검색 트렌드 ({{ start_date }} ~ {{ end_date }})</h2>
+    {% endif %}
+
+    {% if graph_html %}
+        <div>{{ graph_html | safe }}</div>
+    {% endif %}
+</body>
+</html>

@@ -24,7 +24,7 @@ mp_drawing = mp.solutions.drawing_utils
 # 전역 변수
 cap = cv2.VideoCapture(0)
 if not cap.isOpened():
-    print("❌ 웹캠을 열 수 없습니다.")
+    print("[ERR] 웹캠을 열 수 없습니다.")
     exit(1)
 
 latest_pose_summary = "No pose detected yet."
@@ -118,7 +118,7 @@ def generate_frames():
     while True:
         success, frame = cap.read()
         if not success:
-            print("⚠️ 프레임 읽기 실패")
+            print("[ERR] 프레임 읽기 실패")
             break
 
         frame_height, frame_width = frame.shape[:2]
@@ -175,7 +175,7 @@ def shutdown():
 @atexit.register
 def release_camera_on_exit():
     if cap.isOpened():
-        print("🔒 종료: 카메라 해제")
+        print("종료: 카메라 해제")
         cap.release()
 
 

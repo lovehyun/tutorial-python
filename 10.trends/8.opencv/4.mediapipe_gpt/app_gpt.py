@@ -181,9 +181,9 @@ def shutdown():
 @atexit.register
 def release_camera_on_exit():
     if cap.isOpened():
-        print("🔒 Cleaning up: Releasing webcam...")
+        print("Cleaning up: Releasing webcam...")
         cap.release()
-        print("✅ Webcam released.")
+        print("Webcam released.")
 
 
 if __name__ == '__main__':

@@ -9,6 +9,7 @@ function showMail(mailId) {
             }
             document.getElementById('modalSubject').textContent = data.subject;
             document.getElementById('modalBody').textContent = data.body;
+            // document.getElementById('modalBody').innerHTML = data.body;
             document.getElementById('mailModal').style.display = 'flex';
         })
         .catch(error => console.error('Error:', error));

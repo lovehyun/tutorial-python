@@ -76,3 +76,19 @@ tbody tr td:first-child:hover {
     top: 10px;
     right: 10px;
 }
+
+/* 페이징 */
+.pagination {
+    margin-top: 20px;
+    text-align: center;
+}
+
+.pagination a {
+    margin: 0 10px;
+    text-decoration: none;
+    color: blue;
+}
+
+.pagination span {
+    margin: 0 10px;
+}

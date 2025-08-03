@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>메일 목록</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <h1>메일 목록</h1>
+    <table>
+        <thead>
+            <tr>
+                <th>제목</th>
+                <th>발신자</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for mail in mail_list %}
+            <tr onclick="showMail('{{ mail.id }}')">
+                <td>{{ mail.subject }}</td>
+                <td>{{ mail.from }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <!-- 페이징 영역 -->
+    <div class="pagination">
+        {% if page > 1 %}
+            <a href="/?page={{ page - 1 }}">← 이전</a>
+        {% endif %}
+
+        <span>페이지 {{ page }} / {{ total_pages }}</span>
+
+        {% if page < total_pages %}
+            <a href="/?page={{ page + 1 }}">다음 →</a>
+        {% endif %}
+    </div>
+
+    <!-- 모달 -->
+    <div class="modal" id="mailModal">
+        <div class="modal-content">
+            <button class="close-btn" onclick="closeModal()">×</button>
+            <div class="modal-header" id="modalSubject"></div>
+            <div class="modal-body" id="modalBody"></div>
+        </div>
+    </div>
+
+    <script src="/static/script.js"></script>
+</body>
+</html>
