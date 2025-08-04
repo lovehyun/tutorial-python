@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8" />
+    <title>이메일 인증</title>
+</head>
+<body>
+    <h2>회원가입 이메일 인증</h2>
+
+    <div>
+        <label for="email">이메일:</label>
+        <input type="email" id="email" />
+        <button onclick="sendCode()">인증코드 전송</button>
+    </div>
+
+    <div style="margin-top: 10px">
+        <label for="code">인증코드:</label>
+        <input type="text" id="code" />
+        <button onclick="verifyCode()">인증 확인</button>
+    </div>
+
+    <p id="result" style="margin-top: 10px; font-weight: bold"></p>
+
+    <script>
+        async function sendCode() {
+            const email = document.getElementById('email').value;
+            const res = await fetch('/send-code', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email }),
+            });
+            const data = await res.json();
+            document.getElementById('result').innerText = data.message || data.error;
+        }
+
+        async function verifyCode() {
+            const code = document.getElementById('code').value;
+            const res = await fetch('/verify-code', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ code }),
+            });
+            const data = await res.json();
+            document.getElementById('result').innerText = data.message || data.error;
+        }
+    </script>
+</body>
+</html>

@@ -39,7 +39,7 @@ def read_latest_email():
         latest_mail_id = mail_ids[-1]
 
         # 최신 메일 가져오기
-        status, msg_data = mail.fetch(latest_mail_id, "(RFC822)")
+        status, msg_data = mail.fetch(latest_mail_id, "(RFC822)") # 메일 포멧
         if status != "OK":
             print("메일 가져오기 실패.")
             return

@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8" />
+    <title>비밀번호 찾기</title>
+    <style>
+        body {
+            font-family: sans-serif;
+            font-size: 14px;
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .container {
+            width: 300px;
+            border: 1px solid #ccc;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+        }
+
+        label {
+            display: block;
+            margin-top: 10px;
+        }
+
+        input {
+            width: 100%;
+            padding: 6px;
+            margin-top: 4px;
+            box-sizing: border-box;
+        }
+
+        button {
+            margin-top: 12px;
+            padding: 6px;
+            width: 100%;
+        }
+
+        #result {
+            margin-top: 10px;
+            text-align: center;
+            color: green;
+            font-weight: bold;
+        }
+
+        .back {
+            margin-top: 15px;
+            font-size: 13px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h3 style="text-align: center">비밀번호 찾기</h3>
+
+        <label for="email">가입한 이메일 주소:</label>
+        <input type="email" id="email" />
+
+        <button onclick="sendCode()">인증코드 전송</button>
+
+        <label for="code">인증코드 입력:</label>
+        <input type="text" id="code" />
+
+        <button onclick="verifyCode()">인증 확인</button>
+
+        <div id="result"></div>
+
+        <div class="back">
+            <a href="/">← 로그인으로 돌아가기</a>
+        </div>
+    </div>
+
+    <script>
+        async function sendCode() {
+            const email = document.getElementById('email').value;
+            const res = await fetch('/send-code', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email }),
+            });
+            const data = await res.json();
+            document.getElementById('result').innerText = data.message || data.error;
+        }
+
+        async function verifyCode() {
+            const code = document.getElementById('code').value;
+            const res = await fetch('/verify-code', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ code }),
+            });
+            const data = await res.json();
+            document.getElementById('result').innerText = data.message || data.error;
+
+            if (res.ok) {
+                // 이후 비밀번호 재설정 페이지로 이동 가능
+                window.location.href = "/reset";
+            }
+        }
+    </script>
+</body>
+</html>

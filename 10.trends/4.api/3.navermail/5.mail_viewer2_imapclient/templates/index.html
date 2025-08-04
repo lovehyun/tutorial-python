@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8" />
+    <title>메일 목록</title>
+    <style>
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        th,
+        td {
+            border: 1px solid #ccc;
+            padding: 8px;
+        }
+        th {
+            background: #f0f0f0;
+        }
+    </style>
+</head>
+<body>
+    <h1>메일 목록</h1>
+    <table>
+        <thead>
+            <tr>
+                <th>제목</th>
+                <th>발신자</th>
+            </tr>
+        </thead>
+        <tbody id="email-list">
+            <tr>
+                <td colspan="2">로딩 중...</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <script>
+        fetch('/api/emails')
+            .then((res) => res.json())
+            .then((data) => {
+                const tbody = document.getElementById('email-list');
+                tbody.innerHTML = '';
+                data.forEach((mail) => {
+                    const row = `<tr><td>${mail.subject}</td><td>${mail.from}</td></tr>`;
+                    tbody.insertAdjacentHTML('beforeend', row);
+                });
+            });
+    </script>
+</body>
+</html>

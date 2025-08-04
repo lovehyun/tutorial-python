@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8" />
+    <title>비밀번호 재설정</title>
+    <style>
+        body {
+            font-family: sans-serif;
+            font-size: 14px;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .container {
+            width: 300px;
+            padding: 30px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+        }
+        label,
+        input {
+            display: block;
+            width: 100%;
+            margin-top: 10px;
+        }
+        button {
+            margin-top: 15px;
+            padding: 6px;
+            width: 100%;
+        }
+        #result {
+            margin-top: 10px;
+            text-align: center;
+            color: green;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h3 style="text-align: center">비밀번호 재설정</h3>
+        <label>새 비밀번호:</label>
+        <input type="password" id="newPassword" />
+        <button onclick="resetPassword()">비밀번호 변경</button>
+        <div id="result"></div>
+    </div>
+
+    <script>
+        async function resetPassword() {
+            const password = document.getElementById('newPassword').value;
+            const res = await fetch('/reset-password', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ password }),
+            });
+
+            const data = await res.json();
+            document.getElementById('result').innerText = data.message || data.error;
+
+            if (res.ok) {
+                setTimeout(() => {
+                    window.location.href = '/';
+                }, 2000);
+            }
+        }
+    </script>
+</body>
+</html>
