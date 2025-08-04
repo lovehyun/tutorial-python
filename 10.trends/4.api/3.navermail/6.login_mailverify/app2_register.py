@@ -12,7 +12,7 @@ app.secret_key = 'your-secret-key'
 
 # 메일 설정
 app.config['MAIL_SERVER'] = os.getenv("NAVER_MAILSERVER")
-app.config['MAIL_PORT'] = 587
+app.config['MAIL_PORT'] = os.getenv("NAVER_MAILSERVER_PORT")
 app.config['MAIL_USE_TLS'] = True
 app.config['MAIL_USERNAME'] = os.getenv("NAVER_EMAIL")
 app.config['MAIL_PASSWORD'] = os.getenv("NAVER_PASSWORD")

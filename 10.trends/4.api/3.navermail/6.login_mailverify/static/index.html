@@ -31,6 +31,14 @@
             });
             const data = await res.json();
             document.getElementById('result').innerText = data.message || data.error;
+            
+            // fetch('/send-code', {
+            //   // 중략
+            // })
+            //     .then(response => response.json())
+            //     .then(data => {
+            //         console.log(data);
+            //     })
         }
 
         async function verifyCode() {

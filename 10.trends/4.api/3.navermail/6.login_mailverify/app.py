@@ -46,7 +46,9 @@ def send_code():
 @app.route("/verify-code", methods=["POST"])
 def verify_code():
     input_code = request.json.get("code")
-    if session.get("auth_code") == input_code:
+    stored_code = session.get("auth_code")
+    
+    if stored_code == input_code:
         return jsonify({"message": "인증 성공"})
     return jsonify({"error": "인증 실패"}), 400
 

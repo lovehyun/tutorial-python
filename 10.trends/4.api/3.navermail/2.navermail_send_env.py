@@ -11,8 +11,8 @@ NAVER_EMAIL = os.getenv('NAVER_EMAIL')  # 네이버 이메일
 NAVER_PASSWORD = os.getenv('NAVER_PASSWORD')  # 네이버 비밀번호 또는 앱 비밀번호
 
 # SMTP 설정
-SMTP_SERVER = 'smtp.naver.com'
-SMTP_PORT = 587
+SMTP_SERVER = os.getenv("NAVER_MAILSERVER")  # smtp.naver.com
+SMTP_PORT = os.getenv("NAVER_MAILSERVER_PORT")  # 587
 
 # 수신자 정보
 RECIPIENT_EMAIL = os.getenv('RECIPIENT_EMAIL')
