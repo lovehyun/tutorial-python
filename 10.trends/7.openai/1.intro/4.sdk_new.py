@@ -37,7 +37,8 @@ def get_chat_gpt_response(user_input):
         return '챗봇 응답을 가져오는 도중에 오류가 발생했습니다.'
 
 def chat_with_user():
-    user_input = '안녕, 챗봇!'
+    # user_input = '안녕, 챗봇!'
+    user_input = input('사용자 입력: ')
     chat_gpt_response = get_chat_gpt_response(user_input)
     print('챗봇 응답:', chat_gpt_response)
 

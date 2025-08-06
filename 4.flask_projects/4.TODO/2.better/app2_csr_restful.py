@@ -4,9 +4,9 @@
 # /api/todo	    완료 토글	PUT { "id": 1 }
 # /api/todo	    항목 삭제	DELETE { "id": 1 }
 
-from flask import Flask, request, jsonify, render_template
+from flask import Flask, request, jsonify
 
-app = Flask(__name__)
+app = Flask(__name__, static_folder="public", static_url_path="")
 
 # 메모리 내 To-Do 리스트
 todos = []
@@ -14,7 +14,7 @@ next_id = 1
 
 @app.route('/')
 def home():
-    return render_template('index_restapi.html')
+    return app.send_static_file('index_restapi.html')
 
 @app.route('/api/todo', methods=['GET'])
 def get_todos():

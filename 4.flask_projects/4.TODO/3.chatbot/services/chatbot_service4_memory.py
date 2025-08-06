@@ -1,0 +1,133 @@
+# services/chatbot_service.py
+import os
+import json
+import logging
+from dotenv import load_dotenv
+from collections import deque
+
+from openai import OpenAI
+from services import todo_service as todo
+
+logger = logging.getLogger(__name__)  # 모듈 전용 로거
+
+load_dotenv()
+API_KEY = os.getenv("OPENAI_API_KEY")
+if not API_KEY:
+    raise RuntimeError("OPENAI_API_KEY is not set")
+
+client = OpenAI(api_key=API_KEY)
+
+HISTORY = deque(maxlen=20)  # 최대 20개를 담을 수 있는 저장공간, append 시 오른쪽에 쌓임; popleft() 하면 FIFO
+LAST_INDEX_MAP = {}  # {번호: todo_id}
+
+def store_history(role: str, content: str):
+    logger.debug(f"[HISTORY 저장] role={role}, content={content}")
+
+    # HISTORY.append((role, content)) # 튜플로 저장
+    HISTORY.append({"role": role, "content": content}) # dict 로 저장
+
+
+def build_messages(system_prompt: str, user_msg: str):
+    messages = [{"role": "system", "content": system_prompt}]
+
+    # for role, content in HISTORY:  # 튜플로 저장 시
+    #     messages.append({"role": role, "content": content})
+    messages.extend(HISTORY)  # 그대로 합침 (dict 로 저장 시)
+
+    messages.append({"role": "user", "content": user_msg})
+    return messages
+
+def process_chat(question: str, todos_data: list) -> dict:
+    """LLM 호출하여 action/text JSON 반환"""
+    todo_list = "\n".join(
+        [f"{i+1}. {t['text']} [{'완료됨' if t['completed'] else '미완료'}]" for i, t in enumerate(todos_data)]
+    ) or "할 일이 없습니다."
+
+    system_prompt = f"""
+당신은 To-Do 목록을 도와주는 비서입니다. 사용자의 질문을 이해하고 아래 예시처럼 반드시 JSON만 반환하세요.
+
+[할 일 목록]
+{todo_list}
+
+[출력 형식]
+{{ "action": "add" | "done" | "delete" | "list" | "summary", "text": "내용" }}
+"""
+# {{ "action": "add" | "done" | "delete" | "list" | "summary" | "delete_all", "text": "내용" }}
+
+
+
+    # history 포함해서 메시지 구성
+    messages = build_messages(system_prompt, question)
+    
+    # --- Open AI 호출 ---
+    logger.debug("[OpenAI 요청] model=gpt-4o-mini, temperature=0.2")
+    try:
+        response = client.chat.completions.create(
+            model="gpt-4o-mini",
+            messages=messages,
+            temperature=0.2
+        )
+    except Exception as e:
+        logger.error("[OpenAI 호출 실패] %s", e, exc_info=True)
+        raise
+
+    # --- 응답 파싱 ---
+    try:
+        reply_text = response.choices[0].message.content.strip()
+        logger.debug("[OpenAI 응답 텍스트]\n%s", reply_text)
+
+        clean = reply_text.replace("```json", "").replace("```", "").strip()
+        parsed = json.loads(clean)
+        logger.debug("[파싱된 JSON] %s", parsed)
+        return parsed
+    except Exception as e:
+        logger.error("[응답 파싱 실패] error=%s, raw=%s", e, reply_text if 'reply_text' in locals() else '')
+        # 안전망: 최소 형식으로 반환해 액션 함수에서 안내 메시지 출력
+        return {"action": "", "text": ""}
+    
+def handle_chat(question: str) -> dict:
+    """질문을 받아 LLM 호출 → 액션 수행 → 응답"""
+    store_history("user", question)
+    
+    parsed = process_chat(question, todo.to_llm_format())
+    answer = _apply_action_and_build_answer(parsed)
+    
+    store_history("assistant", answer)
+    
+    return {
+        "answer": answer,
+        "todos": todo.get_all()
+    }
+
+def _apply_action_and_build_answer(parsed: dict) -> str:
+    action = (parsed.get("action") or "").lower()
+    text = (parsed.get("text") or "").strip()
+
+    if action == "add":
+        if not text:
+            return "추가할 작업 내용을 알려주세요."
+        todo.add(text)
+        return f"할 일을 추가했어요: “{text}”\n\n{todo.list_compact()}"
+
+    if action == "done":
+        item = todo.find(text)
+        if not item:
+            return f"완료 표시할 항목을 찾지 못했어요: “{text}”"
+        todo.toggle(item["id"])
+        return f"완료 처리했어요: “{item['task']}”\n\n{todo.list_compact()}"
+
+    if action == "delete":
+        item = todo.find(text)
+        if not item:
+            return f"삭제할 항목을 찾지 못했어요: “{text}”"
+        todo.delete(item["id"])
+        return f"삭제했어요: “{item['task']}”\n\n{todo.list_compact()}"
+
+    if action == "list":
+        return todo.list_verbose()
+
+    if action == "summary":
+        total, done, pending = todo.summary()
+        return f"총 {total}개 중 완료 {done}개, 미완료 {pending}개입니다.\n\n{todo.list_compact()}"
+
+    return "무슨 작업을 해야 할지 잘 모르겠어요. 현재는 단순 업무만 지원하며 일괄 처리는 지원하지 않습니다. (지원: add, done, delete, list, summary)"

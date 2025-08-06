@@ -3,15 +3,17 @@
 <head>
     <title>Simple To-Do App</title>
     <style>
-        /* 모든 링크의 밑줄 제거 */
         a {
-            text-decoration: none;
+            text-decoration: none; /* 모든 링크의 밑줄 제거 */
         }
 
-        /* 완료된 항목은 취소선 표시 */
         .done {
-            text-decoration: line-through;
+            text-decoration: line-through; /* 완료된 항목은 취소선 표시 */
             color: gray;
+        }
+
+        ul li span {
+            cursor: pointer; /* 리스트 항목 클릭 시 포인터 커서 */
         }
     </style>
 </head>

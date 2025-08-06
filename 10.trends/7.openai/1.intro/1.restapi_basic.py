@@ -4,7 +4,7 @@ import requests
 
 load_dotenv()
 
-openai_api_key = os.environ.get("OPENAI_API_KEY")
+OPENAI_API_KEY = os.environ.get("OPENAI_API_KEY")
 
 def get_chat_gpt_response(user_input):
     response = requests.post(
@@ -19,7 +19,7 @@ def get_chat_gpt_response(user_input):
         },
         headers={
             'Content-Type': 'application/json',
-            'Authorization': f'Bearer {openai_api_key}'
+            'Authorization': f'Bearer {OPENAI_API_KEY}'
         }
     )
 

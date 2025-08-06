@@ -1,0 +1,15 @@
+a {
+    text-decoration: none;
+    margin-left: 10px;
+    cursor: pointer;
+    color: blue;
+}
+
+.done {
+    text-decoration: line-through;
+    color: gray;
+}
+
+#todo-list li span {
+    cursor: pointer; /* 리스트 항목 클릭 시 포인터 커서 */
+}

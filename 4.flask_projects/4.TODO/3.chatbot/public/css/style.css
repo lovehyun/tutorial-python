@@ -1,0 +1,26 @@
+a {
+    text-decoration: none;
+    margin-left: 10px;
+    cursor: pointer;
+    color: blue;
+}
+
+.done {
+    text-decoration: line-through;
+    color: gray;
+}
+
+#todo-list li span {
+    cursor: pointer; /* 리스트 항목 클릭 시 포인터 커서 */
+    font-size: 1.2em; /* 할 일 텍스트 크기 증가 */
+}
+
+.bi-trash {
+    font-size: 1.2em;
+    color: #dc3545; /* 빨간색 */
+    cursor: pointer;
+}
+
+.bi-trash:hover {
+    color: #ff0000; /* 호버 시 더 진한 빨간색 */
+}
