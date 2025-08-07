@@ -3,7 +3,9 @@ import os
 import json
 import logging
 from dotenv import load_dotenv
+
 from collections import deque
+from string import Template
 
 from openai import OpenAI
 from services import todo_service as todo
@@ -17,7 +19,18 @@ if not API_KEY:
 
 client = OpenAI(api_key=API_KEY)
 
-HISTORY = deque(maxlen=20)  # 최대 20개를 담을 수 있는 저장공간, append 시 오른쪽에 쌓임; popleft() 하면 FIFO
+HISTORY = deque(maxlen=20)  # 최대 10개쌍(총20개) 대화를 담을 수 있는 저장공간, append 시 오른쪽에 쌓임; popleft() 하면 FIFO
+
+SYSTEM_PROMPT_TEMPLATE = Template("""
+당신은 To-Do 목록을 도와주는 비서입니다. 사용자의 질문을 이해하고 아래 예시처럼 반드시 JSON만 반환하세요.
+
+[할 일 목록]
+$todo_list
+
+[출력 형식]
+{ "action": "add" | "done" | "undone" | "delete" | "list" | "summary", "text": "내용" }
+""")
+# {{ "action": "add" | "done" | "undone" | "delete" | "list" | "summary" | "delete_all", "text": "내용" }}
 
 
 def store_history(role: str, content: str):
@@ -26,7 +39,6 @@ def store_history(role: str, content: str):
     # HISTORY.append((role, content)) # 튜플로 저장
     HISTORY.append({"role": role, "content": content}) # dict 로 저장
 
-
 def build_messages(system_prompt: str, user_msg: str):
     messages = [{"role": "system", "content": system_prompt}]
 
@@ -34,47 +46,49 @@ def build_messages(system_prompt: str, user_msg: str):
     #     messages.append({"role": role, "content": content})
     messages.extend(HISTORY)  # 그대로 합침 (dict 로 저장 시)
 
+    # 현재 사용자 질문 추가
     messages.append({"role": "user", "content": user_msg})
     return messages
 
+
 # 메인 핸들러
-def handle_chat(question: str) -> dict:
+def handle_chat6(question: str) -> dict:
     """질문을 받아 LLM 호출 → 액션 수행 → 응답"""
-    store_history("user", question)
+    action = process_chat(question, todo.to_llm_format())
+    answer = _apply_action_and_build_answer(action)
     
-    parsed = process_chat(question, todo.to_llm_format())
-    answer = _apply_action_and_build_answer(parsed)
-    
-    store_history("assistant", answer)
+    store_history("assistant", answer)  # 응답 내용 저장
     
     return {
         "answer": answer,
         "todos": todo.get_all()
     }
 
+def format_messages_for_log(messages: list) -> str:
+    lines = []
+    for msg in messages:
+        role = msg.get("role", "?")
+        content = msg.get("content", "").strip()
+        lines.append(f"[{role}]\n{content}")
+    return "\n\n".join(lines)
+
 # 챗봇 대화 수행
 def process_chat(question: str, todos_data: list) -> dict:
     """LLM 호출하여 action/text JSON 반환"""
     todo_list = "\n".join(
-        [f"{i+1}. {t['text']} [{'완료됨' if t['completed'] else '미완료'}]" for i, t in enumerate(todos_data)]
+        [f"{i}. {t['text']} [{'완료됨' if t['completed'] else '미완료'}]" for i, t in enumerate(todos_data, start=1)]
     ) or "할 일이 없습니다."
 
-    system_prompt = f"""
-당신은 To-Do 목록을 도와주는 비서입니다. 사용자의 질문을 이해하고 아래 예시처럼 반드시 JSON만 반환하세요.
-
-[할 일 목록]
-{todo_list}
-
-[출력 형식]
-{{ "action": "add" | "done" | "delete" | "list" | "summary", "text": "내용" }}
-"""
-# {{ "action": "add" | "done" | "delete" | "list" | "summary" | "delete_all", "text": "내용" }}
-
+    system_prompt = SYSTEM_PROMPT_TEMPLATE.substitute(todo_list=todo_list)
+    
     # history 포함해서 메시지 구성
     messages = build_messages(system_prompt, question)
     
     # --- Open AI 호출 ---
     logger.debug("[OpenAI 요청] model=gpt-4o-mini, temperature=0.2")
+
+    print(f"\n-----\n[프롬프트 (메시지 히스토리)]\n{format_messages_for_log(messages)}\n-----n")
+
     try:
         response = client.chat.completions.create(
             model="gpt-4o-mini",
@@ -94,35 +108,47 @@ def process_chat(question: str, todos_data: list) -> dict:
         parsed = json.loads(clean)
         logger.debug("[파싱된 JSON] %s", parsed)
         return parsed
+    
     except Exception as e:
         logger.error("[응답 파싱 실패] error=%s, raw=%s", e, reply_text if 'reply_text' in locals() else '')
         # 안전망: 최소 형식으로 반환해 액션 함수에서 안내 메시지 출력
         return {"action": "", "text": ""}
 
 # 액션 수행
-def _apply_action_and_build_answer(parsed: dict) -> str:
-    action = (parsed.get("action") or "").lower()
-    text = (parsed.get("text") or "").strip()
+def _apply_action_and_build_answer(action_item: dict) -> str:
+    action = (action_item.get("action") or "").lower()
+    text = (action_item.get("text") or "").strip()
 
     if action == "add":
         if not text:
             return "추가할 작업 내용을 알려주세요."
+
         todo.add(text)
-        return f"할 일을 추가했어요: “{text}”\n\n{todo.list_compact()}"
+        return f"할 일(“{text}”)을 추가했어요\n\n{todo.list_compact()}"
 
     if action == "done":
         item = todo.find(text)
         if not item:
-            return f"완료 표시할 항목을 찾지 못했어요: “{text}”"
+            return f"완료 표시할 항목(“{text}”)을 찾지 못했어요"
+
         todo.toggle(item["id"])
-        return f"완료 처리했어요: “{item['task']}”\n\n{todo.list_compact()}"
+        return f"“{item['task']}” 완료 처리했어요.\n\n{todo.list_compact()}"
+
+    if action == "undone":
+        item = todo.find(text)
+        if not item:
+            return f"완료취소 표시할 항목(“{text}”)을 찾지 못했어요"
+
+        todo.toggle(item["id"])
+        return f"“{item['task']}” 완료취소 처리했어요\n\n{todo.list_compact()}"
 
     if action == "delete":
         item = todo.find(text)
         if not item:
-            return f"삭제할 항목을 찾지 못했어요: “{text}”"
+            return f"삭제할 항목(“{item['task']}”)을 찾지 못했어요"
+
         todo.delete(item["id"])
-        return f"삭제했어요: “{item['task']}”\n\n{todo.list_compact()}"
+        return f"“{item['task']}” 삭제했어요\n\n{todo.list_compact()}"
 
     if action == "list":
         return todo.list_verbose()
@@ -131,4 +157,7 @@ def _apply_action_and_build_answer(parsed: dict) -> str:
         total, done, pending = todo.summary()
         return f"총 {total}개 중 완료 {done}개, 미완료 {pending}개입니다.\n\n{todo.list_compact()}"
 
+    if action == "error":
+        return text
+    
     return "무슨 작업을 해야 할지 잘 모르겠어요. 현재는 단순 업무만 지원하며 일괄 처리는 지원하지 않습니다. (지원: add, done, delete, list, summary)"

@@ -106,7 +106,7 @@ async function handleUserMessage() {
 // 메시지 추가
 function addMessage(message, sender = 'user') {
     const container = document.getElementById('chatbotMessages');
-    const formatted = message.replace(/\n/g, '<br>');
+    const formatted = message.replace(/\n/g, '<br>');  // 출력 메시지 포멧팅 ('\n' -> '<br>')
 
     const messageElement = document.createElement('div');
     messageElement.innerHTML = sender === 'user'

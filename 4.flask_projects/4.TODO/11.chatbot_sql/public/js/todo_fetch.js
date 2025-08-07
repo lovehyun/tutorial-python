@@ -33,13 +33,13 @@ function loadTodos() {
             data.forEach((todo) => {
                 const li = document.createElement('li');
                 li.innerHTML = `
-                            <span class="${todo.done ? 'done' : ''}" onclick="toggleTodo(${todo.id})">
-                                ${todo.task}
-                            </span>
-                            <a onclick="deleteTodo(${todo.id})">
-                                <i class="bi bi-trash"></i>
-                            </a>
-                        `;
+                    <span class="${todo.done ? 'done' : ''}" onclick="toggleTodo(${todo.id})">
+                        ${todo.task}
+                    </span>
+                    <a onclick="deleteTodo(${todo.id})">
+                        <i class="bi bi-trash"></i>
+                    </a>
+                `;
                 todoList.appendChild(li);
             });
         });

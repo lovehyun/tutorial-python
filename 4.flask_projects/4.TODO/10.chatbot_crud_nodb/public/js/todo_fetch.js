@@ -22,6 +22,29 @@ document.addEventListener('DOMContentLoaded', () => {
     loadTodos();
 })
 
+// To-Do 목록 불러오기
+function loadTodos() {
+    const todoList = document.getElementById('todo-list');
+
+    fetch('/api/todo')
+        .then((response) => response.json())
+        .then((data) => {
+            todoList.innerHTML = '';
+            data.forEach((todo) => {
+                const li = document.createElement('li');
+                li.innerHTML = `
+                    <span class="${todo.done ? 'done' : ''}" onclick="toggleTodo(${todo.id})">
+                        ${todo.task}
+                    </span>
+                    <a onclick="deleteTodo(${todo.id})">
+                        <i class="bi bi-trash"></i>
+                    </a>
+                `;
+                todoList.appendChild(li);
+            });
+        });
+}
+
 // 완료 토글
 function toggleTodo(id) {
     fetch(`/api/todo/${id}`, {
@@ -34,27 +57,4 @@ function deleteTodo(id) {
     fetch(`/api/todo/${id}`, {
         method: 'DELETE',
     }).then(() => loadTodos());
-}
-
-// To-Do 목록 불러오기
-function loadTodos() {
-    const todoList = document.getElementById('todo-list');
-
-    fetch('/api/todo')
-        .then((response) => response.json())
-        .then((data) => {
-            todoList.innerHTML = '';
-            data.forEach((todo) => {
-                const li = document.createElement('li');
-                li.innerHTML = `
-                            <span class="${todo.done ? 'done' : ''}" onclick="toggleTodo(${todo.id})">
-                                ${todo.task}
-                            </span>
-                            <a onclick="deleteTodo(${todo.id})">
-                                <i class="bi bi-trash"></i>
-                            </a>
-                        `;
-                todoList.appendChild(li);
-            });
-        });
 }
