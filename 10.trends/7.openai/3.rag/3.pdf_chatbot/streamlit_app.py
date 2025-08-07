@@ -1,6 +1,4 @@
 # streamlit run streamlit_app.py
-
-#import Essential dependencies
 import os
 from dotenv import load_dotenv
 import streamlit as sl
