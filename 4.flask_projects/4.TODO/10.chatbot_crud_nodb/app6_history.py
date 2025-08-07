@@ -3,8 +3,8 @@ import logging
 from flask import Flask
 from flask_cors import CORS
 
-from routes.todo_routes3_refactor import todo_bp
-from routes.chatbot_routes4_history import chatbot_bp
+from routes.todo_routes5_refactor import todo_bp
+from routes.chatbot_routes6_history import chatbot_bp
 
 logging.basicConfig(
     level=logging.DEBUG,  # DEBUG 이상 모두 출력

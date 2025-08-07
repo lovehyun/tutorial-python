@@ -13,6 +13,18 @@ if not API_KEY:
 
 client = OpenAI(api_key=API_KEY)
 
+
+# 메인 핸들러
+def handle_chat(question: str) -> dict:
+    """질문을 받아 LLM 호출 → 액션 수행 → 응답"""
+    parsed = process_chat(question, todo.to_llm_format())
+    answer = _apply_action_and_build_answer(parsed)
+    return {
+        "answer": answer,
+        "todos": todo.get_all()
+    }
+
+# 챗봇 대화 수행
 def process_chat(question: str, todos_data: list) -> dict:
     """LLM 호출하여 action/text JSON 반환"""
     todo_list = "\n".join(
@@ -41,15 +53,7 @@ def process_chat(question: str, todos_data: list) -> dict:
     reply = reply.replace("```json", "").replace("```", "").strip()
     return json.loads(reply)
 
-def handle_chat(question: str) -> dict:
-    """질문을 받아 LLM 호출 → 액션 수행 → 응답"""
-    parsed = process_chat(question, todo.to_llm_format())
-    answer = _apply_action_and_build_answer(parsed)
-    return {
-        "answer": answer,
-        "todos": todo.get_all()
-    }
-
+# 액션 수행
 def _apply_action_and_build_answer(parsed: dict) -> str:
     action = (parsed.get("action") or "").lower()
     text = (parsed.get("text") or "").strip()

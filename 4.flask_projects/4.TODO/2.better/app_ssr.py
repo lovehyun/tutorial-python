@@ -5,10 +5,12 @@ app = Flask(__name__)
 todos = []
 next_id = 1
 
+# READ = GET
 @app.route('/')
 def index():
     return render_template('index_ssr.html', todos=todos)
 
+# CREATE = POST
 @app.route('/add', methods=['POST'])
 def add_todo():
     global next_id
@@ -18,6 +20,7 @@ def add_todo():
         next_id += 1
     return redirect('/')
 
+# UPDATE = POST
 @app.route('/toggle/<int:todo_id>', methods=['POST'])
 def toggle_todo(todo_id):
     for todo in todos:
@@ -26,6 +29,7 @@ def toggle_todo(todo_id):
             break
     return redirect('/')
 
+# DELETE = POST
 @app.route('/delete/<int:todo_id>', methods=['POST'])
 def delete_todo(todo_id):
     for todo in todos:

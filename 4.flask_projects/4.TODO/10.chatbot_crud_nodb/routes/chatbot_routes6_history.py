@@ -1,5 +1,5 @@
 from flask import Blueprint, request, jsonify
-from services.chatbot_service4_memory import handle_chat
+from services.chatbot_service6_memory import handle_chat
 
 chatbot_bp = Blueprint("chatbot", __name__)
 

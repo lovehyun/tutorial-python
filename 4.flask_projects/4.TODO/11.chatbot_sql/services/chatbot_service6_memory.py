@@ -18,7 +18,7 @@ if not API_KEY:
 client = OpenAI(api_key=API_KEY)
 
 HISTORY = deque(maxlen=20)  # 최대 20개를 담을 수 있는 저장공간, append 시 오른쪽에 쌓임; popleft() 하면 FIFO
-LAST_INDEX_MAP = {}  # {번호: todo_id}
+
 
 def store_history(role: str, content: str):
     logger.debug(f"[HISTORY 저장] role={role}, content={content}")
@@ -37,6 +37,22 @@ def build_messages(system_prompt: str, user_msg: str):
     messages.append({"role": "user", "content": user_msg})
     return messages
 
+# 메인 핸들러
+def handle_chat(question: str) -> dict:
+    """질문을 받아 LLM 호출 → 액션 수행 → 응답"""
+    store_history("user", question)
+    
+    parsed = process_chat(question, todo.to_llm_format())
+    answer = _apply_action_and_build_answer(parsed)
+    
+    store_history("assistant", answer)
+    
+    return {
+        "answer": answer,
+        "todos": todo.get_all()
+    }
+
+# 챗봇 대화 수행
 def process_chat(question: str, todos_data: list) -> dict:
     """LLM 호출하여 action/text JSON 반환"""
     todo_list = "\n".join(
@@ -53,8 +69,6 @@ def process_chat(question: str, todos_data: list) -> dict:
 {{ "action": "add" | "done" | "delete" | "list" | "summary", "text": "내용" }}
 """
 # {{ "action": "add" | "done" | "delete" | "list" | "summary" | "delete_all", "text": "내용" }}
-
-
 
     # history 포함해서 메시지 구성
     messages = build_messages(system_prompt, question)
@@ -84,21 +98,8 @@ def process_chat(question: str, todos_data: list) -> dict:
         logger.error("[응답 파싱 실패] error=%s, raw=%s", e, reply_text if 'reply_text' in locals() else '')
         # 안전망: 최소 형식으로 반환해 액션 함수에서 안내 메시지 출력
         return {"action": "", "text": ""}
-    
-def handle_chat(question: str) -> dict:
-    """질문을 받아 LLM 호출 → 액션 수행 → 응답"""
-    store_history("user", question)
-    
-    parsed = process_chat(question, todo.to_llm_format())
-    answer = _apply_action_and_build_answer(parsed)
-    
-    store_history("assistant", answer)
-    
-    return {
-        "answer": answer,
-        "todos": todo.get_all()
-    }
 
+# 액션 수행
 def _apply_action_and_build_answer(parsed: dict) -> str:
     action = (parsed.get("action") or "").lower()
     text = (parsed.get("text") or "").strip()

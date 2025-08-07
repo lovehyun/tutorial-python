@@ -5,11 +5,9 @@ from typing import List, Dict, Optional, Tuple
 _todos: List[Dict] = []
 _next_id: int = 1
 
-
 def get_all() -> List[Dict]:
     """전체 To-Do 반환"""
     return _todos
-
 
 def add(task: str) -> Dict:
     """할 일 추가"""
@@ -19,7 +17,6 @@ def add(task: str) -> Dict:
     _next_id += 1
     return item
 
-
 def toggle(todo_id: int) -> Optional[Dict]:
     """완료/미완료 토글"""
     for t in _todos:
@@ -27,7 +24,6 @@ def toggle(todo_id: int) -> Optional[Dict]:
             t["done"] = not t["done"]
             return t
     return None
-
 
 def delete(todo_id: int) -> bool:
     """항목 삭제"""
@@ -37,7 +33,6 @@ def delete(todo_id: int) -> bool:
             return True
     return False
 
-
 def summary() -> Tuple[int, int, int]:
     """(total, done, pending)"""
     total = len(_todos)
@@ -45,12 +40,10 @@ def summary() -> Tuple[int, int, int]:
     pending = total - done
     return total, done, pending
 
-
 # ---- LLM/챗봇 편의 함수들 ----
 def to_llm_format() -> List[Dict]:
     """LLM 입력용 포맷으로 변환"""
     return [{"text": t["task"], "completed": t["done"]} for t in _todos]
-
 
 def find(hint: str) -> Optional[Dict]:
     """숫자(id) 또는 부분 문자열로 항목 찾기"""
@@ -67,12 +60,10 @@ def find(hint: str) -> Optional[Dict]:
             return t
     return None
 
-
 def list_verbose() -> str:
     if not _todos:
         return "할 일이 없습니다."
     return "\n".join([f"{t['id']}. {t['task']} [{'완료' if t['done'] else '미완료'}]" for t in _todos])
-
 
 def list_compact() -> str:
     if not _todos:
@@ -80,7 +71,6 @@ def list_compact() -> str:
     return "현재 목록:\n" + ", ".join(
         [f"{t['id']}. {t['task']}{'(완료)' if t['done'] else ''}" for t in _todos]
     )
-
 
 # ---- 테스트/초기화용 (선택) ----
 def reset(seed: Optional[List[str]] = None) -> None:

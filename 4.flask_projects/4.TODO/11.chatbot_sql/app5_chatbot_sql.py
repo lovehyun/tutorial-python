@@ -1,12 +1,15 @@
 from flask import Flask
 from flask_cors import CORS
-# from routes.todo_routes import todo_bp
-from routes.todo_routes3_refactor import todo_bp
+
+from database5 import init_db, close_db
+
+from routes.todo_routes5_refactor import todo_bp
 from routes.chatbot_routes import chatbot_bp
 
 app = Flask(__name__, static_folder="public", static_url_path="")
 CORS(app, resources={r"/api/*": {"origins": "*"}})
 # CORS(app)
+app.teardown_appcontext(close_db)
 
 # 블루프린트 등록
 app.register_blueprint(todo_bp, url_prefix="/api/todo")
@@ -17,4 +20,6 @@ def home():
     return app.send_static_file("index_restapi.html")
 
 if __name__ == "__main__":
+    with app.app_context():
+        init_db()
     app.run(debug=True)

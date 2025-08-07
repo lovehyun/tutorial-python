@@ -11,33 +11,16 @@ document.addEventListener('DOMContentLoaded', () => {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ task: task }),
-            })
-                .then(() => {
-                    taskInput.value = '';
-                    loadTodos();
-                });
+            }).then(() => {
+                taskInput.value = '';
+                loadTodos();
+            });
         }
     });
 
     // 초기 로드
     loadTodos();
-});
-
-// 완료 토글
-function toggleTodo(id) {
-    fetch(`/api/todo/${id}`, {
-        method: 'PUT',
-    })
-        .then(() => loadTodos());
-}
-
-// To-Do 삭제
-function deleteTodo(id) {
-    fetch(`/api/todo/${id}`, {
-        method: 'DELETE',
-    })
-        .then(() => loadTodos());
-}
+})
 
 // To-Do 목록 불러오기
 function loadTodos() {
@@ -50,12 +33,28 @@ function loadTodos() {
             data.forEach((todo) => {
                 const li = document.createElement('li');
                 li.innerHTML = `
-                    <span class="${todo.done ? 'done' : ''}" onclick="toggleTodo(${todo.id})">
-                        ${todo.task}
-                    </span>
-                    <a onclick="deleteTodo(${todo.id})">❌</a>
-                `;
+                            <span class="${todo.done ? 'done' : ''}" onclick="toggleTodo(${todo.id})">
+                                ${todo.task}
+                            </span>
+                            <a onclick="deleteTodo(${todo.id})">
+                                <i class="bi bi-trash"></i>
+                            </a>
+                        `;
                 todoList.appendChild(li);
             });
         });
+}
+
+// 완료 토글
+function toggleTodo(id) {
+    fetch(`/api/todo/${id}`, {
+        method: 'PUT',
+    }).then(() => loadTodos());
+}
+
+// To-Do 삭제
+function deleteTodo(id) {
+    fetch(`/api/todo/${id}`, {
+        method: 'DELETE',
+    }).then(() => loadTodos());
 }

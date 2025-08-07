@@ -1,0 +1,135 @@
+body {
+    font-family: Arial, sans-serif; /* 웹 페이지 전체에 Arial 또는 기본 sans-serif 글꼴을 사용 */
+}
+
+.chatbot-icon {
+    position: fixed; /* 화면의 고정된 위치에 아이콘 배치 */
+    bottom: 20px; /* 화면 아래에서 20px 위로 위치 */
+    right: 20px; /* 화면 오른쪽에서 20px 왼쪽으로 위치 */
+    background-color: #007bff; /* 아이콘의 배경색을 파란색으로 설정 */
+    color: white; /* 아이콘의 글자 색상을 흰색으로 설정 */
+    border-radius: 50%; /* 아이콘을 원형으로 만들기 위해 모서리를 둥글게 설정 */
+    width: 50px; /* 아이콘의 너비를 50px로 설정 */
+    height: 50px; /* 아이콘의 높이를 50px로 설정 */
+    display: flex; /* 아이콘 내부 요소들을 플렉스 박스로 설정 */
+    justify-content: center; /* 아이콘 내부 요소들을 수평 중앙 정렬 */
+    align-items: center; /* 아이콘 내부 요소들을 수직 중앙 정렬 */
+    cursor: pointer; /* 아이콘에 마우스 포인터를 가져가면 커서가 포인터 모양으로 변경 */
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2); /* 아이콘에 그림자를 추가하여 입체감 부여 */
+}
+
+.chatbot-icon i {
+    font-size: 24px; /* 또는 1.5rem, 상황에 따라 조정 */
+}
+
+.chatbot-window {
+    position: fixed; /* 화면의 고정된 위치에 챗봇 창 배치 */
+    bottom: 20px; /* 화면 아래에서 20px 위로 위치 */
+    right: 20px; /* 화면 오른쪽에서 20px 왼쪽으로 위치 */
+    width: 300px; /* 챗봇 창의 너비를 300px로 설정 */
+    height: 400px; /* 챗봇 창의 높이를 400px로 설정 */
+    background-color: white; /* 챗봇 창의 배경색을 흰색으로 설정 */
+    border: 1px solid #ddd; /* 챗봇 창의 경계선을 밝은 회색으로 설정 */
+    border-radius: 8px; /* 챗봇 창의 모서리를 둥글게 설정 */
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2); /* 챗봇 창에 그림자를 추가하여 입체감 부여 */
+    display: none; /* 기본적으로 챗봇 창을 보이지 않게 설정 */
+    flex-direction: column; /* 챗봇 창 내부 요소들을 세로로 배치 */
+    resize: none; /* 브라우저 기본 리사이즈는 비활성화 */
+}
+
+.resizer {
+    width: 10px;
+    height: 10px;
+    background: #ccc;
+    position: absolute;
+    left: 0; /* 왼쪽 */
+    top: 0;  /* 상단 */
+    cursor: nw-resize; /* ↖ 방향 커서 */
+}
+
+.chatbot-header {
+    background-color: #007bff; /* 챗봇 헤더의 배경색을 파란색으로 설정 */
+    color: white; /* 챗봇 헤더의 글자 색상을 흰색으로 설정 */
+    padding: 10px; /* 챗봇 헤더의 내부 여백을 10px로 설정 */
+    border-top-left-radius: 8px; /* 챗봇 헤더의 왼쪽 위 모서리를 둥글게 설정 */
+    border-top-right-radius: 8px; /* 챗봇 헤더의 오른쪽 위 모서리를 둥글게 설정 */
+    display: flex; /* 챗봇 헤더 내부 요소들을 플렉스 박스로 설정 */
+    justify-content: space-between; /* 챗봇 헤더 내부 요소들을 양 끝에 배치 */
+    align-items: center; /* 챗봇 헤더 내부 요소들을 수직 중앙 정렬 */
+}
+
+.chatbot-body {
+    flex: 1; /* 챗봇 본문이 가능한 모든 공간을 차지하도록 설정 */
+    padding: 10px; /* 챗봇 본문의 내부 여백을 10px로 설정 */
+    display: flex; /* 챗봇 본문 내부 요소들을 플렉스 박스로 설정 */
+    flex-direction: column; /* 챗봇 본문 내부 요소들을 세로로 배치 */
+    overflow: hidden;        /* 내부에서만 스크롤되도록 */
+}
+
+.chatbot-messages {
+    flex: 1; /* 메시지 창이 가능한 모든 공간을 차지하도록 설정 */
+    overflow-y: auto; /* 메시지 창의 수직 스크롤을 허용 */
+    margin-bottom: 10px; /* 메시지 창의 아래 여백을 10px로 설정 */
+    border: 1px solid #ddd; /* 메시지 창의 경계선을 밝은 회색으로 설정 */
+    border-radius: 4px; /* 메시지 창의 모서리를 둥글게 설정 */
+    padding: 5px; /* 메시지 창의 내부 여백을 5px로 설정 */
+    /* max-height: 280px; 메시지 창의 최대 높이를 280px로 설정하여 스크롤바가 나타나도록 함 */
+}
+
+.chatbot-input-container {
+    display: flex; /* 입력창과 버튼을 같은 줄에 배치 */
+    align-items: center; /* 입력창과 버튼을 수직 중앙 정렬 */
+
+    /* 고정 높이 추가 */
+    padding-top: 8px;
+    padding-bottom: 8px;
+    border-top: 1px solid #ddd;
+}
+
+#chatbotInput {
+    width: calc(100% - 60px); /* 입력창의 너비를 계산하여 설정 (전체 너비에서 버튼의 너비와 여백을 뺀 값) */
+    padding: 5px; /* 입력창의 내부 여백을 5px로 설정 */
+}
+
+#sendMessage {
+    width: 50px; /* 보내기 버튼의 너비를 50px로 설정 */
+    padding: 5px; /* 보내기 버튼의 내부 여백을 5px로 설정 */
+}
+
+/* 메세지 좌우 align */
+/* 사용자 메시지 (오른쪽 정렬) */
+.chatbot-messages .user,
+.chatbot-messages .bot {
+    display: flex;
+    align-items: center;       /* 아이콘과 텍스트를 수직 중앙 정렬 */
+    margin-bottom: 5px;
+    gap: 6px;                  /* 아이콘과 텍스트 사이 여백 */
+}
+
+.chatbot-messages .user {
+    justify-content: flex-end; /* 오른쪽 정렬 */
+}
+
+/* 챗봇 메시지 (왼쪽 정렬) */
+.chatbot-messages .bot {
+    justify-content: flex-start; /* 왼쪽 정렬 */
+}
+
+/* 말풍선 추가 */
+.chatbot-messages .user {
+    background-color: #e1f5fe;
+    /* border-radius: 12px; */
+    border-radius: 12px 12px 0 12px;  /* ↘ 직각 */
+    padding: 6px 10px;
+    max-width: 80%;
+    margin-left: auto;      /* 오른쪽으로 정렬되도록 */
+}
+
+.chatbot-messages .bot {
+    background-color: #ffdcdc;
+    /* border-radius: 12px; */
+    border-radius: 12px 12px 12px 0;  /* ↙ 직각 */
+    padding: 6px 10px;
+    max-width: 80%;
+    margin-right: auto;     /* 왼쪽으로 정렬되도록 */
+}

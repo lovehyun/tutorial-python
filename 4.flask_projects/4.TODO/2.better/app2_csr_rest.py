@@ -16,10 +16,12 @@ next_id = 1
 def home():
     return app.send_static_file('index_restapi.html')
 
+# READ = GET
 @app.route('/api/todo', methods=['GET'])
 def get_todos():
     return jsonify(todos)
 
+# CREATE = POST
 @app.route('/api/todo', methods=['POST'])
 def add_todo():
     global next_id
@@ -33,6 +35,7 @@ def add_todo():
     next_id += 1
     return jsonify(new_todo), 201
 
+# UPDATE = PUT
 @app.route('/api/todo/<int:todo_id>', methods=['PUT'])
 def toggle_todo(todo_id):
     for todo in todos:
@@ -41,6 +44,7 @@ def toggle_todo(todo_id):
             return jsonify(todo)
     return jsonify({'error': 'Todo not found'}), 404
 
+# DELETE = DELETE
 @app.route('/api/todo/<int:todo_id>', methods=['DELETE'])
 def delete_todo(todo_id):
     for todo in todos:
