@@ -12,6 +12,7 @@ __pycache__/
 *.db
 **/audio/*
 *.pdf
+*.xlsx
 
 # temp dir
 TEMP/
@@ -28,6 +29,8 @@ migrations/
 .env
 secret.txt
 gapi-*.json
+credentials.json
+token.json
 *.pem
 
 # streamlit secrets
