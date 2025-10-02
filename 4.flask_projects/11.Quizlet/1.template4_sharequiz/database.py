@@ -65,7 +65,7 @@ def init_database():
         # SQLite 일부 버전에서 ALTER 실패 시 무시 (이미 적용되었을 가능성)
         pass
     
-    # quiz_results 테이블 생성
+    # quiz_results 테이블 생성 (answers 컬럼 포함)
     cursor.execute('''
         CREATE TABLE IF NOT EXISTS quiz_results (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -76,6 +76,7 @@ def init_database():
             correct_answers INTEGER NOT NULL,
             time_taken INTEGER,
             settings TEXT,
+            answers TEXT,
             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
             FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE,
             FOREIGN KEY (quiz_file_id) REFERENCES quiz_files (id) ON DELETE CASCADE

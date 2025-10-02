@@ -5,6 +5,7 @@ from flask import Blueprint, render_template, request, redirect, url_for, flash,
 from flask_login import login_required, current_user
 import json
 from datetime import datetime, timedelta
+import sqlite3
 from database import get_db_connection, get_quiz_session, deactivate_quiz_session
 
 result_bp = Blueprint('result', __name__)
@@ -245,7 +246,9 @@ def detail(result_id):
         return redirect(url_for('result.history'))
     
     # 설정 정보 파싱
-    settings = json.loads(result['settings']) if result and result.get('settings') else {}
+    settings = {}
+    if result and ('settings' in result.keys()) and result['settings']:
+        settings = json.loads(result['settings'])
     answers = {}
     try:
         if result and 'answers' in result.keys() and result['answers']:
