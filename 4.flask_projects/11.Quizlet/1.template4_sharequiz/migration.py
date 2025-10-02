@@ -29,6 +29,11 @@ def run_migrations() -> None:
         if not _column_exists(conn, 'quiz_files', 'shared_by_user_id'):
             conn.execute('ALTER TABLE quiz_files ADD COLUMN shared_by_user_id INTEGER')
             conn.commit()
+
+        # quiz_files: shared_source_file_id (가져오기 원본 파일 ID)
+        if not _column_exists(conn, 'quiz_files', 'shared_source_file_id'):
+            conn.execute('ALTER TABLE quiz_files ADD COLUMN shared_source_file_id INTEGER')
+            conn.commit()
     finally:
         conn.close()
 

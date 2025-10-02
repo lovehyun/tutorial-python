@@ -102,10 +102,19 @@ def dashboard():
     conn = get_db_connection()
     
     # 사용자의 퀴즈 파일 목록
-    files = conn.execute(
-        'SELECT * FROM quiz_files WHERE user_id = ? ORDER BY created_at DESC',
-        (current_user.id,)
-    ).fetchall()
+    files = conn.execute('''
+        SELECT qf.*, u.username AS owner_name,
+               CASE 
+                 WHEN qf.shared_source_file_id IS NOT NULL THEN (
+                   SELECT is_public FROM quiz_files WHERE id = qf.shared_source_file_id
+                 )
+                 ELSE NULL
+               END AS source_is_public
+        FROM quiz_files qf
+        LEFT JOIN users u ON u.id = qf.shared_by_user_id
+        WHERE qf.user_id = ?
+        ORDER BY qf.created_at DESC
+    ''', (current_user.id,)).fetchall()
     
     # 최근 시험 결과 5개
     recent_results = conn.execute('''
@@ -209,10 +218,15 @@ def toggle_share(file_id):
     desired = request.form.get('is_public', '0')
     is_public = 1 if str(desired) == '1' else 0
     conn = get_db_connection()
-    owner = conn.execute('SELECT user_id FROM quiz_files WHERE id = ?', (file_id,)).fetchone()
+    owner = conn.execute('SELECT user_id, shared_source_file_id FROM quiz_files WHERE id = ?', (file_id,)).fetchone()
     if not owner or owner['user_id'] != current_user.id:
         conn.close()
         flash('권한이 없습니다.', 'error')
+        return redirect(url_for('quiz.dashboard'))
+    # 가져온 복제본은 공유 금지
+    if owner['shared_source_file_id']:
+        conn.close()
+        flash('가져온 퀴즈는 재공유할 수 없습니다.', 'error')
         return redirect(url_for('quiz.dashboard'))
     conn.execute('UPDATE quiz_files SET is_public = ? WHERE id = ?', (is_public, file_id))
     conn.commit()
@@ -253,7 +267,10 @@ def import_shared(file_id):
     import shutil
     conn = get_db_connection()
     row = conn.execute('''
-        SELECT * FROM quiz_files WHERE id = ? AND is_public = 1
+        SELECT qf.*, u.username AS owner_name
+        FROM quiz_files qf
+        JOIN users u ON u.id = qf.user_id
+        WHERE qf.id = ? AND qf.is_public = 1
     ''', (file_id,)).fetchone()
     if not row or row['user_id'] == current_user.id:
         conn.close()
@@ -286,9 +303,9 @@ def import_shared(file_id):
 
     # DB에 내 소유로 새 레코드 생성
     conn.execute('''
-        INSERT INTO quiz_files (user_id, filename, original_filename, file_path, question_count, is_public, shared_by_user_id)
-        VALUES (?, ?, ?, ?, ?, 0, ?)
-    ''', (current_user.id, os.path.basename(dst_path), row['original_filename'], dst_path, row['question_count'], row['user_id']))
+        INSERT INTO quiz_files (user_id, filename, original_filename, file_path, question_count, is_public, shared_by_user_id, shared_source_file_id)
+        VALUES (?, ?, ?, ?, ?, 0, ?, ?)
+    ''', (current_user.id, os.path.basename(dst_path), row['original_filename'], dst_path, row['question_count'], row['user_id'], row['id']))
     conn.commit()
     conn.close()
 
@@ -337,6 +354,13 @@ def study(file_id):
         'SELECT * FROM quiz_files WHERE id = ? AND user_id = ?',
         (file_id, current_user.id)
     ).fetchone()
+    # 원본 공개 여부 확인 (가져온 경우만)
+    if file_info and file_info['shared_source_file_id']:
+        source = conn.execute('SELECT is_public FROM quiz_files WHERE id = ?', (file_info['shared_source_file_id'],)).fetchone()
+        if not source or source['is_public'] != 1:
+            conn.close()
+            flash('원작자(공유자)가 해당 문제를 비공개 처리하여 더이상 볼 수 없습니다.', 'error')
+            return redirect(url_for('quiz.dashboard'))
     conn.close()
     
     if not file_info:
@@ -360,11 +384,19 @@ def quiz_start(file_id):
         'SELECT * FROM quiz_files WHERE id = ? AND user_id = ?',
         (file_id, current_user.id)
     ).fetchone()
-    conn.close()
     
     if not file_info:
+        conn.close()
         flash('파일을 찾을 수 없습니다.', 'error')
         return redirect(url_for('quiz.dashboard'))
+    # 원본 공개 여부 확인 (가져온 경우만)
+    if file_info['shared_source_file_id']:
+        source = conn.execute('SELECT is_public FROM quiz_files WHERE id = ?', (file_info['shared_source_file_id'],)).fetchone()
+        if not source or source['is_public'] != 1:
+            conn.close()
+            flash('원작자(공유자)가 해당 문제를 비공개 처리하여 더이상 볼 수 없습니다.', 'error')
+            return redirect(url_for('quiz.dashboard'))
+    conn.close()
     
     questions = read_quiz_file(file_info['file_path'])
     if not questions:

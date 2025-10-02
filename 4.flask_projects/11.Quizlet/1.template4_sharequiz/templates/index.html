@@ -4,7 +4,7 @@
 
 {% block content %}
 <div class="row">
-    <div class="col-md-8">
+    <div class="col-12 col-xl-9 col-xxl-10">
         <!-- 파일 업로드 섹션 -->
         <div class="card mb-4">
             <div class="card-header d-flex justify-content-between align-items-center">
@@ -50,10 +50,23 @@
                                 <tr>
                                     <td>
                                         <strong>{{ file.original_filename }}</strong>
-                                        {% if file.is_public %}
-                                            <span class="badge bg-success ms-2">공개</span>
+                                        {% if file.shared_source_file_id %}
+                                            <span class="badge bg-info ms-2">원작자: {{ file.owner_name or '알수없음' }}</span>
+                                            {% if file.source_is_public is not none %}
+                                                {% if file.source_is_public == 1 %}
+                                                    <span class="badge bg-success ms-2">공개</span>
+                                                {% else %}
+                                                    <span class="badge bg-secondary ms-2">비공개</span>
+                                                {% endif %}
+                                            {% else %}
+                                                <span class="badge bg-secondary ms-2">비공개</span>
+                                            {% endif %}
                                         {% else %}
-                                            <span class="badge bg-secondary ms-2">비공개</span>
+                                            {% if file.is_public %}
+                                                <span class="badge bg-success ms-2">공개</span>
+                                            {% else %}
+                                                <span class="badge bg-secondary ms-2">비공개</span>
+                                            {% endif %}
                                         {% endif %}
                                     </td>
                                     <td>
@@ -68,6 +81,7 @@
                                                class="btn btn-outline-info">📖 공부</a>
                                             <a href="{{ url_for('quiz.quiz_start', file_id=file.id) }}" 
                                                class="btn btn-outline-warning">🎯 시험</a>
+                                            {% if not file.shared_source_file_id %}
                                             <form method="POST" action="{{ url_for('quiz.toggle_share', file_id=file.id) }}" style="display:inline-block;">
                                                 {% if file.is_public %}
                                                 <input type="hidden" name="is_public" value="0">
@@ -77,6 +91,7 @@
                                                 <button type="submit" class="btn btn-outline-success">🔓 공개</button>
                                                 {% endif %}
                                             </form>
+                                            {% endif %}
                                             <form method="POST" action="{{ url_for('quiz.delete_file', file_id=file.id) }}" 
                                                   style="display: inline;" 
                                                   onsubmit="return confirm('정말 삭제하시겠습니까?')">
@@ -100,7 +115,7 @@
     </div>
 
     <!-- 사이드바 -->
-    <div class="col-md-4">
+    <div class="col-12 col-xl-3 col-xxl-2">
         <!-- 빠른 시작 가이드 -->
         <div class="card mb-4">
             <div class="card-header bg-light">

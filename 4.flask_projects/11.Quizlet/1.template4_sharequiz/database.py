@@ -53,6 +53,8 @@ def init_database():
             cursor.execute('ALTER TABLE quiz_files ADD COLUMN is_public INTEGER DEFAULT 0')
         if not column_exists('quiz_files', 'shared_by_user_id'):
             cursor.execute('ALTER TABLE quiz_files ADD COLUMN shared_by_user_id INTEGER')
+        if not column_exists('quiz_files', 'shared_source_file_id'):
+            cursor.execute('ALTER TABLE quiz_files ADD COLUMN shared_source_file_id INTEGER')
     except Exception:
         # SQLite 일부 버전에서 ALTER 실패 시 무시 (이미 적용되었을 가능성)
         pass
