@@ -1,0 +1,78 @@
+{% extends "base.html" %}
+
+{% block title %}관리자 - 시스템 통계{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2 class="text-warning">📊 시스템 통계</h2>
+    <a href="{{ url_for('admin.admin_dashboard') }}" class="btn btn-secondary">← 관리자 대시보드</a>
+</div>
+
+<!-- 사용자 관련 -->
+<div class="card mb-3">
+    <div class="card-header bg-light"><h6 class="mb-0">👥 사용자 지표</h6></div>
+    <div class="card-body">
+        <div class="row text-center">
+            <div class="col-md-4">
+                <div class="display-6">{{ counters.users }}</div>
+                <div class="text-muted">사용자 수</div>
+            </div>
+            <div class="col-md-4">
+                <div class="display-6">{{ counters.total_logins }}</div>
+                <div class="text-muted">누적 로그인 수</div>
+            </div>
+            <div class="col-md-4">
+                <div class="display-6">{{ counters.active_7d }}</div>
+                <div class="text-muted">최근 7일 접속 사용자</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 퀴즈/결과 관련 -->
+<div class="card mb-3">
+    <div class="card-header bg-light"><h6 class="mb-0">📚 퀴즈/시험 지표</h6></div>
+    <div class="card-body">
+        <div class="row text-center">
+            <div class="col-md-3">
+                <div class="display-6">{{ counters.quizzes }}</div>
+                <div class="text-muted">퀴즈 파일 수</div>
+            </div>
+            <div class="col-md-3">
+                <div class="display-6">{{ counters.public_quizzes }}</div>
+                <div class="text-muted">공개 퀴즈</div>
+            </div>
+            <div class="col-md-3">
+                <div class="display-6">{{ counters.results }}</div>
+                <div class="text-muted">시험 결과 수</div>
+            </div>
+            <div class="col-md-3">
+                <div class="display-6">{{ counters.avg_score }}%</div>
+                <div class="text-muted">전체 평균 점수</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% if trend %}
+<div class="card mt-4">
+    <div class="card-header bg-light"><h6 class="mb-0">최근 7일 결과수 추이</h6></div>
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-sm table-hover">
+                <thead>
+                    <tr><th>날짜</th><th>결과 수</th></tr>
+                </thead>
+                <tbody>
+                    {% for t in trend %}
+                    <tr><td>{{ t.date }}</td><td>{{ t.count }}</td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    </div>
+{% endif %}
+{% endblock %}
+
+

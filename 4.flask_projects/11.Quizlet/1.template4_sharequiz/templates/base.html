@@ -38,9 +38,19 @@
                     <li class="nav-item">
                         <a class="nav-link" href="{{ url_for('result.history') }}">히스토리</a>
                     </li>
+                    {% if current_user.is_authenticated and current_user.is_admin %}
+                    <li class="nav-item">
+                        <a class="nav-link text-warning fw-bold" href="{{ url_for('admin.admin_dashboard') }}">관리자</a>
+                    </li>
+                    {% endif %}
                 </ul>
                 
                 <ul class="navbar-nav">
+                    {% if current_user.is_authenticated and current_user.is_admin %}
+                    <li class="nav-item me-2 d-flex align-items-center">
+                        <span class="badge bg-warning text-dark">ADMIN</span>
+                    </li>
+                    {% endif %}
                     <li class="nav-item me-2 d-flex align-items-center">
                         <button id="themeToggle" class="btn btn-sm btn-outline-light">
                             🌓 테마
@@ -83,7 +93,7 @@
     <!-- 푸터 -->
     <footer class="bg-light mt-5 py-4">
         <div class="container-xxl text-center text-muted">
-            <p>&copy; 2025 퀴즈 앱. Made with ❤️ using Flask</p>
+            <p>&copy; 2025 퀴즈 앱. Made with ❤️ — for my lovely Julia319 💕</p>
         </div>
     </footer>
 

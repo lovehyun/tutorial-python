@@ -13,6 +13,7 @@ from migration import run_migrations
 from routes.user_routes import user_bp
 from routes.quiz_routes import quiz_bp
 from routes.result_routes import result_bp
+from routes import admin_bp
 
 app = Flask(__name__)
 
@@ -41,6 +42,7 @@ class User:
         self.is_authenticated = True
         self.is_active = True
         self.is_anonymous = False
+        self.is_admin = False
     
     def get_id(self):
         return str(self.id)
@@ -54,13 +56,16 @@ def load_user(user_id):
     conn.close()
     
     if user:
-        return User(user['id'], user['username'], user['email'])
+        u = User(user['id'], user['username'], user['email'])
+        u.is_admin = bool(user['is_admin']) if 'is_admin' in user.keys() else False
+        return u
     return None
 
 # Blueprint 등록
 app.register_blueprint(user_bp, url_prefix='/user')
 app.register_blueprint(quiz_bp, url_prefix='/quiz')
 app.register_blueprint(result_bp, url_prefix='/result')
+app.register_blueprint(admin_bp)
 
 # 메인 라우트
 @app.route('/')

@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+
+{% block title %}관리자 대시보드{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2 class="text-warning">🛠 관리자 대시보드</h2>
+    <a href="{{ url_for('quiz.dashboard') }}" class="btn btn-secondary">← 사용자 대시보드</a>
+    </div>
+
+<div class="row">
+    <div class="col-md-4">
+        <div class="card mb-4">
+            <div class="card-header bg-warning text-dark"><h5 class="mb-0">빠른 관리</h5></div>
+            <div class="card-body">
+                <ul class="list-unstyled mb-0">
+                    <li class="mb-2"><a href="{{ url_for('admin.admin_users') }}" class="btn btn-outline-warning w-100">사용자 관리</a></li>
+                    <li class="mb-2"><a href="{{ url_for('admin.admin_quizzes') }}" class="btn btn-outline-warning w-100">퀴즈 파일 관리</a></li>
+                    <li class="mb-2"><a href="{{ url_for('admin.admin_results') }}" class="btn btn-outline-warning w-100">시험 결과 관리</a></li>
+                    <li class="mb-2"><a href="{{ url_for('admin.admin_stats') }}" class="btn btn-outline-warning w-100">시스템 통계</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-8">
+        <div class="alert alert-info">기본 관리자 프레임을 추가했습니다. 필요 기능(사용자/파일/통계 CRUD)을 이 화면에 확장해 나가면 됩니다.</div>
+    </div>
+</div>
+{% endblock %}
+
+

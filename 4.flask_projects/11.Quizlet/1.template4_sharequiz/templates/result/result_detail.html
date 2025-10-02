@@ -7,8 +7,15 @@
     <div>
         <h2>📊 시험 결과 상세</h2>
         <p class="text-muted mb-0">{{ result.original_filename }} - {{ result.created_at }}</p>
+        {% if current_user.is_authenticated and current_user.is_admin %}
+            <p class="mb-0"><small class="text-muted">사용자: {{ result.user_username }} ({{ result.user_email }})</small></p>
+        {% endif %}
     </div>
-    <a href="{{ url_for('result.history') }}" class="btn btn-secondary">← 히스토리</a>
+    {% if current_user.is_authenticated and current_user.is_admin %}
+        <a href="{{ url_for('admin.admin_results') }}" class="btn btn-secondary">← 관리자 결과 목록</a>
+    {% else %}
+        <a href="{{ url_for('result.history') }}" class="btn btn-secondary">← 히스토리</a>
+    {% endif %}
 </div>
 
 <!-- 점수 요약 -->
@@ -54,6 +61,80 @@
         </div>
     </div>
 </div>
+
+{% if answers %}
+<!-- 응답 내역 (접기/펼치기 + 오답만 보기) -->
+<div class="card mb-4">
+    <div class="card-header d-flex justify-content-between align-items-center">
+        <h6 class="mb-0">📝 응답 내역</h6>
+        <div class="d-flex align-items-center gap-3">
+            <div class="form-check mb-0">
+                <input class="form-check-input" type="checkbox" id="onlyWrongToggle" checked>
+                <label class="form-check-label" for="onlyWrongToggle">오답만 보기</label>
+            </div>
+            <button class="btn btn-outline-secondary btn-sm" type="button" data-bs-toggle="collapse" data-bs-target="#answersCollapse">펼치기/접기</button>
+        </div>
+    </div>
+    <div id="answersCollapse" class="collapse">
+        <div class="card-body" id="answersContainer">
+            {% for display_id, item in answers.items() %}
+            {% set is_correct = (item.user_real_answer == item.correct_answer) %}
+            <div class="mb-3 answer-item" data-correct="{{ 'true' if is_correct else 'false' }}">
+                <div class="fw-bold">
+                    문제 {{ display_id }}. {{ item.question }}
+                    {% if is_correct %}
+                        <span class="badge bg-success ms-2">정답</span>
+                    {% else %}
+                        <span class="badge bg-danger ms-2">오답</span>
+                    {% endif %}
+                </div>
+                <ul class="mt-2">
+                    {% for choice in item.choices %}
+                    <li class="{% if choice.original_index == item.correct_answer %}text-success{% endif %}">
+                        <strong>{{ choice.display_index }}.</strong> {{ choice.text }}
+                        {% if choice.display_index == item.user_display_answer %}
+                            <span class="badge bg-info ms-2">내 답</span>
+                        {% endif %}
+                        {% if choice.original_index == item.correct_answer %}
+                            <span class="badge bg-success ms-2">정답</span>
+                        {% endif %}
+                    </li>
+                    {% endfor %}
+                </ul>
+            </div>
+            {% if not loop.last %}<hr>{% endif %}
+            {% endfor %}
+        </div>
+    </div>
+</div>
+
+{% block extra_scripts %}
+{{ super() }}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const onlyWrongToggle = document.getElementById('onlyWrongToggle');
+    const container = document.getElementById('answersContainer');
+    if (!onlyWrongToggle || !container) return;
+
+    function applyFilter() {
+        const onlyWrong = onlyWrongToggle.checked;
+        container.querySelectorAll('.answer-item').forEach(function(item){
+            const isCorrect = item.getAttribute('data-correct') === 'true';
+            if (onlyWrong && isCorrect) {
+                item.style.display = 'none';
+            } else {
+                item.style.display = '';
+            }
+        });
+    }
+
+    onlyWrongToggle.addEventListener('change', applyFilter);
+    // 초기 상태에서도 필터 적용 (기본 체크됨)
+    applyFilter();
+});
+</script>
+{% endblock %}
+{% endif %}
 
 <!-- 시험 정보 -->
 <div class="row mb-4">

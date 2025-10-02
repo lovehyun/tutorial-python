@@ -20,6 +20,14 @@ def run_migrations() -> None:
     """필요한 경우 스키마를 최신 상태로 마이그레이션."""
     conn = get_db_connection()
     try:
+        # users: is_admin
+        if not _column_exists(conn, 'users', 'is_admin'):
+            conn.execute('ALTER TABLE users ADD COLUMN is_admin INTEGER DEFAULT 0')
+            conn.commit()
+        # users: login_count
+        if not _column_exists(conn, 'users', 'login_count'):
+            conn.execute('ALTER TABLE users ADD COLUMN login_count INTEGER DEFAULT 0')
+            conn.commit()
         # quiz_files: is_public
         if not _column_exists(conn, 'quiz_files', 'is_public'):
             conn.execute('ALTER TABLE quiz_files ADD COLUMN is_public INTEGER DEFAULT 0')
@@ -33,6 +41,10 @@ def run_migrations() -> None:
         # quiz_files: shared_source_file_id (가져오기 원본 파일 ID)
         if not _column_exists(conn, 'quiz_files', 'shared_source_file_id'):
             conn.execute('ALTER TABLE quiz_files ADD COLUMN shared_source_file_id INTEGER')
+            conn.commit()
+        # quiz_results: answers 저장 컬럼
+        if not _column_exists(conn, 'quiz_results', 'answers'):
+            conn.execute('ALTER TABLE quiz_results ADD COLUMN answers TEXT')
             conn.commit()
     finally:
         conn.close()

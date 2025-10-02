@@ -49,6 +49,12 @@ def init_database():
         return any(row[1] == column for row in cursor.fetchall())
 
     try:
+        # users: is_admin
+        if not column_exists('users', 'is_admin'):
+            cursor.execute('ALTER TABLE users ADD COLUMN is_admin INTEGER DEFAULT 0')
+        # users: login_count
+        if not column_exists('users', 'login_count'):
+            cursor.execute('ALTER TABLE users ADD COLUMN login_count INTEGER DEFAULT 0')
         if not column_exists('quiz_files', 'is_public'):
             cursor.execute('ALTER TABLE quiz_files ADD COLUMN is_public INTEGER DEFAULT 0')
         if not column_exists('quiz_files', 'shared_by_user_id'):

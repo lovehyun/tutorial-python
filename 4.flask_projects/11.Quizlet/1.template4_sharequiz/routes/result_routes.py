@@ -29,6 +29,7 @@ def submit_quiz():
     settings = quiz_session['settings']
     
     results = []
+    answers_payload = {}
     correct_count = 0
     
     # 각 문제 채점
@@ -55,23 +56,32 @@ def submit_quiz():
             'real_answer': user_real_answer,
             'is_correct': is_correct
         })
+        answers_payload[str(display_id)] = {
+            'question': question['question'],
+            'user_display_answer': user_display_answer,
+            'user_real_answer': user_real_answer,
+            'correct_answer': question['answer'],
+            'choices': question['shuffled_choices']
+        }
     
     total_questions = len(questions)
     score_percentage = round((correct_count / total_questions) * 100, 1)
     
     # 결과를 데이터베이스에 저장
     conn = get_db_connection()
+    import json as _json
     conn.execute('''
         INSERT INTO quiz_results 
-        (user_id, quiz_file_id, score, total_questions, correct_answers, settings)
-        VALUES (?, ?, ?, ?, ?, ?)
+        (user_id, quiz_file_id, score, total_questions, correct_answers, settings, answers)
+        VALUES (?, ?, ?, ?, ?, ?, ?)
     ''', (
         current_user.id,
         file_id,
         score_percentage,
         total_questions,
         correct_count,
-        json.dumps(settings)
+        json.dumps(settings),
+        _json.dumps(answers_payload)
     ))
     conn.commit()
     conn.close()
@@ -210,12 +220,23 @@ def detail(result_id):
     conn = get_db_connection()
     
     # 결과 정보 (소유권 확인 포함)
-    result = conn.execute('''
-        SELECT qr.*, qf.original_filename, qf.file_path
-        FROM quiz_results qr
-        JOIN quiz_files qf ON qr.quiz_file_id = qf.id
-        WHERE qr.id = ? AND qr.user_id = ?
-    ''', (result_id, current_user.id)).fetchone()
+    if getattr(current_user, 'is_admin', False):
+        # 관리자는 모든 결과 열람 가능
+        result = conn.execute('''
+            SELECT qr.*, qf.original_filename, qf.file_path, u.username AS user_username, u.email AS user_email
+            FROM quiz_results qr
+            JOIN quiz_files qf ON qr.quiz_file_id = qf.id
+            JOIN users u ON u.id = qr.user_id
+            WHERE qr.id = ?
+        ''', (result_id,)).fetchone()
+    else:
+        result = conn.execute('''
+            SELECT qr.*, qf.original_filename, qf.file_path, u.username AS user_username, u.email AS user_email
+            FROM quiz_results qr
+            JOIN quiz_files qf ON qr.quiz_file_id = qf.id
+            JOIN users u ON u.id = qr.user_id
+            WHERE qr.id = ? AND qr.user_id = ?
+        ''', (result_id, current_user.id)).fetchone()
     
     conn.close()
     
@@ -225,8 +246,9 @@ def detail(result_id):
     
     # 설정 정보 파싱
     settings = json.loads(result['settings']) if result['settings'] else {}
+    answers = json.loads(result['answers']) if result['answers'] else {}
     
-    return render_template('result/result_detail.html', result=result, settings=settings)
+    return render_template('result/result_detail.html', result=result, settings=settings, answers=answers)
 
 @result_bp.route('/delete/<int:result_id>', methods=['POST'])
 @login_required

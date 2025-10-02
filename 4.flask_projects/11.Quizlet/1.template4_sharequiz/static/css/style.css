@@ -277,6 +277,30 @@ footer {
     color: #e0e0e0;
 }
 
+[data-theme="dark"] .modal-content {
+    background-color: #1e1e1e;
+    color: #f0f0f0;
+    border-color: #333;
+}
+
+[data-theme="dark"] .modal-header,
+[data-theme="dark"] .modal-footer {
+    border-color: #333;
+}
+
+[data-theme="dark"] .modal-backdrop.show {
+    opacity: 0.7;
+}
+
+[data-theme="dark"] .modal .form-control,
+[data-theme="dark"] .modal .form-select {
+    background-color: #222;
+    color: #f0f0f0;
+    border-color: #444;
+}
+
+[data-theme="dark"] .modal .btn-close { filter: invert(1) grayscale(100%); }
+
 [data-theme="dark"] .form-control,
 [data-theme="dark"] .form-select {
     background-color: #222;

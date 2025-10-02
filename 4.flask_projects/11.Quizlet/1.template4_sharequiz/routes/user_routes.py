@@ -48,7 +48,7 @@ def login():
             # 최근 로그인 시간 업데이트
             conn = get_db_connection()
             conn.execute(
-                'UPDATE users SET last_login_at = CURRENT_TIMESTAMP WHERE id = ?',
+                'UPDATE users SET last_login_at = CURRENT_TIMESTAMP, login_count = COALESCE(login_count,0) + 1 WHERE id = ?',
                 (user['id'],)
             )
             conn.commit()
