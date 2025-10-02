@@ -49,12 +49,11 @@ def run_migrations() -> None:
             conn.commit()
             actions.append('quiz_files.shared_source_file_id 추가')
         # quiz_results: answers 저장 컬럼 (테이블이 없는 아주 구버전 대비)
-        try:
-            cur = conn.execute("SELECT 1 FROM quiz_results LIMIT 1")
-        except Exception:
-            # 테이블이 없다면 생성 (최신 스키마)
+        # 테이블 존재 여부 확인 후 없으면 생성
+        cur = conn.execute("SELECT name FROM sqlite_master WHERE type='table' AND name='quiz_results'")
+        if not cur.fetchone():
             conn.execute('''
-                CREATE TABLE IF NOT EXISTS quiz_results (
+                CREATE TABLE quiz_results (
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
                     user_id INTEGER NOT NULL,
                     quiz_file_id INTEGER NOT NULL,

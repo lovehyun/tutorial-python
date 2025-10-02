@@ -14,6 +14,7 @@ from routes.user_routes import user_bp
 from routes.quiz_routes import quiz_bp
 from routes.result_routes import result_bp
 from routes import admin_bp
+from migration import run_migrations
 
 app = Flask(__name__)
 
@@ -67,6 +68,18 @@ app.register_blueprint(quiz_bp, url_prefix='/quiz')
 app.register_blueprint(result_bp, url_prefix='/result')
 app.register_blueprint(admin_bp)
 
+# 앱 로드 시점에 DB 준비 (개발/운영 모두 보장)
+try:
+    if not os.path.exists(DB_PATH):
+        print("데이터베이스가 없습니다. 초기화를 진행합니다...")
+        init_database()
+    else:
+        print("기존 데이터베이스를 감지했습니다. 마이그레이션을 실행합니다...")
+        run_migrations()
+        print("마이그레이션이 완료되었습니다.")
+except Exception as e:
+    print(f"DB 초기화/마이그레이션 중 오류: {e}")
+
 # 메인 라우트
 @app.route('/')
 def index():
@@ -89,19 +102,6 @@ def internal_error(error):
     return render_template('error/500.html'), 500
 
 if __name__ == '__main__':
-    # 데이터베이스 초기화 확인
-    if not os.path.exists(DB_PATH):
-        print("데이터베이스가 없습니다. 초기화를 진행합니다...")
-        init_database()
-    else:
-        # 기존 DB가 있다면 마이그레이션 수행
-        print("기존 데이터베이스를 감지했습니다. 마이그레이션을 실행합니다...")
-        try:
-            run_migrations()
-            print("마이그레이션이 완료되었습니다.")
-        except Exception as e:
-            print(f"마이그레이션 중 오류가 발생했습니다: {e}")
-    
     # 환경에 따른 실행 모드
     debug_mode = os.getenv('FLASK_ENV') != 'production'
     
