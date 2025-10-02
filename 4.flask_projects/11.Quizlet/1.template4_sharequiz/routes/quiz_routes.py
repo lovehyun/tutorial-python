@@ -18,7 +18,7 @@ def allowed_file(filename):
 def read_quiz_file(filepath):
     """Excel 파일에서 퀴즈 데이터 읽기"""
     try:
-        workbook = load_workbook(filepath)
+        workbook = load_workbook(filepath, read_only=True, data_only=True)
         sheet = workbook.active
         questions = []
         
@@ -42,6 +42,11 @@ def read_quiz_file(filepath):
     except Exception as e:
         print(f"파일 읽기 오류: {e}")
         return None
+    finally:
+        try:
+            workbook.close()
+        except Exception:
+            pass
 
 def get_user_settings(user_id, mode):
     """사용자 설정 가져오기"""
@@ -194,10 +199,22 @@ def upload_file():
         if questions:
             # 데이터베이스에 파일 정보 저장
             conn = get_db_connection()
-            conn.execute('''
+            # 1) 임시 파일명으로 레코드 생성
+            cur = conn.execute('''
                 INSERT INTO quiz_files (user_id, filename, original_filename, file_path, question_count, is_public)
                 VALUES (?, ?, ?, ?, ?, 0)
             ''', (current_user.id, secure_name, original_filename, filepath, len(questions)))
+            new_id = cur.lastrowid
+            # 2) 실제 파일명을 ID prefix로 변경
+            prefixed_name = f"{new_id}_" + secure_name
+            prefixed_path = os.path.join(user_folder, prefixed_name)
+            try:
+                os.replace(filepath, prefixed_path)
+            except Exception:
+                prefixed_path = filepath  # 실패 시 원본 경로 유지
+                prefixed_name = secure_name
+            # 3) DB에 파일명/경로 업데이트
+            conn.execute('UPDATE quiz_files SET filename = ?, file_path = ? WHERE id = ?', (prefixed_name, prefixed_path, new_id))
             conn.commit()
             conn.close()
             
@@ -301,11 +318,22 @@ def import_shared(file_id):
         flash('파일 복사 중 오류가 발생했습니다.', 'error')
         return redirect(url_for('quiz.search'))
 
-    # DB에 내 소유로 새 레코드 생성
-    conn.execute('''
+    # DB에 내 소유로 새 레코드 생성 후 ID prefix로 파일명 확정
+    cur = conn.execute('''
         INSERT INTO quiz_files (user_id, filename, original_filename, file_path, question_count, is_public, shared_by_user_id, shared_source_file_id)
         VALUES (?, ?, ?, ?, ?, 0, ?, ?)
     ''', (current_user.id, os.path.basename(dst_path), row['original_filename'], dst_path, row['question_count'], row['user_id'], row['id']))
+    new_id = cur.lastrowid
+    user_folder = create_user_upload_folder(current_user.id)
+    base_final = os.path.basename(dst_path)
+    prefixed_name = f"{new_id}_" + base_final
+    prefixed_path = os.path.join(user_folder, prefixed_name)
+    try:
+        os.replace(dst_path, prefixed_path)
+    except Exception:
+        prefixed_path = dst_path
+        prefixed_name = base_final
+    conn.execute('UPDATE quiz_files SET filename = ?, file_path = ? WHERE id = ?', (prefixed_name, prefixed_path, new_id))
     conn.commit()
     conn.close()
 
