@@ -102,10 +102,10 @@
     <a href="{{ url_for('result.stats') }}" class="btn btn-info">
         📊 통계 보기
     </a>
-    <a href="{{ url_for('quiz.study', file_id=results[0].question.id if results else '#') }}" class="btn btn-primary">
+    <a href="{{ url_for('quiz.study', file_id=file_id) }}" class="btn btn-primary">
         📖 공부 모드로
     </a>
-    <a href="{{ url_for('quiz.quiz_start', file_id=results[0].question.id if results else '#') }}" class="btn btn-warning">
+    <a href="{{ url_for('quiz.quiz_start', file_id=file_id) }}" class="btn btn-warning">
         🔄 다시 시험보기
     </a>
 </div>

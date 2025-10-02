@@ -94,7 +94,8 @@ def submit_quiz():
                          results=results, 
                          correct_count=correct_count,
                          total_questions=total_questions, 
-                         score_percentage=score_percentage)
+                         score_percentage=score_percentage,
+                         file_id=file_id)
 
 @result_bp.route('/stats', defaults={'period': 'recent10'})
 @result_bp.route('/stats/<period>')
