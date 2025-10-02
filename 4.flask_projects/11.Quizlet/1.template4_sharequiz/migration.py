@@ -48,7 +48,30 @@ def run_migrations() -> None:
             conn.execute('ALTER TABLE quiz_files ADD COLUMN shared_source_file_id INTEGER')
             conn.commit()
             actions.append('quiz_files.shared_source_file_id 추가')
-        # quiz_results: answers 저장 컬럼
+        # quiz_results: answers 저장 컬럼 (테이블이 없는 아주 구버전 대비)
+        try:
+            cur = conn.execute("SELECT 1 FROM quiz_results LIMIT 1")
+        except Exception:
+            # 테이블이 없다면 생성 (최신 스키마)
+            conn.execute('''
+                CREATE TABLE IF NOT EXISTS quiz_results (
+                    id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    user_id INTEGER NOT NULL,
+                    quiz_file_id INTEGER NOT NULL,
+                    score FLOAT NOT NULL,
+                    total_questions INTEGER NOT NULL,
+                    correct_answers INTEGER NOT NULL,
+                    time_taken INTEGER,
+                    settings TEXT,
+                    answers TEXT,
+                    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                    FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE,
+                    FOREIGN KEY (quiz_file_id) REFERENCES quiz_files (id) ON DELETE CASCADE
+                )
+            ''')
+            conn.commit()
+            actions.append('quiz_results 테이블 생성(answers 포함)')
+        # 컬럼 보강
         if not _column_exists(conn, 'quiz_results', 'answers'):
             conn.execute('ALTER TABLE quiz_results ADD COLUMN answers TEXT')
             conn.commit()
