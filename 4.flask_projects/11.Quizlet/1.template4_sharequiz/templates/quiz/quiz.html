@@ -66,10 +66,10 @@
 
     <!-- 제출 버튼 -->
     <div class="text-center mb-5">
-        <button type="button" class="btn btn-success btn-lg" onclick="submitQuiz()" id="submit-btn" disabled>
+        <button type="button" class="btn btn-success btn-lg" onclick="submitQuiz()" id="submit-btn">
             📝 시험 제출하기
         </button>
-        <p class="text-muted mt-2">모든 문제를 완료하면 제출 버튼이 활성화됩니다.</p>
+        <p class="text-muted mt-2">다 안 풀어도 제출할 수 있습니다. 미응답은 오답 처리됩니다.</p>
     </div>
 </form>
 
@@ -117,18 +117,13 @@ function startTimer() {
 // 진행률 업데이트
 function updateProgress() {
     const totalQuestions = {{ questions|length }};
-    const answeredQuestions = document.querySelectorAll('input[type="radio"]:checked').length;
-    const progressPercent = (answeredQuestions / totalQuestions) * 100;
-    
-    document.getElementById('progress-bar').style.width = progressPercent + '%';
-    document.getElementById('progress-text').textContent = answeredQuestions + ' / ' + totalQuestions;
-    
-    // 완료된 문제 상태 업데이트
+    // 각 문제 카드별로 체크 여부를 계산하여 중복 선택으로 인한 과다 카운트 방지
+    let answeredQuestions = 0;
     document.querySelectorAll('.question-card').forEach(card => {
-        const questionId = card.dataset.questionId;
         const isAnswered = card.querySelector('input[type="radio"]:checked');
+        if (isAnswered) answeredQuestions += 1;
+        const questionId = card.dataset.questionId;
         const statusBadge = document.getElementById('status-' + questionId);
-        
         if (isAnswered) {
             statusBadge.textContent = '완료';
             statusBadge.className = 'badge bg-success';
@@ -137,26 +132,31 @@ function updateProgress() {
             statusBadge.className = 'badge bg-secondary';
         }
     });
-    
+    const progressPercent = (answeredQuestions / totalQuestions) * 100;
+    document.getElementById('progress-bar').style.width = progressPercent + '%';
+    document.getElementById('progress-text').textContent = answeredQuestions + ' / ' + totalQuestions;
     // 제출 버튼 활성화/비활성화
     const submitBtn = document.getElementById('submit-btn');
-    if (answeredQuestions === totalQuestions) {
-        submitBtn.disabled = false;
-        submitBtn.textContent = '📝 시험 제출하기';
-    } else {
-        submitBtn.disabled = true;
-        submitBtn.textContent = `📝 시험 제출하기 (${totalQuestions - answeredQuestions}문제 남음)`;
-    }
+    const remaining = Math.max(totalQuestions - answeredQuestions, 0);
+    submitBtn.disabled = false;
+    submitBtn.textContent = remaining === 0 ? '📝 시험 제출하기' : `📝 시험 제출하기 (${remaining}문제 남음)`;
 }
 
 // 제출 확인
 function submitQuiz() {
-    const answered = document.querySelectorAll('input[type="radio"]:checked').length;
     const total = {{ questions|length }};
+    let answered = 0;
+    document.querySelectorAll('.question-card').forEach(card => {
+        if (card.querySelector('input[type="radio"]:checked')) answered += 1;
+    });
     
+    let warn = '';
+    if (answered < total) {
+        warn = `<div class="alert alert-warning py-2 mt-2">일부 문제를 풀지 않았습니다. 미응답은 오답 처리됩니다. 그래도 제출하시겠습니까?</div>`;
+    }
     document.getElementById('submit-summary').innerHTML = 
         `<strong>답변한 문제:</strong> ${answered} / ${total}<br>` +
-        `<strong>소요 시간:</strong> ${document.getElementById('timer').textContent}`;
+        `<strong>소요 시간:</strong> ${document.getElementById('timer').textContent}` + warn;
     
     new bootstrap.Modal(document.getElementById('submitModal')).show();
 }
@@ -170,6 +170,8 @@ function confirmSubmit() {
 // 선택지 스타일링
 document.addEventListener('DOMContentLoaded', function() {
     startTimer();
+    // 초기 진행률 계산
+    updateProgress();
     
     // 선택지 클릭 시 스타일 변경
     document.querySelectorAll('.form-check-input').forEach(radio => {
