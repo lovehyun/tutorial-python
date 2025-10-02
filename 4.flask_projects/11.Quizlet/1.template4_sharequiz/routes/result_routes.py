@@ -245,8 +245,13 @@ def detail(result_id):
         return redirect(url_for('result.history'))
     
     # 설정 정보 파싱
-    settings = json.loads(result['settings']) if result['settings'] else {}
-    answers = json.loads(result['answers']) if result['answers'] else {}
+    settings = json.loads(result['settings']) if result and result.get('settings') else {}
+    answers = {}
+    try:
+        if result and 'answers' in result.keys() and result['answers']:
+            answers = json.loads(result['answers'])
+    except Exception:
+        answers = {}
     
     return render_template('result/result_detail.html', result=result, settings=settings, answers=answers)
 

@@ -48,5 +48,3 @@ def run_migrations() -> None:
             conn.commit()
     finally:
         conn.close()
-
-
