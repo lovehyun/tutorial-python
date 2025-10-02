@@ -1,0 +1,189 @@
+{% extends "base.html" %}
+
+{% block title %}통계 대시보드 - 퀴즈 앱{% endblock %}
+
+{% block extra_head %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2>📊 통계 대시보드</h2>
+    <a href="{{ url_for('quiz.dashboard') }}" class="btn btn-secondary">← 대시보드</a>
+</div>
+
+<!-- 필터 버튼 -->
+<div class="card mb-4">
+    <div class="card-body">
+        <div class="d-flex justify-content-center gap-2 flex-wrap">
+            <a href="{{ url_for('result.stats', period='recent10') }}" class="btn btn-outline-primary {% if period == 'recent10' %}active{% endif %}">최근 10회</a>
+            <a href="{{ url_for('result.stats', period='recent30') }}" class="btn btn-outline-primary {% if period == 'recent30' %}active{% endif %}">최근 30회</a>
+            <a href="{{ url_for('result.stats', period='last30days') }}" class="btn btn-outline-primary {% if period == 'last30days' %}active{% endif %}">최근 30일</a>
+            <a href="{{ url_for('result.stats', period='all') }}" class="btn btn-outline-primary {% if period == 'all' %}active{% endif %}">전체</a>
+        </div>
+    </div>
+</div>
+
+{% if data|length == 0 %}
+<!-- 데이터 없음 표시 -->
+<div id="no-data" class="text-center py-5">
+    <div class="alert alert-info">
+        <div class="display-1 text-muted mb-4">📊</div>
+        <h4>통계 데이터가 없습니다</h4>
+        <p class="text-muted mb-4">
+            아직 완료한 시험이 없어서 표시할 통계가 없습니다.<br>
+            첫 시험을 완료하면 여기에 점수 추이를 확인할 수 있어요!
+        </p>
+        <div class="d-grid gap-2 d-md-flex justify-content-md-center">
+            <a href="{{ url_for('quiz.dashboard') }}" class="btn btn-primary">
+                🎯 첫 시험 보러 가기
+            </a>
+        </div>
+    </div>
+</div>
+{% else %}
+<!-- 통계 요약 -->
+<div class="row mb-4">
+    <div class="col-md-3">
+        <div class="card text-center">
+            <div class="card-body">
+                <div class="display-6 text-primary">{{ stats.count }}</div>
+                <p class="card-text">시험 횟수</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-center">
+            <div class="card-body">
+                <div class="display-6 text-success">{{ stats.average }}%</div>
+                <p class="card-text">평균 점수</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-center">
+            <div class="card-body">
+                <div class="display-6 text-warning">{{ stats.max }}%</div>
+                <p class="card-text">최고 점수</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-center">
+            <div class="card-body">
+                <div class="display-6 text-danger">{{ stats.min }}%</div>
+                <p class="card-text">최저 점수</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 그래프 유형 전환 버튼 -->
+<div class="text-end mb-3">
+    <button class="btn btn-outline-secondary" onclick="toggleChartType()">
+        🔄 그래프 유형 전환 (현재: <span id="chartTypeLabel">라인</span>)
+    </button>
+</div>
+
+<!-- 차트 영역 -->
+<div class="card mb-4">
+    <div class="card-header">
+        <h5>
+            {% if period == 'recent10' %}점수 추이 - 최근 10회{% elif period == 'recent30' %}점수 추이 - 최근 30회
+            {% elif period == 'last30days' %}점수 추이 - 최근 30일{% else %}점수 추이 - 전체{% endif %}
+        </h5>
+    </div>
+    <div class="card-body">
+        <div class="chart-container" style="position: relative; height: 400px;">
+            <canvas id="scoreChart"></canvas>
+        </div>
+    </div>
+</div>
+
+<!-- 차트 렌더링 -->
+<script>
+    const labels = {{ data|map(attribute='x')|list|tojson }}; // 데이터 포멧을 json list 형태로 전달
+    const scores = {{ data|map(attribute='y')|list }};
+    const colors = scores.map(score => {
+        if (score >= 80) return 'rgba(40, 167, 69, 0.8)';
+        if (score >= 60) return 'rgba(255, 193, 7, 0.8)';
+        return 'rgba(220, 53, 69, 0.8)';
+    });
+
+    let currentChartType = 'line';
+
+    const ctx = document.getElementById('scoreChart').getContext('2d');
+    const scoreChart = new Chart(ctx, {
+        type: currentChartType,
+        data: {
+            labels: labels,
+            datasets: [{
+                label: '점수',
+                data: scores,
+                backgroundColor: colors,
+                borderColor: colors.map(c => c.replace('0.8', '1')),
+                fill: true,
+                tension: 0.1,
+                pointRadius: 6,
+                pointHoverRadius: 8
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    max: 100,
+                    ticks: {
+                        callback: value => value + '%'
+                    }
+                },
+                x: {
+                    title: {
+                        display: true,
+                        text: '시험 날짜'
+                    },
+                    ticks: {
+                        maxRotation: 45,
+                        minRotation: 20
+                    }
+                }
+            },
+            plugins: {
+                title: {
+                    display: true,
+                    text: '시험 점수 추이'
+                },
+                legend: {
+                    display: false
+                }
+            },
+            interaction: {
+                intersect: false,
+                mode: 'index'
+            }
+        }
+    });
+
+    function toggleChartType() {
+        currentChartType = currentChartType === 'line' ? 'bar' : 'line';
+        scoreChart.config.type = currentChartType;
+
+        // barThickness 조건부 설정
+        const dataset = scoreChart.data.datasets[0];
+        if (currentChartType === 'bar') {
+           dataset.borderWidth = 2;  // 바 테두리 두께
+        } else {
+            delete dataset.borderWidth;  // 선형에서는 제거
+        }
+
+        // x축 레이블 위치 조정
+        scoreChart.options.scales.x.offset = currentChartType === 'bar';
+
+        scoreChart.update();
+        document.getElementById('chartTypeLabel').textContent = currentChartType === 'line' ? '라인' : '막대';
+    }
+</script>
+{% endif %}
+{% endblock %}

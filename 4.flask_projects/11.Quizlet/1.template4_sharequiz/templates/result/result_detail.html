@@ -1,0 +1,232 @@
+{% extends "base.html" %}
+
+{% block title %}시험 결과 상세 - {{ result.original_filename }}{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h2>📊 시험 결과 상세</h2>
+        <p class="text-muted mb-0">{{ result.original_filename }} - {{ result.created_at }}</p>
+    </div>
+    <a href="{{ url_for('result.history') }}" class="btn btn-secondary">← 히스토리</a>
+</div>
+
+<!-- 점수 요약 -->
+<div class="card mb-4">
+    <div class="card-header text-center bg-primary text-white">
+        <h3>채점 결과</h3>
+    </div>
+    <div class="card-body">
+        <div class="row text-center">
+            <div class="col-md-3">
+                <div class="display-4 {% if result.score >= 80 %}text-success{% elif result.score >= 60 %}text-warning{% else %}text-danger{% endif %}">
+                    {{ result.score }}%
+                </div>
+                <p class="fs-5">총점</p>
+            </div>
+            <div class="col-md-3">
+                <div class="display-6 text-success">{{ result.correct_answers }}</div>
+                <p>정답</p>
+            </div>
+            <div class="col-md-3">
+                <div class="display-6 text-danger">{{ result.total_questions - result.correct_answers }}</div>
+                <p>오답</p>
+            </div>
+            <div class="col-md-3">
+                <div class="display-6 text-info">{{ result.total_questions }}</div>
+                <p>총 문제</p>
+            </div>
+        </div>
+        
+        <!-- 성과 메시지 -->
+        <div class="text-center mt-3">
+            {% if result.score >= 90 %}
+                <div class="alert alert-success">🎉 훌륭합니다! 완벽한 실력이네요!</div>
+            {% elif result.score >= 80 %}
+                <div class="alert alert-success">👏 잘했습니다! 우수한 성과입니다!</div>
+            {% elif result.score >= 70 %}
+                <div class="alert alert-warning">👍 괜찮습니다! 조금 더 노력하면 더 좋은 결과가 있을 거예요!</div>
+            {% elif result.score >= 60 %}
+                <div class="alert alert-warning">📚 더 공부가 필요해요. 공부 모드를 활용해보세요!</div>
+            {% else %}
+                <div class="alert alert-danger">💪 다시 도전하세요! 공부 모드로 복습 후 재시험을 추천합니다!</div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<!-- 시험 정보 -->
+<div class="row mb-4">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">
+                <h6>📋 시험 정보</h6>
+            </div>
+            <div class="card-body">
+                <div class="row mb-2">
+                    <div class="col-sm-4"><strong>파일명:</strong></div>
+                    <div class="col-sm-8">{{ result.original_filename }}</div>
+                </div>
+                <div class="row mb-2">
+                    <div class="col-sm-4"><strong>시험 날짜:</strong></div>
+                    <div class="col-sm-8">{{ result.created_at }}</div>
+                </div>
+                <div class="row mb-2">
+                    <div class="col-sm-4"><strong>소요 시간:</strong></div>
+                    <div class="col-sm-8">
+                        {% if result.time_taken %}
+                            {{ result.time_taken // 60 }}분 {{ result.time_taken % 60 }}초
+                        {% else %}
+                            기록 없음
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-4"><strong>정답률:</strong></div>
+                    <div class="col-sm-8">{{ result.correct_answers }} / {{ result.total_questions }} ({{ result.score }}%)</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">
+                <h6>⚙️ 시험 설정</h6>
+            </div>
+            <div class="card-body">
+                {% if settings %}
+                <div class="row mb-2">
+                    <div class="col-sm-5"><strong>문제 순서:</strong></div>
+                    <div class="col-sm-7">
+                        {% if settings.question_order == 'shuffle' %}
+                            🔀 섞기
+                        {% else %}
+                            📑 순서대로
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="row mb-2">
+                    <div class="col-sm-5"><strong>보기 순서:</strong></div>
+                    <div class="col-sm-7">
+                        {% if settings.choice_order == 'shuffle' %}
+                            🔀 섞기
+                        {% else %}
+                            📝 순서대로
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-5"><strong>문항 수 제한:</strong></div>
+                    <div class="col-sm-7">
+                        {% if settings.question_limit and settings.question_limit > 0 %}
+                            {{ settings.question_limit }}문제
+                        {% else %}
+                            전체 문제
+                        {% endif %}
+                    </div>
+                </div>
+                {% else %}
+                <p class="text-muted">설정 정보가 없습니다.</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 점수 분포 -->
+<div class="card mb-4">
+    <div class="card-header">
+        <h6>📈 점수 분포</h6>
+    </div>
+    <div class="card-body">
+        <div class="row text-center">
+            <div class="col-md-4">
+                <div class="progress mb-2" style="height: 25px;">
+                    <div class="progress-bar bg-success" role="progressbar" 
+                         style="width: {{ (result.correct_answers / result.total_questions * 100) }}%">
+                        정답: {{ result.correct_answers }}개
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="progress mb-2" style="height: 25px;">
+                    <div class="progress-bar bg-danger" role="progressbar" 
+                         style="width: {{ ((result.total_questions - result.correct_answers) / result.total_questions * 100) }}%">
+                        오답: {{ result.total_questions - result.correct_answers }}개
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card text-center">
+                    <div class="card-body py-2">
+                        <div class="h5 mb-0 {% if result.score >= 80 %}text-success{% elif result.score >= 60 %}text-warning{% else %}text-danger{% endif %}">
+                            {{ result.score }}%
+                        </div>
+                        <small class="text-muted">최종 점수</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 액션 버튼 -->
+<div class="d-flex justify-content-center gap-3 mb-5">
+    <a href="{{ url_for('result.history') }}" class="btn btn-outline-secondary">
+        📋 히스토리로
+    </a>
+    <a href="{{ url_for('quiz.study', file_id=result.quiz_file_id) }}" class="btn btn-info">
+        📖 공부 모드
+    </a>
+    <a href="{{ url_for('quiz.quiz_start', file_id=result.quiz_file_id) }}" class="btn btn-warning">
+        🔄 다시 시험보기
+    </a>
+    <a href="{{ url_for('result.stats') }}" class="btn btn-primary">
+        📊 통계 보기
+    </a>
+</div>
+
+<!-- 삭제 확인 모달 -->
+<div class="card border-danger">
+    <div class="card-header bg-danger text-white">
+        <h6 class="mb-0">⚠️ 위험 구역</h6>
+    </div>
+    <div class="card-body">
+        <p class="text-muted">이 시험 결과를 삭제하시겠습니까? 삭제된 데이터는 복구할 수 없습니다.</p>
+        <button type="button" class="btn btn-outline-danger" data-bs-toggle="modal" data-bs-target="#deleteModal">
+            🗑️ 결과 삭제
+        </button>
+    </div>
+</div>
+
+<!-- 삭제 확인 모달 -->
+<div class="modal fade" id="deleteModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">🗑️ 결과 삭제 확인</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <p>정말로 이 시험 결과를 삭제하시겠습니까?</p>
+                <div class="alert alert-warning">
+                    <strong>⚠️ 주의:</strong> 삭제된 데이터는 복구할 수 없습니다.
+                </div>
+                <div class="bg-light p-3 rounded">
+                    <strong>삭제할 결과:</strong><br>
+                    파일: {{ result.original_filename }}<br>
+                    점수: {{ result.score }}%<br>
+                    날짜: {{ result.created_at }}
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">취소</button>
+                <form method="POST" action="{{ url_for('result.delete_result', result_id=result.id) }}" style="display: inline;">
+                    <button type="submit" class="btn btn-danger">삭제하기</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

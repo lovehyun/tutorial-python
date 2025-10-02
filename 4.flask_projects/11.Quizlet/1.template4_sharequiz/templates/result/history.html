@@ -1,0 +1,166 @@
+{% extends "base.html" %}
+
+{% block title %}시험 기록 - 퀴즈 앱{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h2>📋 시험 기록</h2>
+        <p class="text-muted mb-0">총 {{ total_count }}개의 시험 기록</p>
+    </div>
+    <a href="{{ url_for('quiz.dashboard') }}" class="btn btn-secondary">← 대시보드</a>
+</div>
+
+{% if results %}
+<!-- 시험 기록 테이블 -->
+<div class="card">
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <thead class="table-light">
+                    <tr>
+                        <th>날짜</th>
+                        <th>파일명</th>
+                        <th>점수</th>
+                        <th>정답률</th>
+                        <th>문제수</th>
+                        <th>작업</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for result in results %}
+                    <tr>
+                        <td>
+                            <small class="text-muted">{{ result.created_at }}</small>
+                        </td>
+                        <td>
+                            <strong>{{ result.original_filename }}</strong>
+                        </td>
+                        <td>
+                            <span class="badge fs-6 {% if result.score >= 80 %}bg-success{% elif result.score >= 60 %}bg-warning{% else %}bg-danger{% endif %}">
+                                {{ result.score }}%
+                            </span>
+                        </td>
+                        <td>
+                            {{ result.correct_answers }} / {{ result.total_questions }}
+                        </td>
+                        <td>
+                            <span class="badge bg-info">{{ result.total_questions }}문제</span>
+                        </td>
+                        <td>
+                            <div class="btn-group btn-group-sm">
+                                <a href="{{ url_for('result.detail', result_id=result.id) }}" 
+                                   class="btn btn-outline-primary">상세보기</a>
+                                <form method="POST" action="{{ url_for('result.delete_result', result_id=result.id) }}" 
+                                      style="display: inline;" 
+                                      onsubmit="return confirm('정말 삭제하시겠습니까?')">
+                                    <button type="submit" class="btn btn-outline-danger">삭제</button>
+                                </form>
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- 페이지네이션 -->
+{% if total_pages > 1 %}
+<nav aria-label="페이지 네비게이션" class="mt-4">
+    <ul class="pagination justify-content-center">
+        {% if has_prev %}
+        <li class="page-item">
+            <a class="page-link" href="{{ url_for('result.history', page=page-1) }}">이전</a>
+        </li>
+        {% endif %}
+        
+        {% set start_page = ((page - 1) // 5) * 5 + 1 %}
+        {% set end_page = [start_page + 4, total_pages] | min %}
+        
+        {% if start_page > 1 %}
+        <li class="page-item">
+            <a class="page-link" href="{{ url_for('result.history', page=1) }}">1</a>
+        </li>
+        {% if start_page > 2 %}
+        <li class="page-item disabled">
+            <span class="page-link">...</span>
+        </li>
+        {% endif %}
+        {% endif %}
+        
+        {% for p in range(start_page, end_page + 1) %}
+        <li class="page-item {% if p == page %}active{% endif %}">
+            <a class="page-link" href="{{ url_for('result.history', page=p) }}">{{ p }}</a>
+        </li>
+        {% endfor %}
+        
+        {% if end_page < total_pages %}
+        {% if end_page < total_pages - 1 %}
+        <li class="page-item disabled">
+            <span class="page-link">...</span>
+        </li>
+        {% endif %}
+        <li class="page-item">
+            <a class="page-link" href="{{ url_for('result.history', page=total_pages) }}">{{ total_pages }}</a>
+        </li>
+        {% endif %}
+        
+        {% if has_next %}
+        <li class="page-item">
+            <a class="page-link" href="{{ url_for('result.history', page=page+1) }}">다음</a>
+        </li>
+        {% endif %}
+    </ul>
+</nav>
+{% endif %}
+
+{% else %}
+<!-- 데이터 없음 -->
+<div class="text-center py-5">
+    <div class="alert alert-info">
+        <h4>📝 아직 시험 기록이 없습니다</h4>
+        <p>시험을 완료하면 여기에 기록이 표시됩니다.</p>
+        <a href="{{ url_for('quiz.dashboard') }}" class="btn btn-primary">시험 보러 가기</a>
+    </div>
+</div>
+{% endif %}
+
+<!-- 통계 요약 (하단) -->
+{% if results %}
+<div class="card mt-4">
+    <div class="card-header bg-light">
+        <h6 class="mb-0">📊 요약 통계</h6>
+    </div>
+    <div class="card-body">
+        <div class="row text-center">
+            <div class="col-md-3">
+                <div class="text-primary">
+                    <div class="h4">{{ total_count }}</div>
+                    <small>총 시험 수</small>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="text-success">
+                    <div class="h4">{{ (results | selectattr('score', 'ge', 80) | list | length) }}</div>
+                    <small>80점 이상</small>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="text-warning">
+                    <div class="h4">{{ (results | selectattr('score', 'ge', 60) | selectattr('score', 'lt', 80) | list | length) }}</div>
+                    <small>60-79점</small>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="text-danger">
+                    <div class="h4">{{ (results | selectattr('score', 'lt', 60) | list | length) }}</div>
+                    <small>60점 미만</small>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
+{% endblock %}

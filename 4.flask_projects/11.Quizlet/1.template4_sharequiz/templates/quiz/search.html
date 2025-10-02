@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+
+{% block title %}검색 - 퀴즈 앱{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2>🔎 공개 퀴즈 검색</h2>
+    <a href="{{ url_for('quiz.dashboard') }}" class="btn btn-secondary">← 대시보드</a>
+    </div>
+
+<form class="mb-3" method="get">
+    <div class="input-group">
+        <input type="text" class="form-control" name="q" value="{{ q }}" placeholder="파일명으로 검색...">
+        <button class="btn btn-primary" type="submit">검색</button>
+    </div>
+    <div class="form-text">다른 사용자가 공개한 퀴즈를 검색해 내 계정으로 가져올 수 있습니다.</div>
+</form>
+
+<div class="card">
+    <div class="card-header">
+        <h5>공개 퀴즈 목록 ({{ items|length }}개)</h5>
+    </div>
+    <div class="card-body">
+        {% if items %}
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>파일명</th>
+                        <th>문제 수</th>
+                        <th>소유자</th>
+                        <th>등록일</th>
+                        <th>가져오기</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in items %}
+                    <tr>
+                        <td>{{ item.original_filename }}</td>
+                        <td><span class="badge bg-info">{{ item.question_count }}문제</span></td>
+                        <td><span class="text-muted">{{ item.owner_name }}</span></td>
+                        <td><small class="text-muted">{{ item.created_at }}</small></td>
+                        <td>
+                            {% if item.user_id != current_user.id %}
+                            <form method="POST" action="{{ url_for('quiz.import_shared', file_id=item.id) }}">
+                                <button class="btn btn-sm btn-outline-primary" type="submit">📥 가져오기</button>
+                            </form>
+                            {% else %}
+                            <span class="text-muted">내 공개 항목</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+            <div class="text-center text-muted py-4">표시할 공개 퀴즈가 없습니다.</div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
+
+

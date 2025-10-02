@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+
+{% block title %}로그인 - 퀴즈 앱{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8 col-lg-6">
+        <div class="card shadow">
+            <div class="card-header text-center bg-primary text-white">
+                <h3>로그인</h3>
+            </div>
+            <div class="card-body">
+                <form method="POST">
+                    <div class="mb-3">
+                        <label for="username" class="form-label">사용자명</label>
+                        <input type="text" class="form-control" id="username" name="username" required 
+                               placeholder="사용자명을 입력하세요">
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="password" class="form-label">비밀번호</label>
+                        <input type="password" class="form-control" id="password" name="password" required
+                               placeholder="비밀번호를 입력하세요">
+                    </div>
+                    
+                    <div class="mb-3 form-check">
+                        <input type="checkbox" class="form-check-input" id="remember" name="remember">
+                        <label class="form-check-label" for="remember">
+                            로그인 상태 유지
+                        </label>
+                    </div>
+                    
+                    <div class="d-grid">
+                        <button type="submit" class="btn btn-primary">로그인</button>
+                    </div>
+                </form>
+            </div>
+            <div class="card-footer text-center">
+                <p class="mb-0">계정이 없으신가요? 
+                    <a href="{{ url_for('user.register') }}" class="text-decoration-none">회원가입</a>
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 시작 가이드 -->
+<div class="row justify-content-center mt-4">
+    <div class="col-md-8 col-lg-6">
+        <div class="alert alert-info">
+            <h6>🎯 시작하기</h6>
+            <ol class="mb-0 small">
+                <li>회원가입 후 로그인</li>
+                <li>템플릿 다운로드</li>
+                <li>문제 작성 후 업로드</li>
+                <li>공부 모드 또는 시험 모드 선택</li>
+            </ol>
+        </div>
+    </div>
+</div>
+{% endblock %}

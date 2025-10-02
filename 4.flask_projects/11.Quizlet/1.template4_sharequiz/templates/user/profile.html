@@ -1,0 +1,402 @@
+{% extends "base.html" %}
+
+{% block title %}프로필 - {{ current_user.username }}{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2>👤 프로필</h2>
+    <a href="{{ url_for('quiz.dashboard') }}" class="btn btn-secondary">← 대시보드</a>
+</div>
+
+<div class="row">
+    <!-- 사용자 정보 -->
+    <div class="col-md-6">
+        <div class="card mb-4">
+            <div class="card-header bg-primary text-white">
+                <h5 class="mb-0">🔍 계정 정보</h5>
+            </div>
+            <div class="card-body">
+                <div class="row mb-3">
+                    <div class="col-sm-4"><strong>사용자명:</strong></div>
+                    <div class="col-sm-8">{{ current_user.username }}</div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-sm-4"><strong>이메일:</strong></div>
+                    <div class="col-sm-8">
+                        <span id="current-email">{{ current_user.email }}</span>
+                        <button class="btn btn-outline-info btn-sm ms-2" data-bs-toggle="modal" data-bs-target="#emailModal">변경</button>
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-sm-4"><strong>비밀번호:</strong></div>
+                    <div class="col-sm-8">
+                        ••••••••
+                        <button class="btn btn-outline-warning btn-sm ms-2" data-bs-toggle="modal" data-bs-target="#passwordModal">변경</button>
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-sm-4"><strong>가입일:</strong></div>
+                    <div class="col-sm-8">
+                        {% if user_info and user_info.created_at %}
+                            {{ user_info.created_at }}
+                        {% else %}
+                            정보 없음
+                        {% endif %}
+                    </div>
+                </div>
+                <!--
+                <div class="row mb-3">
+                    <div class="col-sm-4"><strong>최근 로그인:</strong></div>
+                    <div class="col-sm-8">
+                        {% if user_info and user_info.last_login_at %}
+                            <span class="text-success">{{ user_info.last_login_at }}</span>
+                        {% else %}
+                            <span class="text-muted">정보 없음</span>
+                        {% endif %}
+                    </div>
+                </div>
+                -->
+                <div class="row">
+                    <div class="col-sm-4"><strong>회원 등급:</strong></div>
+                    <div class="col-sm-8">
+                        {% if stats.quiz_count >= 50 %}
+                            <span class="badge bg-danger">퀴즈 마스터</span>
+                        {% elif stats.quiz_count >= 20 %}
+                            <span class="badge bg-warning">고급 사용자</span>
+                        {% elif stats.quiz_count >= 5 %}
+                            <span class="badge bg-success">중급 사용자</span>
+                        {% else %}
+                            <span class="badge bg-info">초보 사용자</span>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 활동 통계 -->
+    <div class="col-md-6">
+        <div class="card mb-4">
+            <div class="card-header bg-info text-white">
+                <h5 class="mb-0">📊 활동 통계</h5>
+            </div>
+            <div class="card-body">
+                <div class="row text-center">
+                    <div class="col-6">
+                        <div class="display-6 text-primary">{{ stats.file_count }}</div>
+                        <p class="text-muted">업로드한 파일</p>
+                    </div>
+                    <div class="col-6">
+                        <div class="display-6 text-success">{{ stats.quiz_count }}</div>
+                        <p class="text-muted">완료한 시험</p>
+                    </div>
+                </div>
+                <hr>
+                <div class="row text-center">
+                    <div class="col-6">
+                        <div class="display-6 text-warning">{{ stats.avg_score }}%</div>
+                        <p class="text-muted">평균 점수</p>
+                    </div>
+                    <div class="col-6">
+                        <div class="display-6 text-danger">{{ stats.max_score }}%</div>
+                        <p class="text-muted">최고 점수</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 이메일 변경 모달 -->
+<div class="modal fade" id="emailModal" tabindex="-1">
+    <div class="modal-dialog">
+        <form class="modal-content" method="POST" action="{{ url_for('user.change_email') }}">
+            <div class="modal-header">
+                <h5 class="modal-title">📧 이메일 변경</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <div class="mb-3">
+                    <label for="newEmail" class="form-label">새 이메일 주소</label>
+                    <input
+                        type="email"
+                        class="form-control"
+                        id="newEmail"
+                        name="new_email"
+                        required
+                        placeholder="새 이메일 주소를 입력하세요"
+                    />
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">취소</button>
+                <button type="submit" class="btn btn-info">변경</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- 비밀번호 변경 모달 -->
+<div class="modal fade" id="passwordModal" tabindex="-1">
+    <div class="modal-dialog">
+        <form class="modal-content" method="POST" action="{{ url_for('user.change_password') }}">
+            <div class="modal-header">
+                <h5 class="modal-title">🔒 비밀번호 변경</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <div class="mb-3">
+                    <label for="currentPassword" class="form-label">현재 비밀번호</label>
+                    <input type="password" class="form-control" id="currentPassword" name="current_password" required />
+                </div>
+                <div class="mb-3">
+                    <label for="newPassword" class="form-label">새 비밀번호</label>
+                    <input
+                        type="password"
+                        class="form-control"
+                        id="newPassword"
+                        name="new_password"
+                        required
+                        minlength="6"
+                    />
+                </div>
+                <div class="mb-3">
+                    <label for="confirmPassword" class="form-label">새 비밀번호 확인</label>
+                    <input type="password" class="form-control" id="confirmPassword" name="confirm_password" required />
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">취소</button>
+                <button type="submit" class="btn btn-warning">변경</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- 성취 배지 -->
+<div class="card mb-4">
+    <div class="card-header bg-warning text-dark">
+        <h5 class="mb-0">🏆 성취 배지</h5>
+    </div>
+    <div class="card-body">
+        <div class="row text-center">
+            {% if stats.quiz_count >= 1 %}
+            <div class="col-md-2 mb-3">
+                <div class="badge-item">
+                    <div class="badge bg-success badge-large">🎯</div>
+                    <small class="d-block mt-1">첫 시험</small>
+                </div>
+            </div>
+            {% endif %}
+            
+            {% if stats.quiz_count >= 10 %}
+            <div class="col-md-2 mb-3">
+                <div class="badge-item">
+                    <div class="badge bg-primary badge-large">📚</div>
+                    <small class="d-block mt-1">열정적 학습자</small>
+                </div>
+            </div>
+            {% endif %}
+            
+            {% if stats.max_score >= 90 %}
+            <div class="col-md-2 mb-3">
+                <div class="badge-item">
+                    <div class="badge bg-warning badge-large">⭐</div>
+                    <small class="d-block mt-1">완벽주의자</small>
+                </div>
+            </div>
+            {% endif %}
+            
+            {% if stats.avg_score >= 80 %}
+            <div class="col-md-2 mb-3">
+                <div class="badge-item">
+                    <div class="badge bg-info badge-large">🎓</div>
+                    <small class="d-block mt-1">우수한 성적</small>
+                </div>
+            </div>
+            {% endif %}
+            
+            {% if stats.file_count >= 5 %}
+            <div class="col-md-2 mb-3">
+                <div class="badge-item">
+                    <div class="badge bg-secondary badge-large">📁</div>
+                    <small class="d-block mt-1">파일 마스터</small>
+                </div>
+            </div>
+            {% endif %}
+            
+            {% if stats.quiz_count >= 50 %}
+            <div class="col-md-2 mb-3">
+                <div class="badge-item">
+                    <div class="badge bg-danger badge-large">🔥</div>
+                    <small class="d-block mt-1">퀴즈 마니아</small>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+        
+        {% if stats.quiz_count == 0 %}
+        <div class="text-center text-muted">
+            <p>아직 획득한 배지가 없습니다.</p>
+            <p>시험을 완료하고 배지를 수집해보세요!</p>
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+<!-- 학습 진행 상황 -->
+<div class="card mb-4">
+    <div class="card-header bg-success text-white">
+        <h5 class="mb-0">📈 학습 진행 상황</h5>
+    </div>
+    <div class="card-body">
+        {% if stats.quiz_count > 0 %}
+        <div class="row">
+            <div class="col-md-6">
+                <h6>목표 달성률</h6>
+                <div class="mb-3">
+                    <!-- 시험 횟수 진행률 -->
+                    {% if stats.quiz_count < 10 %}
+                        {% set target = 10 %}
+                        {% set progress = (stats.quiz_count / target * 100) %}
+                        <div class="d-flex justify-content-between mb-1">
+                            <small>열정적 학습자 목표</small>
+                            <small>{{ stats.quiz_count }} / {{ target }}회</small>
+                        </div>
+                        <div class="progress mb-2">
+                            <div class="progress-bar bg-primary" style="width: {{ progress }}%"></div>
+                        </div>
+                    {% elif stats.quiz_count < 50 %}
+                        {% set target = 50 %}
+                        {% set progress = (stats.quiz_count / target * 100) %}
+                        <div class="d-flex justify-content-between mb-1">
+                            <small>퀴즈 마니아 목표</small>
+                            <small>{{ stats.quiz_count }} / {{ target }}회</small>
+                        </div>
+                        <div class="progress mb-2">
+                            <div class="progress-bar bg-warning" style="width: {{ progress }}%"></div>
+                        </div>
+                    {% else %}
+                        <div class="alert alert-success py-2 mb-2">
+                            🏆 모든 시험 횟수 목표 달성!
+                        </div>
+                    {% endif %}
+                    
+                    <!-- 평균 점수 진행률 -->
+                    {% if stats.avg_score < 80 %}
+                        {% set score_progress = (stats.avg_score / 80 * 100) %}
+                        <div class="d-flex justify-content-between mb-1">
+                            <small>평균 80점 목표</small>
+                            <small>{{ stats.avg_score }}% / 80%</small>
+                        </div>
+                        <div class="progress">
+                            <div class="progress-bar bg-success" style="width: {{ score_progress }}%"></div>
+                        </div>
+                    {% else %}
+                        <div class="alert alert-success py-2">
+                            🎯 평균 점수 목표 달성!
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+            <div class="col-md-6">
+                <h6>다음 목표</h6>
+                <div class="list-unstyled">
+                    {% if stats.quiz_count < 5 %}
+                        <li class="mb-2">🎯 중급 사용자까지 <strong>{{ 5 - stats.quiz_count }}회</strong> 남음</li>
+                    {% elif stats.quiz_count < 10 %}
+                        <li class="mb-2">📚 열정적 학습자까지 <strong>{{ 10 - stats.quiz_count }}회</strong> 남음</li>
+                    {% elif stats.quiz_count < 20 %}
+                        <li class="mb-2">🎓 고급 사용자까지 <strong>{{ 20 - stats.quiz_count }}회</strong> 남음</li>
+                    {% elif stats.quiz_count < 50 %}
+                        <li class="mb-2">🔥 퀴즈 마니아까지 <strong>{{ 50 - stats.quiz_count }}회</strong> 남음</li>
+                    {% else %}
+                        <li class="mb-2">🏆 모든 목표를 달성했습니다!</li>
+                    {% endif %}
+                    
+                    {% if stats.avg_score < 80 %}
+                        <li class="mb-2">💪 평균 80점까지 <strong>{{ "%.1f"|format(80 - stats.avg_score) }}점</strong> 상승 필요</li>
+                    {% endif %}
+                    
+                    {% if stats.max_score < 90 %}
+                        <li class="mb-2">⭐ 완벽주의자 배지를 위해 <strong>90점 이상</strong> 도전!</li>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        {% else %}
+        <div class="text-center text-muted py-4">
+            <h6>아직 시험 기록이 없습니다</h6>
+            <p>첫 시험을 완료하고 학습 진행 상황을 확인해보세요!</p>
+            <a href="{{ url_for('quiz.dashboard') }}" class="btn btn-primary">시험 보러 가기</a>
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+<!-- 빠른 액션 -->
+<div class="card">
+    <div class="card-header bg-light">
+        <h5 class="mb-0">🚀 빠른 액션</h5>
+    </div>
+    <div class="card-body">
+        <div class="row">
+            <div class="col-md-3 mb-2">
+                <a href="{{ url_for('quiz.dashboard') }}" class="btn btn-outline-primary w-100">
+                    🏠 대시보드
+                </a>
+            </div>
+            <div class="col-md-3 mb-2">
+                <a href="{{ url_for('result.stats') }}" class="btn btn-outline-info w-100">
+                    📊 통계 보기
+                </a>
+            </div>
+            <div class="col-md-3 mb-2">
+                <a href="{{ url_for('result.history') }}" class="btn btn-outline-success w-100">
+                    📋 시험 기록
+                </a>
+            </div>
+            <div class="col-md-3 mb-2">
+                <a href="{{ url_for('quiz.settings') }}" class="btn btn-outline-secondary w-100">
+                    ⚙️ 설정
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .badge-large {
+        font-size: 2rem;
+        padding: 1rem;
+        border-radius: 50%;
+        width: 60px;
+        height: 60px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .badge-item {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .progress-stacked {
+        display: flex;
+        border-radius: 0.375rem;
+        overflow: hidden;
+    }
+
+    .progress-stacked .progress {
+        background-color: transparent;
+    }
+
+    .progress-stacked .progress-bar {
+        font-size: 0.75rem;
+        line-height: 20px;
+        text-align: center;
+    }
+</style>
+{% endblock %}

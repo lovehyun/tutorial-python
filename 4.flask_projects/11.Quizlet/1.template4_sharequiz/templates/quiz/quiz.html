@@ -1,0 +1,194 @@
+{% extends "base.html" %}
+
+{% block title %}시험 모드 - {{ file_info.original_filename }}{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h2>🎯 시험 모드</h2>
+        <p class="text-muted mb-0">{{ file_info.original_filename }} ({{ questions|length }}문제)</p>
+    </div>
+    <div>
+        <span id="timer" class="badge bg-info fs-6">00:00:00</span>
+    </div>
+</div>
+
+<div class="alert alert-warning">
+    <strong>⚠️ 주의사항:</strong>
+    <ul class="mb-0">
+        <li>모든 문제를 풀고 <strong>제출 버튼</strong>을 눌러야 채점됩니다.</li>
+        <li>제출 후에는 수정할 수 없습니다.</li>
+        <li>페이지를 새로고침하면 진행 상황이 초기화됩니다.</li>
+    </ul>
+</div>
+
+<!-- 진행률 표시 -->
+<div class="card mb-4">
+    <div class="card-body">
+        <div class="d-flex justify-content-between align-items-center">
+            <span>진행률</span>
+            <span id="progress-text">0 / {{ questions|length }}</span>
+        </div>
+        <div class="progress mt-2">
+            <div id="progress-bar" class="progress-bar" role="progressbar" style="width: 0%"></div>
+        </div>
+    </div>
+</div>
+
+<form method="POST" action="{{ url_for('result.submit_quiz') }}" id="quiz-form">
+    <input type="hidden" name="session_token" value="{{ session_token }}">
+    {% for question in questions %}
+    <div class="card mb-4 question-card" data-question-id="{{ question.display_id }}">
+        <div class="card-header d-flex justify-content-between align-items-center">
+            <h5>문제 {{ question.display_id }}</h5>
+            <span class="badge bg-secondary" id="status-{{ question.display_id }}">미완료</span>
+        </div>
+        <div class="card-body">
+            <p class="fs-5 mb-4">{{ question.question }}</p>
+
+            {% for choice in question.shuffled_choices %}
+            <div class="form-check mb-3">
+                <input class="form-check-input" type="radio" 
+                       name="question_{{ question.display_id }}" 
+                       id="q{{ question.display_id }}_{{ choice.display_index }}"
+                       value="{{ choice.display_index }}"
+                       onchange="updateProgress()">
+                <label class="form-check-label w-100" for="q{{ question.display_id }}_{{ choice.display_index }}">
+                    <div class="p-2 border rounded choice-label">
+                        <strong>{{ choice.display_index }}.</strong> {{ choice.text }}
+                    </div>
+                </label>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endfor %}
+
+    <!-- 제출 버튼 -->
+    <div class="text-center mb-5">
+        <button type="button" class="btn btn-success btn-lg" onclick="submitQuiz()" id="submit-btn" disabled>
+            📝 시험 제출하기
+        </button>
+        <p class="text-muted mt-2">모든 문제를 완료하면 제출 버튼이 활성화됩니다.</p>
+    </div>
+</form>
+
+<!-- 제출 확인 모달 -->
+<div class="modal fade" id="submitModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">시험 제출 확인</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <p>정말 시험을 제출하시겠습니까?</p>
+                <p class="text-muted">제출 후에는 수정할 수 없습니다.</p>
+                <div id="submit-summary"></div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">취소</button>
+                <button type="button" class="btn btn-success" onclick="confirmSubmit()">제출하기</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+let startTime = new Date();
+let timerInterval;
+
+// 타이머 시작
+function startTimer() {
+    timerInterval = setInterval(function() {
+        const now = new Date();
+        const elapsed = Math.floor((now - startTime) / 1000);
+        const hours = Math.floor(elapsed / 3600);
+        const minutes = Math.floor((elapsed % 3600) / 60);
+        const seconds = elapsed % 60;
+        
+        document.getElementById('timer').textContent = 
+            String(hours).padStart(2, '0') + ':' + 
+            String(minutes).padStart(2, '0') + ':' + 
+            String(seconds).padStart(2, '0');
+    }, 1000);
+}
+
+// 진행률 업데이트
+function updateProgress() {
+    const totalQuestions = {{ questions|length }};
+    const answeredQuestions = document.querySelectorAll('input[type="radio"]:checked').length;
+    const progressPercent = (answeredQuestions / totalQuestions) * 100;
+    
+    document.getElementById('progress-bar').style.width = progressPercent + '%';
+    document.getElementById('progress-text').textContent = answeredQuestions + ' / ' + totalQuestions;
+    
+    // 완료된 문제 상태 업데이트
+    document.querySelectorAll('.question-card').forEach(card => {
+        const questionId = card.dataset.questionId;
+        const isAnswered = card.querySelector('input[type="radio"]:checked');
+        const statusBadge = document.getElementById('status-' + questionId);
+        
+        if (isAnswered) {
+            statusBadge.textContent = '완료';
+            statusBadge.className = 'badge bg-success';
+        } else {
+            statusBadge.textContent = '미완료';
+            statusBadge.className = 'badge bg-secondary';
+        }
+    });
+    
+    // 제출 버튼 활성화/비활성화
+    const submitBtn = document.getElementById('submit-btn');
+    if (answeredQuestions === totalQuestions) {
+        submitBtn.disabled = false;
+        submitBtn.textContent = '📝 시험 제출하기';
+    } else {
+        submitBtn.disabled = true;
+        submitBtn.textContent = `📝 시험 제출하기 (${totalQuestions - answeredQuestions}문제 남음)`;
+    }
+}
+
+// 제출 확인
+function submitQuiz() {
+    const answered = document.querySelectorAll('input[type="radio"]:checked').length;
+    const total = {{ questions|length }};
+    
+    document.getElementById('submit-summary').innerHTML = 
+        `<strong>답변한 문제:</strong> ${answered} / ${total}<br>` +
+        `<strong>소요 시간:</strong> ${document.getElementById('timer').textContent}`;
+    
+    new bootstrap.Modal(document.getElementById('submitModal')).show();
+}
+
+// 최종 제출
+function confirmSubmit() {
+    clearInterval(timerInterval);
+    document.getElementById('quiz-form').submit();
+}
+
+// 선택지 스타일링
+document.addEventListener('DOMContentLoaded', function() {
+    startTimer();
+    
+    // 선택지 클릭 시 스타일 변경
+    document.querySelectorAll('.form-check-input').forEach(radio => {
+        radio.addEventListener('change', function() {
+            // 같은 문제의 다른 선택지들 스타일 리셋
+            const questionName = this.name;
+            document.querySelectorAll(`input[name="${questionName}"]`).forEach(otherRadio => {
+                const label = otherRadio.nextElementSibling.querySelector('.choice-label');
+                if (otherRadio.checked) {
+                    label.classList.add('bg-primary', 'text-white');
+                    label.classList.remove('bg-light');
+                } else {
+                    label.classList.add('bg-light');
+                    label.classList.remove('bg-primary', 'text-white');
+                }
+            });
+        });
+    });
+});
+
+</script>
+{% endblock %}
