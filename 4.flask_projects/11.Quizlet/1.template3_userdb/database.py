@@ -5,11 +5,12 @@ import sqlite3
 import os
 
 DB_PATH = 'data/quizlet.db'
+UPLOAD_PATH = 'data/uploads'
 
 def init_database():
     """데이터베이스 및 테이블 초기화"""
     # uploads 디렉토리 생성
-    os.makedirs('data/uploads', exist_ok=True)
+    os.makedirs(UPLOAD_PATH, exist_ok=True)
     
     conn = sqlite3.connect(DB_PATH)
     cursor = conn.cursor()

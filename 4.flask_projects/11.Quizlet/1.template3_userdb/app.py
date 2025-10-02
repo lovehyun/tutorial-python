@@ -8,7 +8,7 @@ import os
 from datetime import timedelta
 
 # 로컬 모듈 import
-from database import init_database, get_db_connection
+from database import init_database, get_db_connection, DB_PATH, UPLOAD_PATH
 from routes.user_routes import user_bp
 from routes.quiz_routes import quiz_bp
 from routes.result_routes import result_bp
@@ -17,7 +17,7 @@ app = Flask(__name__)
 
 # 설정
 app.secret_key = 'your-secret-key-change-this-in-production'
-app.config['UPLOAD_FOLDER'] = 'data/uploads'
+app.config['UPLOAD_FOLDER'] = UPLOAD_PATH
 app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024  # 16MB
 app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(days=7)
 
@@ -82,12 +82,9 @@ def not_found(error):
 def internal_error(error):
     return render_template('error/500.html'), 500
 
-# 업로드 폴더 생성
-os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
-
 if __name__ == '__main__':
     # 데이터베이스 초기화 확인
-    if not os.path.exists('quizlet.db'):
+    if not os.path.exists(DB_PATH):
         print("데이터베이스가 없습니다. 초기화를 진행합니다...")
         init_database()
     
