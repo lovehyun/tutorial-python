@@ -5,7 +5,7 @@ from flask import Blueprint, render_template, request, redirect, url_for, flash,
 from flask_login import login_required, current_user
 import json
 from datetime import datetime, timedelta
-from database import get_db_connection
+from database import get_db_connection, get_quiz_session, deactivate_quiz_session
 
 result_bp = Blueprint('result', __name__)
 
@@ -13,14 +13,20 @@ result_bp = Blueprint('result', __name__)
 @login_required
 def submit_quiz():
     """시험 제출 및 채점"""
-    quiz_data = session.get('quiz_data')
-    if not quiz_data:
-        flash('시험 세션이 만료되었습니다. 다시 시작해주세요.', 'error')
+    session_token = request.form.get('session_token')
+    if not session_token:
+        flash('시험 세션이 유효하지 않습니다. 다시 시작해주세요.', 'error')
         return redirect(url_for('quiz.dashboard'))
     
-    questions = quiz_data['questions']
-    file_id = quiz_data['file_id']
-    settings = quiz_data['settings']
+    # 데이터베이스에서 퀴즈 세션 조회
+    quiz_session = get_quiz_session(session_token)
+    if not quiz_session or quiz_session['user_id'] != current_user.id:
+        flash('시험 세션이 만료되었거나 유효하지 않습니다. 다시 시작해주세요.', 'error')
+        return redirect(url_for('quiz.dashboard'))
+    
+    questions = quiz_session['questions_data']
+    file_id = quiz_session['quiz_file_id']
+    settings = quiz_session['settings']
     
     results = []
     correct_count = 0
@@ -70,8 +76,8 @@ def submit_quiz():
     conn.commit()
     conn.close()
     
-    # 세션 정리
-    session.pop('quiz_data', None)
+    # 퀴즈 세션 비활성화
+    deactivate_quiz_session(session_token)
     
     return render_template('result/result.html', 
                          results=results, 

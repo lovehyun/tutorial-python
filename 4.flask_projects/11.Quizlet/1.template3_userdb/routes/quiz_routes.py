@@ -8,7 +8,7 @@ from openpyxl import Workbook, load_workbook
 import os
 import tempfile
 from random import shuffle
-from database import get_db_connection, create_user_upload_folder
+from database import get_db_connection, create_user_upload_folder, create_quiz_session, get_quiz_session, deactivate_quiz_session
 
 quiz_bp = Blueprint('quiz', __name__)
 
@@ -279,15 +279,20 @@ def quiz_start(file_id):
         return redirect(url_for('quiz.dashboard'))
     
     prepared_questions = prepare_questions(questions, 'quiz', current_user.id)
+    settings = get_user_settings(current_user.id, 'quiz')
     
-    # 시험 데이터를 세션에 저장
-    session['quiz_data'] = {
-        'file_id': file_id,
-        'questions': {q['display_id']: q for q in prepared_questions},
-        'settings': get_user_settings(current_user.id, 'quiz')
-    }
+    # 데이터베이스에 퀴즈 세션 생성
+    session_token = create_quiz_session(
+        current_user.id, 
+        file_id, 
+        {q['display_id']: q for q in prepared_questions},
+        settings
+    )
     
-    return render_template('quiz/quiz.html', questions=prepared_questions, file_info=file_info)
+    return render_template('quiz/quiz.html', 
+                         questions=prepared_questions, 
+                         file_info=file_info,
+                         session_token=session_token)
 
 @quiz_bp.route('/settings', methods=['GET', 'POST'])
 @login_required

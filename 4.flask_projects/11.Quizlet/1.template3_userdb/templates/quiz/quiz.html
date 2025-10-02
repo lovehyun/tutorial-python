@@ -36,6 +36,7 @@
 </div>
 
 <form method="POST" action="{{ url_for('result.submit_quiz') }}" id="quiz-form">
+    <input type="hidden" name="session_token" value="{{ session_token }}">
     {% for question in questions %}
     <div class="card mb-4 question-card" data-question-id="{{ question.display_id }}">
         <div class="card-header d-flex justify-content-between align-items-center">

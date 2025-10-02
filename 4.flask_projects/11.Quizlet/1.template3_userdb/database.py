@@ -72,6 +72,23 @@ def init_database():
         )
     ''')
     
+    # quiz_sessions 테이블 생성 (퀴즈 세션 관리)
+    cursor.execute('''
+        CREATE TABLE IF NOT EXISTS quiz_sessions (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            user_id INTEGER NOT NULL,
+            quiz_file_id INTEGER NOT NULL,
+            session_token VARCHAR(255) UNIQUE NOT NULL,
+            questions_data TEXT NOT NULL,
+            settings TEXT NOT NULL,
+            started_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            expires_at TIMESTAMP,
+            is_active BOOLEAN DEFAULT 1,
+            FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE,
+            FOREIGN KEY (quiz_file_id) REFERENCES quiz_files (id) ON DELETE CASCADE
+        )
+    ''')
+    
     conn.commit()
     conn.close()
     print(f"데이터베이스가 성공적으로 초기화되었습니다: {DB_PATH}")
@@ -87,6 +104,88 @@ def create_user_upload_folder(user_id):
     user_folder = f'data/uploads/user_{user_id}'
     os.makedirs(user_folder, exist_ok=True)
     return user_folder
+
+def create_quiz_session(user_id, quiz_file_id, questions_data, settings):
+    """퀴즈 세션 생성"""
+    import uuid
+    import json
+    from datetime import datetime, timedelta
+    
+    session_token = str(uuid.uuid4())
+    expires_at = datetime.now() + timedelta(hours=2)  # 2시간 후 만료
+    
+    conn = get_db_connection()
+    conn.execute('''
+        INSERT INTO quiz_sessions 
+        (user_id, quiz_file_id, session_token, questions_data, settings, expires_at)
+        VALUES (?, ?, ?, ?, ?, ?)
+    ''', (
+        user_id, 
+        quiz_file_id, 
+        session_token, 
+        json.dumps(questions_data), 
+        json.dumps(settings),
+        expires_at
+    ))
+    conn.commit()
+    conn.close()
+    
+    return session_token
+
+def get_quiz_session(session_token):
+    """퀴즈 세션 조회"""
+    import json
+    from datetime import datetime
+    
+    conn = get_db_connection()
+    session = conn.execute(
+        'SELECT * FROM quiz_sessions WHERE session_token = ? AND is_active = 1',
+        (session_token,)
+    ).fetchone()
+    conn.close()
+    
+    if not session:
+        return None
+    
+    # 만료 시간 확인
+    if session['expires_at'] and datetime.fromisoformat(session['expires_at']) < datetime.now():
+        return None
+    
+    # JSON 데이터 파싱
+    session_data = {
+        'id': session['id'],
+        'user_id': session['user_id'],
+        'quiz_file_id': session['quiz_file_id'],
+        'session_token': session['session_token'],
+        'questions_data': json.loads(session['questions_data']),
+        'settings': json.loads(session['settings']),
+        'started_at': session['started_at'],
+        'expires_at': session['expires_at']
+    }
+    
+    return session_data
+
+def deactivate_quiz_session(session_token):
+    """퀴즈 세션 비활성화"""
+    conn = get_db_connection()
+    conn.execute(
+        'UPDATE quiz_sessions SET is_active = 0 WHERE session_token = ?',
+        (session_token,)
+    )
+    conn.commit()
+    conn.close()
+
+def cleanup_expired_sessions():
+    """만료된 세션 정리"""
+    from datetime import datetime
+    
+    conn = get_db_connection()
+    conn.execute(
+        'UPDATE quiz_sessions SET is_active = 0 WHERE expires_at < ?',
+        (datetime.now(),)
+    )
+    conn.commit()
+    conn.close()
 
 if __name__ == '__main__':
     init_database()
