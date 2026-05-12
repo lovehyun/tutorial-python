@@ -24,8 +24,6 @@ with open(file_path, "r") as file:
     csv_reader = csv.DictReader(file)
     for row in csv_reader:
         # print(row)
-
-        for row in csv_reader:
-            data.append(row)  # row는 dict 형태
+        data.append(row)  # row는 dict 형태
 
 print(data)
