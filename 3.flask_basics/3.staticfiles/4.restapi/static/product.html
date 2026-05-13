@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>Product 검색</title>
+</head>
+<body>
+    <h1>Product 검색 (Query param 방식)</h1>
+    <p><a href="/">← 홈으로</a></p>
+
+    <form id="searchForm">
+        <label>ID: <input type="number" id="pid" min="1"></label>
+        <label>Name: <input type="text" id="pname"></label>
+        <button type="submit">조회</button>
+    </form>
+
+    <ul id="result"></ul>
+
+    <script>
+        async function search(qs) {
+            const res = await fetch(`/api/products?${qs}`);
+            const products = await res.json();
+
+            // 간결한 코드 (고차함수)
+            // document.getElementById('result').innerHTML = products
+            //     .map(p => `<li>${p.id} - ${p.name} / $${p.price}</li>`)
+            //     .join('');
+
+            // 간단한 코드
+            let html = '';
+            for (const p of products) {
+                html += `<li>${p.id} - ${p.name} / $${p.price}</li>`;
+            }
+            document.getElementById('result').innerHTML = html;
+        }
+
+        document.getElementById('searchForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const params = new URLSearchParams();
+            const id = document.getElementById('pid').value;
+            const name = document.getElementById('pname').value;
+            if (id) params.set('id', id);
+            if (name) params.set('name', name);
+            search(params.toString());
+        });
+
+        search('');
+    </script>
+</body>
+</html>

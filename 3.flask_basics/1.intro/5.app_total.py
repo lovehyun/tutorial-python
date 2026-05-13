@@ -62,6 +62,7 @@ def search_user2():
     if phone_query:
         if len(phone_query) == 4 and phone_query.isdigit():
             results = [user for user in results if user['phone'][-4:] == phone_query]
+            # results = [user for user in results if user['phone'].startswith(phone_query)]
         else:
             return jsonify({'error': 'Phone parameter must be the last 4 digits'}), 400
             # 한글 깨짐 이슈 해결법

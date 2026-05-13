@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>User 검색</title>
+</head>
+<body>
+    <h1>User 검색 (URL path param 방식)</h1>
+    <p><a href="/">← 홈으로</a></p>
+
+    <form id="searchForm">
+        <label>ID: <input type="number" id="uid" min="1" required></label>
+        <button type="submit">조회</button>
+    </form>
+
+    <div id="result"></div>
+    <ul id="userList"></ul>
+
+    <script>
+        document.getElementById('searchForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const id = document.getElementById('uid').value;
+            const result = document.getElementById('result');
+            
+            const res = await fetch(`/api/users/${id}`);
+            if (!res.ok) {
+                result.textContent = '없음';
+                return;
+            }
+            const user = await res.json();
+
+            result.textContent = `${user.id} - ${user.name} (${user.email})`;
+        });
+
+        (async () => {
+            const res = await fetch('/api/users');
+            const users = await res.json();
+            document.getElementById('userList').innerHTML = users
+                .map(u => `<li>${u.id} - ${u.name}</li>`)
+                .join('');
+        })();
+    </script>
+</body>
+</html>

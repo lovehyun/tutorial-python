@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>Product 검색</title>
+</head>
+<body>
+    <h1>Product 검색 (Query param 방식)</h1>
+    <p><a href="/">← 홈으로</a></p>
+
+    <form method="get" action="/product">
+        <label>ID: <input type="number" name="id" min="1" value="{{ request.args.get('id', '') }}"></label>
+        <label>Name: <input type="text" name="name" value="{{ request.args.get('name', '') }}"></label>
+        <button type="submit">조회</button>
+    </form>
+
+    <h2>검색 결과</h2>
+    <ul>
+    {% for p in results %}
+        <li>{{ p.id }} - {{ p.name }} / ${{ p.price }}</li>
+    {% endfor %}
+    </ul>
+</body>
+</html>

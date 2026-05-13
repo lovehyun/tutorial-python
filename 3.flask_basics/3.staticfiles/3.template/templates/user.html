@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>User 검색</title>
+</head>
+<body>
+    <h1>User 검색 (URL path param 방식)</h1>
+    <p><a href="/">← 홈으로</a></p>
+
+    <form onsubmit="event.preventDefault(); location.href='/user/' + document.getElementById('uid').value;">
+        <label>ID: <input type="number" id="uid" min="1" required></label>
+        <button type="submit">조회</button>
+    </form>
+
+    <h2>검색 결과</h2>
+    {% if user_id %}
+        {% set user = users.get(user_id) %}
+        {% if user %}
+            <p>{{ user.id }} - {{ user.name }} ({{ user.email }})</p>
+        {% else %}
+            <p>없음</p>
+        {% endif %}
+    {% endif %}
+
+    <h2>전체 목록</h2>
+    <ul>
+    {% for u in users.values() %}
+        <li><a href="/user/{{ u.id }}">{{ u.id }} - {{ u.name }}</a></li>
+    {% endfor %}
+    </ul>
+</body>
+</html>
