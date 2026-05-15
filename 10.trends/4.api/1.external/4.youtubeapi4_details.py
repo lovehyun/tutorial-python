@@ -10,7 +10,8 @@ load_dotenv()
 API_KEY = os.getenv('YOUTUBE_API_KEY')
 
 # YouTube Data API 엔드포인트 설정
-url = 'https://www.googleapis.com/youtube/v3/search'
+youtube_search_url = 'https://www.googleapis.com/youtube/v3/search'
+youtube_video_url = 'https://www.googleapis.com/youtube/v3/videos'
 
 # 검색 쿼리 설정
 search_query = 'Python programming'
@@ -34,11 +35,12 @@ for page in range(1, total_pages + 1):
     }
     
     # API 요청 보내기
-    response = requests.get(url, params=params)
+    response = requests.get(youtube_search_url, params=params)
     data = response.json()
 
     # 검색 결과 파싱하여 저장
-    search_results.extend(data['items'])
+    # search_results = data['items'] # 한 페이지만 저장
+    search_results.extend(data['items']) # 페이지별로 돌아가면서 누적
     
     # 다음 페이지 토큰 저장
     next_page_token = data.get('nextPageToken')
@@ -60,7 +62,7 @@ for index, result in enumerate(search_results, start=1):
         'id': video_id,
         'key': API_KEY
     }
-    video_response = requests.get('https://www.googleapis.com/youtube/v3/videos', params=video_params)
+    video_response = requests.get(youtube_video_url, params=video_params)
     video_data = video_response.json()
 
     # 통계 정보가 있는 경우에만 조회수 가져오기

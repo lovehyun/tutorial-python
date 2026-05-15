@@ -1,3 +1,4 @@
+# https://docs.github.com/en/rest/search/search
 import requests
 
 # GitHub 검색 API 엔드포인트 URL
@@ -9,15 +10,22 @@ keyword = 'python scraping'
 # 검색 결과를 저장할 리스트
 all_repositories = []
 
-# 최대 검색 페이지 수
+# 최대 페이지 수
 max_pages = 3
+
+# 페이지당 개수 (기본 30)
+per_page = 50
 
 for page in range(1, max_pages + 1):
     # API 쿼리 파라미터 설정 - 한번에 최대 30개
     params = {
         'q': keyword,
-        'page': page
+        'page': page,
+        # 'per_page': per_page
     }
+
+    if per_page is not None:
+        params['per_page'] = per_page
 
     # API로부터 데이터 가져오기
     response = requests.get(url, params=params)

@@ -43,6 +43,7 @@ for item in data['items']:
     video_id = item['id']['videoId']
     video_url = f"https://www.youtube.com/watch?v={video_id}"
     description = item['snippet']['description']
+    
     print(f"Title: {title}")
     print(f"URL: {video_url}")
     print(f"Description: {description}")

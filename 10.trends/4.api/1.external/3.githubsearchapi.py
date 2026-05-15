@@ -1,3 +1,4 @@
+# https://docs.github.com/en/rest/search/search
 import requests
 
 # GitHub 검색 API 엔드포인트 URL
