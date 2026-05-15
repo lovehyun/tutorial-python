@@ -1,4 +1,6 @@
-# pip install google-generativeai python-dotenv
+# pip install google-generativeai python-dotenv   <-- 구버전
+# pip install google-genai  <-- 신버전
+
 # 예제 1. "어떤 영상이 인기인지 분석"
 import csv
 import os
