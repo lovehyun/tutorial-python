@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>3D Pose Viewer</title>
+    <style>
+        body { 
+            font-family: 'Arial', sans-serif; 
+            text-align: center;
+            margin: 0;
+            padding: 20px;
+            background-color: #f8f9fa;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        h2 {
+            color: #333;
+            margin-bottom: 20px;
+        }
+        .video-container {
+            width: 100%;
+            margin-bottom: 20px;
+        }
+        .video-feed {
+            width: 100%;
+            max-width: 720px;
+            height: auto;
+            border: 3px solid #ddd;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        #pose-text {
+            width: 100%;
+            max-width: 720px;
+            white-space: pre-line;
+            background-color: #fff;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 15px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            text-align: left;
+            font-family: monospace;
+            font-size: 14px;
+            margin-top: 20px;
+            box-sizing: border-box;
+        }
+        .status {
+            padding: 5px 10px;
+            border-radius: 4px;
+            font-weight: bold;
+            display: inline-block;
+            margin-top: 10px;
+        }
+        .status.active {
+            background-color: #d4edda;
+            color: #155724;
+        }
+        .status.inactive {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>실시간 3D 포즈 보기</h2>
+        
+        <div class="video-container">
+            <img src="{{ url_for('video_feed') }}" class="video-feed" alt="실시간 포즈 영상">
+        </div>
+        
+        <div id="pose-text">포즈 데이터 로딩 중...</div>
+        
+        <div id="connection-status" class="status active">연결됨</div>
+    </div>
+
+    <script>
+        let connectionLost = false;
+        
+        function fetchPoseSummary() {
+            fetch('/pose_summary')
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('서버 연결 실패');
+                    }
+                    if (connectionLost) {
+                        document.getElementById('connection-status').textContent = '연결됨';
+                        document.getElementById('connection-status').className = 'status active';
+                        connectionLost = false;
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    document.getElementById('pose-text').innerText = data.summary;
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    document.getElementById('connection-status').textContent = '연결 끊김';
+                    document.getElementById('connection-status').className = 'status inactive';
+                    connectionLost = true;
+                });
+        }
+
+        // 페이지 로드시 즉시 호출하고, 이후 주기적으로 호출
+        fetchPoseSummary();
+        setInterval(fetchPoseSummary, 1000);  // 1초 간격으로 업데이트
+
+        // 페이지 언로드 시 카메라 해제
+        window.addEventListener('beforeunload', function() {
+            fetch('/shutdown');
+        });
+    </script>
+</body>
+</html>

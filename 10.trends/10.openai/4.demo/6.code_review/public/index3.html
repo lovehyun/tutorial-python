@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>GitHub 코드 취약점 분석기</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 40px; }
+        input[type=text] { width: 100%; padding: 8px; }
+        button { padding: 10px 20px; }
+        pre { background: #f4f4f4; padding: 10px; border: 1px solid #ccc; }
+        .error { color: red; }
+        #codeContainer {
+            background: #f4f4f4;
+            border: 1px solid #ccc;
+            padding: 10px;
+            font-family: monospace;
+            white-space: pre;
+            overflow-x: auto;
+        }
+        .code-line {
+            display: block;
+        }
+        .line-number {
+            display: inline-block;
+            width: 40px;
+            text-align: right;
+            margin-right: 10px;
+            color: gray;
+        }
+        /* 하이라이팅 스타일 (연한 빨간색 배경) */
+        .highlight {
+            background-color: #ffcccc;
+        }
+        /* 진행 상태 표시 스타일 */
+        .progress {
+            font-weight: bold;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <h1>GitHub 코드 취약점 분석기</h1>
+    <form id="checkForm">
+        <label for="github_url">GitHub 파일 URL:</label><br>
+        <input type="text" id="github_url" name="github_url" placeholder="https://github.com/user/repo/blob/branch/path/to/file.py" required>
+        <br><br>
+        <button type="submit">Check</button>
+    </form>
+    <!-- 진행 상태 표시 영역 (초기엔 숨김) -->
+    <div id="progress" class="progress" style="display: none;">처리 중입니다...</div>
+    <div id="error" class="error"></div>
+    <div id="result">
+        <h2>소스 코드</h2>
+        <div id="codeContainer"></div>
+        <h2>분석 결과</h2>
+        <pre id="analysis"></pre>
+    </div>
+    <script src="script3.js"></script>
+</body>
+</html>

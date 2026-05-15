@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div style="display: flex; align-items: center; justify-content: space-between;">
+    <h2>{{ grade }}학년 - {{ curriculum_title }}</h2>
+</div>
+<p>여기에 영어 대화 및 학습 내용을 추가하세요.</p>
+
+<div style="display: flex; height: 100%;">
+    <!-- 왼쪽 영역: 얼굴과 오디오 플레이 버튼 -->
+    <div id="left-container" style="flex: 0 0 25%; display: flex; flex-direction: column; align-items: center; justify-content: space-between;">
+        <div id="character">
+            <div id="face">
+                <div id="eye-left" class="eye"></div>
+                <div id="eye-right" class="eye"></div>
+                <div id="mouth"></div>
+            </div>
+        </div>
+        <audio id="ttsAudio" controls style="display: none; margin-top: 20px;"></audio>
+    </div>
+
+    <!-- 오른쪽 영역: 채팅 다이얼로그와 입력 폼 -->
+    <div id="right-container" style="flex: 1; display: flex; flex-direction: column;">
+        <div id="chatlog" style="flex: 1;"></div>
+        <form id="chatForm" style="display: flex; align-items: center; margin-top: 10px;">
+            <input type="text" id="user_input" name="user_input" placeholder="영어로 대화를 시작하세요..." required style="flex: 1;">
+            <button type="submit">Send</button>
+            <button type="button" id="recordButton" style="margin-left: 10px;">Speak</button>
+        </form>
+        <!-- <button id="recordButton" style="margin-top: 10px;">영어로 말하기 (Speak in English)</button> -->
+    </div>
+</div>
+
+<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/curriculum_styles.css') }}">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
+<script src="{{ url_for('static', filename='js/curriculum_script.js') }}"></script>
+{% endblock %}

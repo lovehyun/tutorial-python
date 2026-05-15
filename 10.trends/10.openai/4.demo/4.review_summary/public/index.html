@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Product Reviews</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="script.js" defer></script>
+</head>
+<body>
+    <h1>Product Reviews</h1>
+
+    <!-- Product Image -->
+    <div class="product-image">
+        <!-- <img src="https://via.placeholder.com/600x400" alt="Product Image"> -->
+        <img src="https://picsum.photos/600/400" alt="Product Image">
+    </div>
+
+    <!-- Review Form -->
+    <section class="review-form">
+        <h2>Write a Review</h2>
+
+        <div>
+            <p>Rating:</p>
+            <label><input type="radio" name="rating" value="1"> 1</label>
+            <label><input type="radio" name="rating" value="2"> 2</label>
+            <label><input type="radio" name="rating" value="3"> 3</label>
+            <label><input type="radio" name="rating" value="4"> 4</label>
+            <label><input type="radio" name="rating" value="5"> 5</label>
+        </div>
+
+        <textarea id="opinion" placeholder="Write your opinion here..." rows="5" cols="40"></textarea>
+
+        <button onclick="submitReview()">Submit Review</button>
+    </section>
+
+    <!-- Reviews Section -->
+    <section>
+        <h2>Reviews</h2>
+        <div id="reviews-container">
+            <div class="ai-summary">
+                <p><strong>AI 요약:</strong> No reviews yet.</p>
+                <p><strong>평균 별점:</strong> N/A</p>
+            </div>
+        </div>
+    </section>
+</body>
+</html>

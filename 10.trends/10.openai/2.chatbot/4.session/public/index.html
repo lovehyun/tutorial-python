@@ -1,0 +1,40 @@
+<!-- public/index.html -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ChatGPT 챗봇</title>
+    <link rel="stylesheet" href="public/styles.css">
+</head>
+<body>
+    <div id="sidebar">
+        <button type="button" id="new-chat-button">New Chat</button>
+        <div id="session-history">
+            <!-- 세션 정보를 나타내는 요소 추가 -->
+            <div class="session-info">
+                <strong>Session ID:</strong> <span id="current-session-id"></span>
+            </div>
+            <div class="session-info">
+                <strong>Start Date:</strong> <span id="current-session-date"></span>
+            </div>
+        </div>
+
+        <!-- 세션 목록을 표시할 요소 추가 -->
+        <div id="session-list-container"></div>
+    </div>
+    <div id="content">
+        <div id="chat-container"></div>
+        <div id="loading-indicator" class="loading">
+            <span class="loading-dots"></span>
+            생각 중...
+        </div>
+        <form id="user-input-form">
+            <input type="text" id="user-input" placeholder="메시지를 입력하세요">
+            <button type="button" id="submit-button">전송</button>
+        </form>
+    </div>
+    <script src="public/script.js"></script>
+</body>
+</html>

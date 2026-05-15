@@ -1,7 +1,7 @@
 from flask import Flask, render_template
-from admin.admin import admin_bp
-from user.user import user_bp
-from product.product import product_bp
+from routes.admin.admin import admin_bp
+from routes.user.user import user_bp
+from routes.product.product import product_bp
 
 app = Flask(__name__)
 

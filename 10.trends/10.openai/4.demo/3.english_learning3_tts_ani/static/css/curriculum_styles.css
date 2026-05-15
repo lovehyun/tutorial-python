@@ -1,0 +1,78 @@
+/* 캐릭터 스타일 */
+#character {
+    width: 80%;
+    padding-top: 80%; /* 1:1 비율 */
+    background-color: #f0f0f0;
+    border-radius: 50%;
+    position: relative;
+    margin: 0 auto;
+}
+
+#face {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.eye {
+    width: 15px;
+    height: 15px;
+    background-color: black;
+    border-radius: 50%;
+    position: absolute;
+    top: 40%; /* 눈 위치 살짝 위로 */
+}
+
+#eye-left {
+    left: 35%;
+}
+
+#eye-right {
+    right: 35%;
+}
+
+#mouth {
+    width: 50px; /* 입 크기 확대 */
+    height: 25px; /* 입 크기 확대 */
+    background-color: red;
+    position: absolute;
+    bottom: 25%; /* 입 위치를 약간 올림 */
+    left: 50%;
+    transform: translateX(-50%);
+    border-radius: 10px;
+    transition: all 0.2s ease;
+}
+
+/* 채팅 로그 스타일 */
+#chatlog {
+    border: 1px solid #ccc;
+    padding: 10px;
+    height: 300px;
+    max-height: 300px;
+    overflow-y: scroll;
+}
+
+/* 채팅 폼 스타일 */
+#chatForm {
+    display: flex;
+    margin-top: 10px;
+}
+
+/* 사용자 입력 필드 스타일 */
+#user_input {
+    flex: 1;
+    padding: 10px;
+    font-size: 16px;
+}
+
+/* 채팅 폼 버튼 스타일 */
+#chatForm button {
+    padding: 10px 20px;
+    font-size: 16px;
+}

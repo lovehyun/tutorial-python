@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI 포즈 분석기</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h1>AI 포즈 분석기</h1>
+        <h2>실시간 자세 분석 및 피드백</h2>
+        
+        <div class="video-container">
+            <img src="{{ url_for('video_feed') }}" class="video-feed" alt="실시간 포즈 영상">
+        </div>
+        
+        <div class="data-container">
+            <div class="data-section">
+                <div class="section-title">GPT 자세 분석</div>
+                <div id="gpt-analysis">분석 중... <span class="loading"></span></div>
+                <div id="update-time" class="update-time">마지막 업데이트: 대기 중</div>
+            </div>
+            
+            <div class="data-section">
+                <div class="section-title">포즈 데이터 (좌표)</div>
+                <div id="pose-text">데이터 로딩 중... <span class="loading"></span></div>
+            </div>
+        </div>
+        
+        <div id="connection-status" class="status active">연결됨</div>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/main2.js') }}"></script>
+</body>
+</html>

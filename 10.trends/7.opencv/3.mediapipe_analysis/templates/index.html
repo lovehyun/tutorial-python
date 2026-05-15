@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>3D Pose Viewer</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h2>실시간 3D 포즈 보기</h2>
+
+        <div class="video-container">
+            <img src="{{ url_for('video_feed') }}" width="720" height="480">
+        </div>
+
+        <div id="pose-text">포즈 데이터 로딩 중...</div>
+
+        <div id="connection-status" class="status active">연결됨</div>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+</body>
+</html>
