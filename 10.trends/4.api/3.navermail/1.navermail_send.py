@@ -19,6 +19,7 @@ body = '이 메일은 Python을 통해 네이버 SMTP 서버를 사용해 전송
 
 # MIMEText 객체 생성
 message = MIMEText(body, _charset='utf-8')
+# message = MIMEText(body, 'html', _charset='utf-8')   # 본문에 html 희망시
 message['Subject'] = subject
 message['From'] = NAVER_EMAIL
 message['To'] = recipient_email
