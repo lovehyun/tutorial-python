@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Flask SSE Test</title>
+</head>
+<body>
+
+    <h1>Flask SSE Test</h1>
+
+    <input id="msg" type="text" placeholder="메시지 입력">
+    <button onclick="sendMessage()">전송</button>
+
+    <hr>
+
+    <!-- 서버 메시지 출력 영역 -->
+    <div id="messages"></div>
+
+    <script>
+
+        // 메시지 출력 div
+        const messagesDiv = document.getElementById("messages");
+
+        // SSE 연결
+        const source = new EventSource("/stream");
+
+        // 연결 성공
+        source.onopen = () => {
+            console.log("서버와 연결됨!");
+        };
+
+        // 메시지 수신
+        source.onmessage = (event) => {
+            console.log("서버 메시지:", event.data);
+
+            const div = document.createElement("div"); // 새 div 생성
+            div.textContent = event.data; // 메시지 넣기
+            messagesDiv.appendChild(div); // 화면에 추가
+        };
+
+        // 에러 발생
+        source.onerror = (error) => {
+            console.log("SSE 에러:", error);
+        };
+
+        // 메시지 전송
+        function sendMessage() {
+
+            if (source.readyState !== EventSource.OPEN) {
+                console.log("서버 연결 안됨");
+                return;
+            }
+
+            const msg = document.getElementById("msg").value;
+
+            fetch("/send", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/x-www-form-urlencoded"
+                },
+                body: "message=" + encodeURIComponent(msg)
+            });
+
+            console.log("전송:", msg);
+        }
+
+    </script>
+
+</body>
+</html>

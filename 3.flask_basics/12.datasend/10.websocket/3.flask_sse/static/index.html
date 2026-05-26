@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Flask SSE Test</title>
+</head>
+<body>
+
+    <h1>Flask SSE Test</h1>
+
+    <input id="msg" type="text" placeholder="메시지 입력">
+    <button onclick="sendMessage()">전송</button>
+
+    <script>
+        // SSE 연결 (서버 -> 클라이언트 단방향)
+        const source = new EventSource("/stream");
+
+        // 연결 성공
+        source.onopen = () => {
+            console.log("서버와 연결됨!");
+        };
+
+        // 메시지 수신
+        source.onmessage = (event) => {
+            console.log("서버 메시지:", event.data);
+        };
+
+        // 에러 발생 (브라우저가 자동 재연결을 시도함)
+        source.onerror = (error) => {
+            console.log("SSE 에러:", error);
+        };
+
+        // 메시지 전송 (SSE 는 단방향이므로 POST 로 보냄)
+        function sendMessage() {
+            if (source.readyState !== EventSource.OPEN) {
+                console.log("서버 연결 안됨");
+                return;
+            }
+
+            const msg = document.getElementById("msg").value;
+
+            fetch("/send", {
+                method: "POST",
+                headers: { "Content-Type": "application/x-www-form-urlencoded" },
+                body: "message=" + encodeURIComponent(msg)  // 폼의 기본 형태는 key=value
+            });
+
+            console.log("전송:", msg);
+        }
+    </script>
+
+</body>
+</html>

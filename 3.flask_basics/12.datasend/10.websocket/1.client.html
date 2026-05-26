@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+<body>
+    <h1>WebSocket Test</h1>
+
+    <input id="msg" type="text" placeholder="메시지 입력" />
+    <button onclick="sendMessage()">전송</button>
+
+    <script>
+        const socket = new WebSocket("ws://localhost:8080");
+
+        // 연결 성공
+        socket.onopen = () => {
+            console.log("서버와 연결됨!");
+        };
+
+        // 메시지 수신
+        socket.onmessage = (event) => {
+            console.log("서버 메시지:", event.data);
+
+            // ping → pong 자동 응답
+            // if (event.data === "ping") {
+            //     socket.send("pong");
+            //     console.log("자동응답: pong 전송됨");
+            // }
+        };
+
+        // 연결 실패 / 에러
+        socket.onerror = (error) => {
+            console.log("WebSocket 에러 발생!");
+            console.log(error);
+        };
+
+        // 연결 종료
+        socket.onclose = (event) => {
+            console.log("서버 연결 종료");
+
+            console.log("종료 코드:", event.code);
+            console.log("종료 이유:", event.reason);
+        };
+
+        function sendMessage() {
+
+            // 연결 안된 상태 체크
+            if (socket.readyState !== WebSocket.OPEN) {
+                console.log("서버와 연결되지 않았습니다.");
+                return;
+            }
+
+            const msg = document.getElementById("msg").value;
+
+            socket.send(msg);
+
+            console.log("전송:", msg);
+        }
+    </script>
+</body>
+</html>

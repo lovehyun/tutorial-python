@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Flask WebSocket Test</title>
+</head>
+<body>
+
+    <h1>Flask WebSocket Test</h1>
+
+    <input id="msg" type="text" placeholder="메시지 입력">
+    <button onclick="sendMessage()">전송</button>
+
+    <script>
+        // WebSocket 연결
+        const socket = new WebSocket("ws://localhost:5000/ws");
+
+        // 연결 성공
+        socket.onopen = () => {
+            console.log("서버와 연결됨!");
+        };
+
+        // 메시지 수신
+        socket.onmessage = (event) => {
+            console.log("서버 메시지:", event.data);
+        };
+
+        // 에러 발생
+        socket.onerror = (error) => {
+            console.log("WebSocket 에러:", error);
+        };
+
+        // 연결 종료
+        socket.onclose = () => {
+            console.log("서버 연결 종료");
+        };
+
+        // 메시지 전송
+        function sendMessage() {
+            if (socket.readyState !== WebSocket.OPEN) {
+                console.log("서버 연결 안됨");
+                return;
+            }
+
+            const msg = document.getElementById("msg").value;
+            socket.send(msg);
+            console.log("전송:", msg);
+        }
+    </script>
+
+</body>
+</html>

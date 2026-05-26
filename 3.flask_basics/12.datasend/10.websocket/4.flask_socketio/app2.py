@@ -1,9 +1,9 @@
-from flask import Flask, render_template
+from flask import Flask, send_from_directory
 from flask_socketio import SocketIO, emit
 import threading
 import time
 
-app = Flask(__name__)
+app = Flask(__name__, static_folder="static")
 app.config['SECRET_KEY'] = 'secret!'
 socketio = SocketIO(app, async_mode='threading')
 # SocketIO(app): Flask 애플리케이션 app을 SocketIO와 연결합니다. 이렇게 하면 Flask 애플리케이션에서 WebSocket 프로토콜을 사용할 수 있게 됩니다.
@@ -16,7 +16,7 @@ def send_numbers():
     # 백그라운드 스레드에서 실행되는 함수로, 1초마다 증가하는 숫자를 웹소켓을 통해 클라이언트로 전송합니다.
     global stop_thread
     number = 1
-    
+
     print("'send_numbers' thread is just about to start... ")
 
     while not stop_thread:
@@ -29,7 +29,7 @@ def send_numbers():
 
 @app.route('/')
 def index():
-    return render_template('index2.html')
+    return send_from_directory("static", "index2.html")
 
 @socketio.on('start')
 def handle_start():
